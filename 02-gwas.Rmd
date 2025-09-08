@@ -1,0 +1,1169 @@
+---
+title: "GWAS 절차"
+author:
+  - name: "고해수, 농학박사"
+    affiliation: "국립축산과학원(NIAS) 가축개량평가과"
+    email: "kosoo91@korea.kr"
+date: "`r format(Sys.Date())`"
+output:
+  rmdformats::readthedown:
+    toc_depth: 3
+    highlight: kate
+    includes:
+      in_header:
+        - copy-button.html
+    css: custom.css
+lang: ko
+encoding: UTF-8
+resource_files:
+  - copy-button.html
+---
+# GWAS 절차
+
+개요
+<div class="alert alert-info checklist" role="alert">
+  <p><span class="icon">📋</span> <strong>단계별 튜토리얼: R에서 GWAS 수행</strong></p>
+  <ul class="tight">
+    <li>필요 패키지 설치/로딩</li>
+    <li>PLINK 유전자형 데이터 & 표현형 데이터 로딩 및 정리</li>
+    <li>GRM 계산 및 시각화</li>
+    <li>lme4breeding + GWASTools + GENESIS 기반 GWAS 귀무모형(Null model) 적합</li>
+    <li>단일 마커 연관성 검정, P 값 보정, 결과 시각화</li>
+  </ul>
+</div>
+
+```{r setup, include=FALSE}
+# 전역 청크 옵션(가독성/재현성)
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.align = "center",
+  fig.retina = 2
+)
+set.seed(20250829)
+```
+
+## 패키지 설치 & 로딩
+```{r packages}
+# ---- 설치어시스턴트 -------------------------------------------------------
+cran_pkgs <- c("genio", "qqman", "sommer", "lme4breeding", "dplyr", "CMplot", "stringr", "ggplot2", "tibble", "readr")
+bioc_pkgs <- c("GENESIS","GWASTools","BiocParallel")
+
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+install_if_missing <- function(pkgs, installer) {
+  need <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+  if (length(need)) installer(need, ask = FALSE)
+}
+
+install_if_missing(cran_pkgs, install.packages)
+install_if_missing(bioc_pkgs, BiocManager::install)
+
+# ---- 라이브러리 로드 ------------------------------------------------------
+library(genio)
+library(GENESIS)
+library(GWASTools)
+library(qqman)
+library(CMplot)
+library(lme4breeding)
+library(sommer)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(tibble)
+```
+
+## 경로/입력 정의
+```{r}
+breed        <- "holstein"
+plink_prefix <- "03_qc/NIAS_ibv3_296ea.holstein"
+pheno_file   <- "NIAS_ibv3_296ea_pheno.csv"
+
+report_dir <- file.path("05_gwas", breed)
+figs_dir   <- file.path(report_dir, "figs")
+gwas_dir   <- file.path(report_dir, "gwas")
+tables_dir <- file.path(report_dir, "tables")
+for (d in c(report_dir, figs_dir, gwas_dir, tables_dir)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
+```
+
+## PLINK binary 데이터 불러오기
+```{r plink}
+# read_plink()는 SNP x Sample 행렬(X), bim(마커정보), fam(개체정보)을 불러온다.
+plink <- read_plink(plink_prefix)
+
+X <- plink$X             # 행: SNP, 열: 샘플, 값: 0/1/2
+bim <- plink$bim         # chr, id, pos, alt, ref 등
+fam <- plink$fam         # family/sample id 등
+
+# 미리보기
+X[1:5, 1:5]
+head(bim)
+head(fam)
+```
+
+## 표현형 데이터 로딩 & 정렬
+```{r}
+pheno <- readr::read_csv(pheno_file, show_col_types = FALSE)
+
+sample_id_chr <- colnames(X)  # PLINK 열이 샘플 ID
+scanID <- seq_along(sample_id_chr)
+
+pheno_ord <- pheno[match(sample_id_chr, pheno$individual_id), , drop = FALSE]
+stopifnot(!any(is.na(pheno_ord$individual_id)))
+pheno_ord$sample_id <- sample_id_chr
+pheno_ord$scanID    <- scanID
+stopifnot(identical(as.character(pheno_ord$individual_id), pheno_ord$sample_id))
+# 미리보기
+str(pheno_ord)
+
+# 표현형 분포 확인
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+p=ggplot(pheno_ord, aes(x = .data[[single_trait]])) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(
+    title = paste("Distribution of", single_trait),
+    x = single_trait, 
+    y = "Density"
+  ) +
+  theme_minimal()
+
+# 변수에 저장된 플롯 확인
+print(p)
+# ggsave() 함수를 사용하여 플롯을 png 파일로 저장
+ggsave(
+  filename = file.path(figs_dir, paste0("pheno_distribution_", single_trait, ".png")),
+  plot = p,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
+```
+
+## GRM(유전체 관계 행렬) 계산 & 간단 시각화
+```{r grm}
+# A.mat은 -1/0/1 코딩된 genotype matrix 이용
+G_mat <- t(X)              # 샘플 x SNP
+colnames(G_mat) <- rownames(X)
+rownames(G_mat) <- sample_id_chr
+
+G_code <- G_mat - 1        # 0/1/2 -> -1/0/1
+KI     <- sommer::A.mat(G_code)
+# 수치안정성(아주 작은 ridge)
+diag(KI) <- diag(KI) + 1e-4
+
+# scanID 기준의 dimnames 지정
+rownames(KI) <- as.character(scanID)
+colnames(KI) <- as.character(scanID)
+
+stopifnot(
+  identical(rownames(KI), as.character(scanID)),
+  identical(colnames(KI), as.character(scanID))
+)
+
+# 상위 5x5 확인
+KI[1:5, 1:5]
+
+# 히트맵
+colfunc <- grDevices::colorRampPalette(c("steelblue4","springgreen","yellow"))
+
+png(file.path(report_dir, "A_matrix_heatmap.png"), width=2000, height=1400, res=200)
+stats::heatmap(KI, col = colfunc(100), Colv = "Rowv", symmetric = TRUE)
+dev.off()
+```
+<p><em>GRM 히트맵</em></p>
+```{r grm-plot, echo=FALSE}
+knitr::include_graphics(file.path(report_dir, "A_matrix_heatmap.png"))
+```
+
+## GWAS 분석용 데이터 객체 만들기
+```{r}
+bim <- cbind(index = seq_len(nrow(bim)), bim)
+stopifnot(all.equal(rownames(X), bim$id))
+stopifnot(all.equal(colnames(X), pheno_ord$sample_id))
+
+rownames(X) <- bim$index
+colnames(X) <- scanID
+
+# GENESIS 패키지에서 요구하는 데이터 객체 만들기
+mg <- GWASTools::MatrixGenotypeReader(
+  genotype   = X,
+  snpID      = bim$index,
+  chromosome = as.integer(bim$chr),
+  position   = as.integer(bim$pos),
+  scanID     = scanID,
+  autosomeCode = 1L:29L,
+  XchromCode   = 30L, YchromCode = 31L, XYchromCode = 32L, MchromCode = 33L
+)
+# 유전자형 데이터 객체 생성
+genoData <- GWASTools::GenotypeData(mg)
+# 표현형 데이터 객체 생성
+scanAnno <- GWASTools::ScanAnnotationDataFrame(pheno_ord)
+# 객체 구조 확인
+str(genoData)
+str(scanAnno@data)   
+```
+
+## GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산
+```{r}
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# --- 데이터 전처리 ---
+
+# 1. 모델에서 효과를 분석할 변수들을 factor(범주형 변수)로 변환
+pheno_ord$farm_id <- as.factor(pheno_ord$farm_id)
+pheno_ord$scanID <- as.factor(pheno_ord$scanID)
+
+# 2. 분석할 형질(days_in_milk)에 결측치(NA)가 있는 샘플을 제거하여
+#    최종 분석 데이터셋 'PH'를 생성
+#    droplevels() 함수는 PH 데이터셋에 더 이상 존재하지 않는 샘플이나 농장의 레벨 정보를 제거
+PH <- droplevels(subset(pheno_ord, !is.na(days_in_milk)))
+
+# 3. Kinship 행렬(KI)을 최종 분석 데이터셋 'PH'에 맞춰 자른다.
+#    반드시 'PH'의 샘플 목록과 순서를 기준으로 잘라야,
+#    표현형 데이터와 Kinship 데이터의 샘플이 1:1로 정확하게 일치한다.
+K_scan <- KI[levels(PH$scanID), levels(PH$scanID)]
+
+# 농장 효과와 개체별 유전 효과를 임의 효과(random effect)로 설정하여 모델을 만든다.
+# lmebreed 함수는 혈연관계(kinship)를 고려한 혼합 모델을 적합해준다.
+mix <- lme4breeding::lmebreed(
+  # 모델 공식: days_in_milk를 개체 효과(scanID)와 농장 효과(farm_id)로 설명
+  days_in_milk ~ (1|scanID) + (1|farm_id),
+  
+  # relmat 인자: scanID의 임의 효과는 K_scan 행렬에 정의된 유전적 관계를 따르도록 지정한다.
+  relmat  = list(scanID = K_scan),
+  
+  # verbose=TRUE: 모델 계산 과정을 화면에 출력
+  verbose = TRUE,
+  
+  # data 인자: 모델에 사용할 데이터셋으로 PH를 지정
+  data    = PH
+)
+
+# 모델 분석 결과 요약본 출력
+summary(mix)
+
+```
+
+```{=html}
+<!-- ===== 헤더 바가 있는 카드 버전 ===== -->
+<style>
+.gwas-card{
+  border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; margin:18px 0;
+  background:#fcfcff; box-shadow:0 1px 0 rgba(17,24,39,.04);
+}
+.gwas-header{
+  padding:10px 16px; background:#e0e7ff; border-bottom:1px solid #c7d2fe;
+  display:flex; align-items:center; gap:.6rem;
+}
+.gwas-header .title{ font-weight:700; }
+.gwas-body{ padding:16px 18px; }
+
+/* 나머지 스타일은 위와 동일 */
+.gwas-sub{ color:#4b5563; margin:0 0 .8rem; font-size:.95rem; }
+.gwas-dl{ margin:0; }
+.gwas-dl dt{ font-weight:700; margin-top:.6rem; }
+.gwas-dl dd{ margin:.15rem 0 .5rem 0; color:#374151; }
+.gwas-kpis{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.6rem 0 .2rem; }
+.kpi{ display:inline-flex; align-items:center; gap:.35rem;
+      padding:.3rem .55rem; border-radius:999px; background:#c7d2fe; font-weight:600;
+      border:1px solid #818cf8; color:#1f2937; }
+.badge{ font-size:.8rem; padding:.05rem .35rem; border-radius:6px; background:#9ca3af; color:#fff; }
+.gwas-grid{ display:grid; grid-template-columns: 1fr; gap:.6rem; }
+@media(min-width:700px){ .gwas-grid{ grid-template-columns:1fr 1fr; } }
+.gwas-table{ width:100%; border-collapse:collapse; font-size:.95rem; }
+.gwas-table th, .gwas-table td{ padding:.4rem .55rem; border-bottom:1px solid #e5e7eb; text-align:left; }
+.gwas-note{ margin-top:.6rem; color:#374151; }
+.hr-soft{ border:0; border-top:1px dashed #e5e7eb; margin:1rem 0; }
+</style>
+
+<div class="gwas-card" id="null-model-summary">
+  <div class="gwas-header">
+    <div class="title icon-wrap"><span class="emoji">❓</span><span>Null model 요약 — days_in_milk</span></div>
+    <div class="meta" style="margin-left:auto; font-size:.9rem; color:#374151;">Vg/Vc/Ve & h²</div>
+  </div>
+  <div class="gwas-body">
+    <h4 style="margin:.2rem 0 .8rem;"> 1. 임의 효과 (Random effects) 분석</h4>
+    <p class="gwas-sub">이 부분이 결과 해석의 핵심이다. <code>days_in_milk</code> 형질의 전체 변이가 어떤 요인들로 구성되어 있는지 보여준다.</p>
+
+    <div class="gwas-dl">
+      <div class="gwas-kpis">
+        <span class="kpi">scanID Variance: <b>3794.3</b> <span class="badge">Vg</span></span>
+        <span class="kpi">farm_id Variance: <b>289.4</b> <span class="badge">Vc</span></span>
+        <span class="kpi">Residual Variance: <b>17284.7</b> <span class="badge">Ve</span></span>
+      </div>
+
+      <dl class="gwas-dl">
+        <dt>scanID (유전 효과)</dt>
+        <dd>개체 간 유전적 차이(혈연관계 고려)로 인한 분산 → <b>유전 분산(Vg)</b>.</dd>
+        <dt>farm_id (농장 효과)</dt>
+        <dd>농장 간 환경 차이로 인한 분산 → <b>공통 환경 분산(Vc)</b>.</dd>
+        <dt>Residual (잔차)</dt>
+        <dd>유전 및 농장 효과로 설명되지 않는 나머지 오차 → <b>환경 분산(Ve)</b>.</dd>
+      </dl>
+    </div>
+
+    <hr class="hr-soft"/>
+
+    <h4 style="margin:.2rem 0 .8rem;">📐 2. 유전력 (Heritability) 계산</h4>
+    <div class="gwas-grid">
+      <div>
+        <table class="gwas-table">
+          <thead><tr><th>성분</th><th>값</th><th>설명</th></tr></thead>
+          <tbody>
+            <tr><td>Vg</td><td>3794.3</td><td>유전 분산</td></tr>
+            <tr><td>Vc</td><td>289.4</td><td>농장(공통 환경) 분산</td></tr>
+            <tr><td>Ve</td><td>17284.7</td><td>잔차(환경) 분산</td></tr>
+            <tr><td>Vp = Vg + Vc + Ve</td><td><b>21368.4</b></td><td>전체 표현형 분산</td></tr>
+            <tr><td>h² = Vg / Vp</td><td><b>0.178</b></td><td>유전력</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gwas-note">
+        <p><b>결론:</b> <code>days_in_milk</code>의 <b>SNP 유전력은 약 17.8%</b>로 추정된다. 이는 이 형질의 전체 변이 중 약 17.8%가 우리가 측정한 SNP 마커로 설명되는 유전적 요인에 의해 결정된다는 의미이다.</p>
+        <p>추가로, 농장 환경이 설명하는 변이의 비율은 289.4 / 21368.4 ≈ <b>1.4%</b>로 상대적으로 작다는 것을 알 수 있다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### 함수를 이용한 유전력 계산
+```{r}
+# VarCorr() 함수로 모델('mix')에서 분산 성분(Variance Components)을 추출
+vc <- VarCorr(mix)
+print(vc, comp = c("Variance"))
+
+# 잔차 분산(Residual variance)을 추출
+# VarCorr 결과의 속성(attribute) "sc"는 잔차의 표준편차이므로 제곱하여 분산을 구한다. 
+ve <- attr(VarCorr(mix), "sc")^2
+
+# SNP 유전력(h2) 계산
+# h2 = 유전분산 / (유전분산 + 농장분산 + 잔차분산)
+h2 <- vc$scanID / (vc$scanID +  vc$farm_id + ve)
+print(paste("SNP Heritability (h2):", base::as.numeric(h2)))
+
+# 전체 표현형 분산 중 농장 효과(farm ID)가 차지하는 분산 비율 계산
+farm_var <- vc$farm_id / (vc$scanID + vc$farm_id + ve)
+print(paste("Farm Variance ratio:", base::as.numeric(farm_var)))
+```
+
+## GWAS 최종 null 모형 적합 및 GWAS
+```{r}
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# 귀무모형
+null_single <- GENESIS::fitNullModel(
+  x        = scanAnno,
+  outcome  = single_trait,
+  cov.mat  = list(gen = KI),
+  family   = "gaussian"
+)
+
+# 모형에서 추정된 분산 성분(유전분산, 잔차분산)을 확인
+null_single$varComp 
+# SNP heritability 계산 (h2, CI value)
+GENESIS::varCompCI(null_single, prop = TRUE)                             
+```
+
+```{r, results='hide'}
+# GWAS 실행
+# 유전체 데이터를 **블록 단위(여기서는 10,000 SNP씩)**로 순차 처리하기 위한 이터레이터 생성: 메모리 사용을 줄이기 위함
+genoIt <- GWASTools::GenotypeBlockIterator(genoData, snpBlock = 10000)
+# 위에서 적합한 귀무모형을 고정한 상태에서, 각 SNP에 대해 단일변량 Score test로 연관성을 계산
+assoc_single <- GENESIS::assocTestSingle(
+  genoIt, null.model = null_single, BPPARAM = BiocParallel::SerialParam()
+)
+
+# ---- P-값 보정 & 유의 SNP 선별 ---------------------------------
+assoc_single$p_adj_BH=p.adjust(assoc_single$Score.pval, method="BH")
+assoc_single$p_adj_bonferroni=p.adjust(assoc_single$Score.pval, method="bonferroni")
+
+# 저장
+saveRDS(assoc_single, file = file.path(gwas_dir, paste0("assoc_", single_trait, ".rds")))
+readr::write_csv(assoc_single, file.path(tables_dir, paste0("assoc_", single_trait, ".csv")))
+
+head(assoc_single, 5)
+```
+
+```{r assoc-single-table, echo=FALSE, message=FALSE, warning=FALSE}
+# 1. 각 컬럼에 대한 설명을 담은 벡터를 생성합니다.
+column_notes_assoc <- c(
+  "SNP 고유 ID (인덱스)",
+  "염색체 번호",
+  "염색체 내 위치 (base pair)",
+  "해당 SNP 분석에 사용된 개체 수",
+  "대립유전자 빈도 (Allele Frequency)",
+  "부대립유전자 개수 (Minor Allele Count)",
+  "연관성 검정의 Score 통계량",
+  "Score 통계량의 표준 오차",
+  "표준화된 Score 통계량 (Z-값)",
+  "연관성 검정의 P-값",
+  "대립유전자의 효과 추정치 (Effect Size)",
+  "효과 추정치의 표준 오차",
+  "해당 SNP이 설명하는 표현형 분산의 비율 (PVE)",
+  "BH 방법으로 보정된 P-값 (FDR)",
+  "Bonferroni 방법으로 보정된 P-값"
+)
+
+# 2. 전체 결과는 매우 크므로, 상위 10개 행만 잘라서 출력용 데이터로 만듭니다.
+assoc_head <- head(assoc_single, 5)
+
+# 3. 출력용 데이터의 컬럼 이름에 각주 기호(^a^, ^b^, ...)를 붙입니다.
+assoc_for_print <- assoc_head
+colnames(assoc_for_print) <- paste0(colnames(assoc_head), " ^", letters[1:ncol(assoc_head)], "^")
+
+# 4. kable, kable_styling, footnote, scroll_box 함수를 이용해 최종 테이블을 만듭니다.
+knitr::kable(
+  assoc_for_print,
+  digits = 3,
+  caption = "GWAS 연관 분석 결과 (5개 SNP 예시)",
+  escape = FALSE # 각주 기호를 윗첨자로 변환하기 위해 필수
+) %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+  ) %>%
+  kableExtra::footnote(
+    alphabet = column_notes_assoc,
+    footnote_as_chunk = TRUE,
+    title_format = "bold"
+  ) %>%
+  # 테이블이 가로로 길기 때문에, 100% 너비의 스크롤 박스에 넣어줍니다.
+  kableExtra::scroll_box(width = "100%")
+```
+
+### Null model이란? 왜 먼저 적합하는가? {#nullmodel-explainer}
+
+::: {.alert .alert-info .null-explainer}
+
+### 📐 모형식
+
+전체(혼합) 모형  
+\[
+y = X\beta + Zu + G\gamma + \varepsilon
+\]
+
+Null 모형(검정할 SNP 제거)  
+\[
+y = X\beta + Zu + \varepsilon
+\]
+
+**모형항 풀이**
+
+- \(y\) : 관측한 형질 값(예: days_in_milk).  
+- \(X\) : **고정효과 설계행렬(입력 행렬)** — 절편(1), 성별/연령, 주성분(PC) 등의 공변량 열로 구성.  
+- \(\beta\) : 고정효과 계수(공변량의 평균적인 영향 크기).  
+- \(Z\) : **임의효과 인시던스 행렬** — 개체가 어떤 레벨(개체 자신/농장 등)에 속하는지 0/1로 표시.  
+- \(u\) : 임의효과 벡터.  
+  - 개체 유전효과는 **GRM \(K\)**(친족도 행렬)로 상관구조를 반영해 모델링.  
+  - 농장 효과처럼 서로 독립·분산 동일로 보는 효과는 **항등행렬 \(I\)**(상관 0, 분산 동일)로 둠.  
+- \(G\) : **검정 중인 단일 SNP**의 유전자형(0/1/2 또는 통계적으로 추정된 유전자량, dosage). `assocTestSingle()`가 SNP마다 이 \(G\)를 바꿔가며 사용.  
+- \(\gamma\) : 해당 SNP의 효과 크기(귀무가설 \(H_0:\gamma=0\)).  
+- \(\varepsilon\) : 잔차(아직 설명되지 않은 변동).
+
+### 💡 한눈에 보기
+- **Null model**: SNP 효과 없이 공변량/친족구조만으로 **오차구조·분산성분**을 먼저 추정  
+- **GWAS per-SNP**: 위 Null을 **고정**하고 각 SNP를 **Score 계열 검정(Score, Score.SPA 등)**으로 빠르게 평가
+
+GWAS에서 Null model(귀무모형)을 먼저 적합하는 것은 **정확하고 효율적인 분석**을 위한 핵심 전략이다. 
+
+1. **통계적 타당성(제1종 오류 통제)**  
+   - 집단 구조((population stratification)나 친족 관계(cryptic relatedness)가 있으면, 이를 보정하지 않을 때 **genomic inflation(λ)**이 커지고 거짓양성(제1종 오류)이 늘어난다.  
+   - Null model은 **GRM, \(K\)** 등으로 **오차 구조와 분산성분**을 먼저 추정해 이 교란을 제거/완화한다. 그 결과, 이후 SNP 검정에서 **λ가 안정**되고 **거짓양성**이 억제된다.
+
+2. **계산 효율성(속도)**  
+   - 혼합모형의 분산성분 추정은 고비용 작업(큰 GRM 역행렬 계산 등)이다.  
+   - Null에서 **한 번만** 분산성분을 추정·고정해 두고, 이후 각 SNP는 **Score 계열 검정**으로 처리하면 **수십만~수백만 SNP**도 빠르게 평가할 수 있다(매 SNP마다 혼합모형을 재적합할 필요 없음).
+
+3. **가정(Infinitesimal 가정)**  
+   - 이 방법은 “**개별 SNP 하나가 전체 유전분산 \(\sigma_g^2\)에 미치는 영향은 매우 작다**”는 가정에 기반한다.  
+   - 드물게 특정 SNP 효과가 매우 크면(예: 유전력의 큰 비율) 약간의 정확도 손실이 있을 수 있으나, 일반적으로 Null→Score 절차가 가장 합리적이다.
+
+#### 📈 Genomic Inflation, \(\lambda\)
+
+- **정의**: GWAS에서 관측된 검정 통계량(또는 P-값)들이 **귀무가설 하의 기대치보다 전반적으로 더 유의**하게 나오는 현상. 이는 모델이 데이터 속 **집단 계층화**, **잠재적 친족 관계** 등을 충분히 통제하지 못했을 때 나타나는 **체계적 편향(systematic bias)**의 신호이다. 
+
+**결론**: Null model을 먼저 적합하면 **genomic inflation을 방지**하고 **제1종 오류를 통제**하면서, 대규모 SNP를 **고속으로** 분석할 수 있다. 
+
+:::
+
+```{r}
+# 결과 요약
+# genomic inflation 구하기
+chisq  <- qchisq(1 - assoc_single$Score.pval, df = 1)
+lambda <- median(chisq, na.rm = TRUE)/stats::qchisq(0.5, 1)
+# 요약 표로 정리하기
+summary_single <- tibble::tibble(
+  trait = single_trait,
+  n_snps = sum(!is.na(assoc_single$Score.pval)),
+  lambda = lambda,
+  n_sig_BH = sum(assoc_single$p_adj_BH < 0.05, na.rm = TRUE),
+  n_sig_bonf = sum(assoc_single$p_adj_bonferroni < 0.05, na.rm = TRUE),
+  min_p = min(assoc_single$Score.pval, na.rm = TRUE),
+  min_p_SNP = assoc_single$variant.id[which.min(assoc_single$Score.pval)],
+  min_BH = min(assoc_single$p_adj_BH, na.rm = TRUE)
+)
+readr::write_csv(summary_single, file.path(tables_dir, paste0("gwas_summary_", single_trait, ".csv")))
+```
+<div class="alert alert-success" role="alert">
+<h4 class="alert-heading">📁 GWAS 요약 결과</h4>
+```{r gwas-summary-table, echo=FALSE}
+# 1. 각 컬럼에 대한 주석(설명)을 정의합니다.
+column_notes <- c(
+  "분석 대상 형질 이름",
+  "분석에 사용된 총 SNP 개수",
+  "Genomic Inflation Factor (λ): 집단 구조화가 잘 보정되었는지 확인하는 지표. 1에 가까울수록 좋음.",
+  "BH 보정 기준(FDR < 0.05)을 만족하는 유의 SNP 개수",
+  "Bonferroni 보정 기준을 만족하는 유의 SNP 개수",
+  "가장 낮은 P-값 (min P-value)",
+  "가장 낮은 P-값을 보이는 SNP의 index ID",
+  "가장 낮은 BH 보정 P-값 (min FDR)"
+)
+
+# 2. 원본 데이터의 컬럼 이름에 주석 기호를 붙입니다.
+# (기존 summary_single 객체는 그대로 두고, 출력용으로만 컬럼명을 바꿉니다)
+summary_for_print <- summary_single
+colnames(summary_for_print) <- paste0(colnames(summary_single), " ^", letters[1:ncol(summary_single)], "^")
+
+# 3. kable 코드에 escape=FALSE 와 footnote() 함수를 추가합니다.
+knitr::kable(
+  summary_for_print, 
+  digits = 3, 
+  escape = FALSE  # escape=FALSE가 매우 중요합니다!
+) %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+  ) %>%
+  kableExtra::footnote(
+    alphabet = column_notes,
+    footnote_as_chunk = TRUE,
+    title_format = "bold"
+  )
+```
+</div>
+```{css, echo=FALSE}
+/* R 코드 청크(echo=TRUE)의 스타일을 지정합니다 */
+pre.sourceCode {
+  background-color: #e7f3ff !important; /* 연한 하늘색 배경 */
+  border: 1px solid #cce0ff !important;   /* 배경색과 어울리는 연한 파란색 테두리 */
+  border-radius: 5px;                      /* 모서리를 살짝 둥글게 (선택 사항) */
+}
+
+/* 테이블 헤더(th)의 텍스트가 줄바꿈되지 않도록 설정 */
+.table th {
+  white-space: nowrap;
+}
+```
+
+## GWAS 결과 시각화
+```{r}
+# PVE 분포 확인
+p = ggplot(assoc_single, aes(x = PVE*100)) + # PVE를 퍼센트로 변환
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(title = "Distribution of Variance Explained (PVE) by Single Variants", x = "PVE (%)", y = "Density") +
+  theme_minimal()
+
+print(p)
+# 플롯 저장
+ggsave(file.path(figs_dir, paste0("pve_hist_", single_trait, ".png")), p, dpi=300, width=6, height=4)
+
+# ---- QQ 플롯 & 맨해튼 플롯 -------------------------------
+manplot <- assoc_single |>
+  dplyr::select(SNP = variant.id, Chromosome = chr, Position = pos, P = Score.pval)
+
+# 염색체 분류 확인
+dplyr::distinct(manplot, Chromosome)
+
+# U 염색체 코딩 변경
+manplot <- dplyr::mutate(manplot, Chromosome = dplyr::case_when(Chromosome == "U" ~ "X", TRUE ~ Chromosome))
+
+## QQ plot
+CMplot::CMplot(                                                           #
+  Pmap = manplot,
+  plot.type = "q",
+  conf.int = TRUE,
+  box = TRUE,
+  main = paste0("QQ Plot (λ = ", round(lambda, 3), ")"),
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  # ↓↓↓ 크기 조절
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  main.cex = 1.0,   # 타이틀 크기(기본 1.5 → 더 작게)
+ # 라벨 위치 미세조정
+  xticks.pos = 0.5,    # x축 눈금과 축 간격
+  ylab.pos   = 1.5,    # y축 라벨과 축 간격
+ mar = c(3, 4, 2.5, 2)  # 아래-왼-위-오른 여백(클립 방지/밀착 조절)
+)
+```
+
+<p><em>QQ plot</em></p>
+```{r, echo=FALSE}
+knitr::include_graphics(file.path(figs_dir, "QQplot.P.png"))
+```
+
+```{r}
+## Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "m",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 12, height = 4
+)
+```
+
+<p><em>Manhattan plot</em></p>
+```{r, echo=FALSE}
+knitr::include_graphics(file.path(figs_dir,"Rect_Manhtn.P.png"))
+```
+
+```{r}
+## Circular Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "c",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  mar = c(1, 1, 1, 1),   # 기본(3,6,3,3)보다 훨씬 타이트
+  cir.chr.h = 0.6              # 바깥 크로모솜 테두리 두께 축소
+)
+```
+
+<p><em>Circular Manhattan plot</em></p>
+```{r, echo=FALSE}
+knitr::include_graphics(file.path(figs_dir,"Cir_Manhtn.P.png"))
+```
+
+```{r, results='hide'}
+# plot 위치 및 이름 변경
+file.rename("QQplot.P.png", file.path(figs_dir, paste0("QQplot.P_", single_trait, ".png")))
+file.rename("Rect_Manhtn.P.png", file.path(figs_dir, paste0("Rect_Manhtn.P_", single_trait, ".png")))
+file.rename("Cir_Manhtn.P.png", file.path(figs_dir, paste0("Cir_Manhtn.P_", single_trait, ".png")))
+```
+
+```{r, echo=FALSE}
+# ---- farm 임의효과 행렬(K_farm) 구성 -------------------------------------
+
+# 1. PH 데이터셋의 farm_id 정보를 바탕으로 incidence matrix 'Z' 생성
+#    Z 행렬: (개체 수 n) x (농장 수 L) 크기
+#    각 행(개체)은 해당 개체가 속한 농장 열에만 1의 값을 갖고 나머지는 0을 갖는다. 
+Z <- model.matrix(~ 0 + farm_id, data = PH)
+
+# 2. Z 행렬의 행 이름을 개체 ID(scanID)로 설정
+rownames(Z) <- PH$scanID
+
+# 3. tcrossprod(Z) 함수 (Z %*% t(Z)와 동일)를 이용해 n x n 크기의 공분산 행렬 K_farm을 생성
+#    이 행렬은 같은 농장 출신 개체 쌍은 1, 다른 농장이면 0의 값을 갖는다.
+K_farm <- tcrossprod(Z)
+
+# 4. 행렬 계산 시 수치적 안정성을 위해 대각선에 아주 작은 값(ridge)을 더해준다.
+K_farm <- K_farm + diag(1e-4, nrow(K_farm))
+
+# 5. 최종 행렬의 행/열 이름을 개체 ID로 지정
+dimnames(K_farm) <- list(PH$scanID, PH$scanID)
+
+```
+<style>
+  /* 이 출력 블록 전체의 기본 폰트/줄높이 통일 */
+  .outputs { font-size: .95rem; line-height: 1.5; }
+
+  /* 표와 표 내부 요소들이 동일한 크기를 상속받도록 강제 */
+  .outputs .outputs-table,
+  .outputs .outputs-table td,
+  .outputs .outputs-table th,
+  .outputs .outputs-table ul,
+  .outputs .outputs-table li,
+  .outputs .outputs-table code {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+
+  /* 표 안 리스트 여백 정리 */
+  .outputs .outputs-table td ul { margin: 0; padding-left: 1rem; }
+
+  /* 표 폭 자동 */
+  .outputs .outputs-table { table-layout: auto !important; width: 100%; }
+
+  /* 절대 줄바꿈 금지(셀 + 내부 모든 요소) */
+  .outputs .outputs-table td.nowrap,
+  .outputs .outputs-table td.nowrap *,
+  .outputs .outputs-table td.nowrap code {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Bootstrap 없는 환경 대비 (안전장치) */
+  .mb-0 { margin-bottom: 0 !important; }
+  .list-unstyled { list-style: none; padding-left: 0; }
+</style>
+
+<div class="alert alert-success outputs" role="alert">
+  <h4 class="alert-heading">📁 최종출력물</h4>
+
+  <h5 class="mt-2">품종별 (<code>05_gwas/&lt;breed&gt;/</code> 내부)</h5>
+  <table class="table table-striped table-condensed outputs-table">
+    <thead>
+      <tr>
+        <th>위치</th>
+        <th>파일 이름</th>
+        <th>형식</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>05_gwas/&lt;breed&gt;/</code></td>
+        <td><code>A_matrix_heatmap.png</code></td>
+        <td>PNG</td>
+        <td>GRM(유전체 관계 행렬) 히트맵</td>
+      </tr>
+
+      <!-- 플롯 행: 플롯별 1줄씩 표시 -->
+      <tr>
+        <td><code>05_gwas/&lt;breed&gt;/figs/</code></td>
+        <td>
+          <ul class="list-unstyled mb-0">
+            <li><code>pheno_distribution_&lt;trait&gt;.png</code></li>
+            <li><code>pve_hist_&lt;trait&gt;.png</code></li>
+            <li><code>QQplot.P_&lt;trait&gt;.png</code></li>
+            <li><code>Rect_Manhtn.P_&lt;trait&gt;.png</code></li>
+            <li><code>Cir_Manhtn.P_&lt;trait&gt;.png</code></li>
+          </ul>
+        </td>
+        <td>PNG</td>
+        <td>
+          <ul class="list-unstyled mb-0">
+            <li>표현형 분포 플롯</li>
+            <li>PVE 분포 플롯</li>
+            <li>QQ 플롯(λ 포함)</li>
+            <li>맨해튼 플롯(직사각형)</li>
+            <li>맨해튼 플롯(원형)</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- GENESIS 설명: 한 줄 고정 -->
+      <tr>
+        <td><code>05_gwas/&lt;breed&gt;/gwas/</code></td>
+        <td><code>assoc_&lt;trait&gt;.rds</code></td>
+        <td>RDS</td>
+        <td class="nowrap">GENESIS::assocTestSingle() 결과&nbsp;객체&nbsp;(재분석/추가&nbsp;가공용)
+        </td>
+      </tr>
+
+      <tr>
+        <td><code>05_gwas/&lt;breed&gt;/tables/</code></td>
+        <td><code>assoc_&lt;trait&gt;.csv</code></td>
+        <td>CSV</td>
+        <td>단일 마커 연관성 표: P-value, 효과, 표준오차, PVE, FDR(BH), Bonferroni 등</td>
+      </tr>
+
+      <tr>
+        <td><code>05_gwas/&lt;breed&gt;/tables/</code></td>
+        <td><code>gwas_summary_&lt;trait&gt;.csv</code></td>
+        <td>CSV</td>
+        <td>요약 지표: SNP 수, λ, 유의 SNP 개수(FDR/Bonferroni), 최소 P, 해당 SNP index ID</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h5 class="mt-3">참고</h5>
+<ul class="list-unstyled mb-0">
+  <li>🔧 현재 설정
+    <ul class="list-unstyled mb-0" style="margin-left:1.1rem">
+      <li><code>&lt;breed&gt; = holstein</code></li>
+      <li><code>&lt;trait&gt; = days_in_milk</code></li>
+    </ul>
+  </li>
+</ul>
+</div>
+<style>
+  /* 'outputs' 상자 내부의 h5와, 그 다음에 오는 ul 및 li의 폰트를 조절 */
+  .outputs h5 {
+    font-size: 1.2em !important; /* 이 값을 조절하여 '참고' 글씨 크기 변경 */
+    font-weight: 700; /* 글씨를 좀 더 굵게 (선택 사항) */
+  }
+  
+  .outputs h5 + ul,
+  .outputs h5 + ul li {
+    font-size: 1.2em !important; 
+    line-height: inherit !important;
+  }
+</style>
+
+## 🎉 R로 GWAS 과정 완료
+
+<div class="alert alert-success" role="alert" style="margin-top:.5rem">
+  <h4 class="alert-heading" style="margin-top:0;margin-bottom:.5rem">✅ R로 하는 GWAS 절차를 끝까지 잘 마쳤다!</h4>
+  <p style="margin-bottom:.75rem">
+    모든 단계를 거쳐 최종 출력물을 만들었다. 🍀
+  </p>
+  <hr style="margin:.75rem 0" />
+  <p class="mb-0">이제 Holstein의 다른 형질들과 Jersey 데이터셋에 대해서도 GWAS 분석을 할 수 있다. 🚀🔥</p>
+</div>
+
+## 스크립트 전체 보기 {#script-full}
+
+<span></span>
+
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+  <p><span style="font-size:1.1em">📘 <strong> GWAS R script</strong></span></p>
+
+  <details>
+    <summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+      <code>gwas_workflow.R</code> 파일 — 👆 클릭하여 보기
+    </summary>
+    <pre><code class="language-r">## 1. 패키지 설치 & 로딩
+# ---- 설치어시스턴트 -------------------------------------------------------
+cran_pkgs <- c("genio", "qqman", "sommer", "lme4breeding", "dplyr", "CMplot", "stringr", "ggplot2", "tibble", "readr")
+bioc_pkgs <- c("GENESIS","GWASTools","BiocParallel")
+
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+install_if_missing <- function(pkgs, installer) {
+  need <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+  if (length(need)) installer(need, ask = FALSE)
+}
+
+install_if_missing(cran_pkgs, install.packages)
+install_if_missing(bioc_pkgs, BiocManager::install)
+
+# ---- 라이브러리 로드 ------------------------------------------------------
+library(genio)
+library(GENESIS)
+library(GWASTools)
+library(qqman)
+library(CMplot)
+library(lme4breeding)
+library(sommer)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(tibble)
+
+## 2. 경로/입력 정의
+breed        <- "holstein"
+plink_prefix <- "03_qc/NIAS_ibv3_296ea.holstein"
+pheno_file   <- "NIAS_ibv3_296ea_pheno.csv"
+
+report_dir <- file.path("05_gwas", breed)
+figs_dir   <- file.path(report_dir, "figs")
+gwas_dir   <- file.path(report_dir, "gwas")
+tables_dir <- file.path(report_dir, "tables")
+for (d in c(report_dir, figs_dir, gwas_dir, tables_dir)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
+
+## 3. PLINK binary 데이터 불러오기
+# read_plink()는 SNP x Sample 행렬(X), bim(마커정보), fam(개체정보)을 불러온다.
+plink <- read_plink(plink_prefix)
+
+X <- plink$X             # 행: SNP, 열: 샘플, 값: 0/1/2
+bim <- plink$bim         # chr, id, pos, alt, ref 등
+fam <- plink$fam         # family/sample id 등
+
+# 미리보기
+X[1:5, 1:5]
+head(bim)
+head(fam)
+
+## 4. 표현형 데이터 로딩 & 정렬
+pheno <- readr::read_csv(pheno_file, show_col_types = FALSE)
+
+sample_id_chr <- colnames(X)  # PLINK 열이 샘플 ID
+scanID <- seq_along(sample_id_chr)
+
+pheno_ord <- pheno[match(sample_id_chr, pheno$individual_id), , drop = FALSE]
+stopifnot(!any(is.na(pheno_ord$individual_id)))
+pheno_ord$sample_id <- sample_id_chr
+pheno_ord$scanID    <- scanID
+stopifnot(identical(as.character(pheno_ord$individual_id), pheno_ord$sample_id))
+# 미리보기
+str(pheno_ord)
+
+# 표현형 분포 확인
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+p=ggplot(pheno_ord, aes(x = .data[[single_trait]])) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(
+    title = paste("Distribution of", single_trait),
+    x = single_trait, 
+    y = "Density"
+  ) +
+  theme_minimal()
+
+# 변수에 저장된 플롯 확인
+print(p)
+# ggsave() 함수를 사용하여 플롯을 png 파일로 저장
+ggsave(
+  filename = file.path(figs_dir, paste0("pheno_distribution_", single_trait, ".png")),
+  plot = p,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
+
+## 5. GRM(유전체 관계 행렬) 계산 & 간단 시각화
+# A.mat은 -1/0/1 코딩된 genotype matrix 이용
+G_mat <- t(X)              # 샘플 x SNP
+colnames(G_mat) <- rownames(X)
+rownames(G_mat) <- sample_id_chr
+
+G_code <- G_mat - 1        # 0/1/2 -> -1/0/1
+KI     <- sommer::A.mat(G_code)
+# 수치안정성(아주 작은 ridge)
+diag(KI) <- diag(KI) + 1e-4
+
+# scanID 기준의 dimnames 지정
+rownames(KI) <- as.character(scanID)
+colnames(KI) <- as.character(scanID)
+
+stopifnot(
+  identical(rownames(KI), as.character(scanID)),
+  identical(colnames(KI), as.character(scanID))
+)
+
+# 상위 5x5 확인
+KI[1:5, 1:5]
+
+# 히트맵
+colfunc <- grDevices::colorRampPalette(c("steelblue4","springgreen","yellow"))
+
+png(file.path(report_dir, "A_matrix_heatmap.png"), width=2000, height=1400, res=200)
+stats::heatmap(KI, col = colfunc(100), Colv = "Rowv", symmetric = TRUE)
+dev.off()
+
+## 6. GWAS 분석용 데이터 객체 만들기
+bim <- cbind(index = seq_len(nrow(bim)), bim)
+stopifnot(all.equal(rownames(X), bim$id))
+stopifnot(all.equal(colnames(X), pheno_ord$sample_id))
+
+rownames(X) <- bim$index
+colnames(X) <- scanID
+
+# GENESIS 패키지에서 요구하는 데이터 객체 만들기
+mg <- GWASTools::MatrixGenotypeReader(
+  genotype   = X,
+  snpID      = bim$index,
+  chromosome = as.integer(bim$chr),
+  position   = as.integer(bim$pos),
+  scanID     = scanID,
+  autosomeCode = 1L:29L,
+  XchromCode   = 30L, YchromCode = 31L, XYchromCode = 32L, MchromCode = 33L
+)
+# 유전자형 데이터 객체 생성
+genoData <- GWASTools::GenotypeData(mg)
+# 표현형 데이터 객체 생성
+scanAnno <- GWASTools::ScanAnnotationDataFrame(pheno_ord)
+# 객체 구조 확인
+str(genoData)
+str(scanAnno@data)   
+
+## 7. GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# --- 데이터 전처리 ---
+
+# 1. 모델에서 효과를 분석할 변수들을 factor(범주형 변수)로 변환
+pheno_ord$farm_id <- as.factor(pheno_ord$farm_id)
+pheno_ord$scanID <- as.factor(pheno_ord$scanID)
+
+# 2. 분석할 형질(days_in_milk)에 결측치(NA)가 있는 샘플을 제거하여
+#    최종 분석 데이터셋 'PH'를 생성
+#    droplevels() 함수는 PH 데이터셋에 더 이상 존재하지 않는 샘플이나 농장의 레벨 정보를 제거
+PH <- droplevels(subset(pheno_ord, !is.na(days_in_milk)))
+
+# 3. Kinship 행렬(KI)을 최종 분석 데이터셋 'PH'에 맞춰 자른다.
+#    반드시 'PH'의 샘플 목록과 순서를 기준으로 잘라야,
+#    표현형 데이터와 Kinship 데이터의 샘플이 1:1로 정확하게 일치한다.
+K_scan <- KI[levels(PH$scanID), levels(PH$scanID)]
+
+# 농장 효과와 개체별 유전 효과를 임의 효과(random effect)로 설정하여 모델을 만든다.
+# lmebreed 함수는 혈연관계(kinship)를 고려한 혼합 모델을 적합해준다.
+mix <- lme4breeding::lmebreed(
+  # 모델 공식: days_in_milk를 개체 효과(scanID)와 농장 효과(farm_id)로 설명
+  days_in_milk ~ (1|scanID) + (1|farm_id),
+  
+  # relmat 인자: scanID의 임의 효과는 K_scan 행렬에 정의된 유전적 관계를 따르도록 지정한다.
+  relmat  = list(scanID = K_scan),
+  
+  # verbose=TRUE: 모델 계산 과정을 화면에 출력
+  verbose = TRUE,
+  
+  # data 인자: 모델에 사용할 데이터셋으로 PH를 지정
+  data    = PH
+)
+
+# 모델 분석 결과 요약본 출력
+summary(mix)
+
+### 함수를 이용한 유전력 계산
+# VarCorr() 함수로 모델('mix')에서 분산 성분(Variance Components)을 추출
+vc <- VarCorr(mix)
+print(vc, comp = c("Variance"))
+
+# 잔차 분산(Residual variance)을 추출
+# VarCorr 결과의 속성(attribute) "sc"는 잔차의 표준편차이므로 제곱하여 분산을 구한다. 
+ve <- attr(VarCorr(mix), "sc")^2
+
+# SNP 유전력(h2) 계산
+# h2 = 유전분산 / (유전분산 + 농장분산 + 잔차분산)
+h2 <- vc$scanID / (vc$scanID +  vc$farm_id + ve)
+print(paste("SNP Heritability (h2):", base::as.numeric(h2)))
+
+# 전체 표현형 분산 중 농장 효과(farm ID)가 차지하는 분산 비율 계산
+farm_var <- vc$farm_id / (vc$scanID + vc$farm_id + ve)
+print(paste("Farm Variance ratio:", base::as.numeric(farm_var)))
+
+## 8. GWAS 최종 null 모형 적합 및 GWAS
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# 귀무모형
+null_single <- GENESIS::fitNullModel(
+  x        = scanAnno,
+  outcome  = single_trait,
+  cov.mat  = list(gen = KI),
+  family   = "gaussian"
+)
+
+# 모형에서 추정된 분산 성분(유전분산, 잔차분산)을 확인
+null_single$varComp 
+# SNP heritability 계산 (h2, CI value)
+GENESIS::varCompCI(null_single, prop = TRUE)       
+
+# GWAS 실행
+# 유전체 데이터를 **블록 단위(여기서는 10,000 SNP씩)**로 순차 처리하기 위한 이터레이터 생성: 메모리 사용을 줄이기 위함
+genoIt <- GWASTools::GenotypeBlockIterator(genoData, snpBlock = 10000)
+# 위에서 적합한 귀무모형을 고정한 상태에서, 각 SNP에 대해 단일변량 Score test로 연관성을 계산
+assoc_single <- GENESIS::assocTestSingle(
+  genoIt, null.model = null_single, BPPARAM = BiocParallel::SerialParam()
+)
+
+# ---- P-값 보정 & 유의 SNP 선별 ---------------------------------
+assoc_single$p_adj_BH=p.adjust(assoc_single$Score.pval, method="BH")
+assoc_single$p_adj_bonferroni=p.adjust(assoc_single$Score.pval, method="bonferroni")
+
+# 저장
+saveRDS(assoc_single, file = file.path(gwas_dir, paste0("assoc_", single_trait, ".rds")))
+readr::write_csv(assoc_single, file.path(tables_dir, paste0("assoc_", single_trait, ".csv")))
+
+head(assoc_single, 5)
+
+# 결과 요약
+# genomic inflation 구하기
+chisq  <- stats::qchisq(1 - assoc_single$Score.pval, df = 1)
+lambda <- median(chisq, na.rm = TRUE)/stats::qchisq(0.5, 1)
+# 요약 표로 정리하기
+summary_single <- tibble::tibble(
+  trait = single_trait,
+  n_snps = sum(!is.na(assoc_single$Score.pval)),
+  lambda = lambda,
+  n_sig_BH = sum(assoc_single$p_adj_BH < 0.05, na.rm = TRUE),
+  n_sig_bonf = sum(assoc_single$p_adj_bonferroni < 0.05, na.rm = TRUE),
+  min_p = min(assoc_single$Score.pval, na.rm = TRUE),
+  min_p_SNP = assoc_single$variant.id[which.min(assoc_single$Score.pval)],
+  min_BH = min(assoc_single$p_adj_BH, na.rm = TRUE)
+)
+readr::write_csv(summary_single, file.path(tables_dir, paste0("gwas_summary_", single_trait, ".csv")))
+
+## 9. GWAS 결과 시각화
+# PVE 분포 확인
+p=ggplot(assoc_single, aes(x = PVE*100)) + # PVE를 퍼센트로 변환
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(title = "Distribution of Variance Explained (PVE) by Single Variants", x = "PVE (%)", y = "Density") +
+  theme_minimal()
+
+# 플롯 저장
+ggsave(file.path(figs_dir, paste0("pve_hist_", single_trait, ".png")), p, dpi=300, width=6, height=4)
+
+# ---- QQ 플롯 & 맨해튼 플롯 -------------------------------
+manplot <- assoc_single |>
+  dplyr::select(SNP = variant.id, Chromosome = chr, Position = pos, P = Score.pval)
+
+# 염색체 분류 확인
+dplyr::distinct(manplot, Chromosome)
+
+# U 염색체 코딩 변경
+manplot <- dplyr::mutate(manplot, Chromosome = dplyr::case_when(Chromosome == "U" ~ "X", TRUE ~ Chromosome))
+
+## QQ plot
+CMplot::CMplot(                                                           #
+  Pmap = manplot,
+  plot.type = "q",
+  conf.int = TRUE,
+  box = TRUE,
+  main = paste0("QQ Plot (λ = ", round(lambda, 3), ")"),
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  # ↓↓↓ 크기 조절
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  main.cex = 1.0,   # 타이틀 크기(기본 1.5 → 더 작게)
+  # 라벨 위치 미세조정
+  xticks.pos = 0.5,    # x축 눈금과 축 간격
+  ylab.pos   = 1.5,    # y축 라벨과 축 간격
+  mar = c(3, 4, 2.5, 2)  # 아래-왼-위-오른 여백(클립 방지/밀착 조절)
+)
+
+## Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "m",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 12, height = 4
+)
+
+## Circular Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "c",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  mar = c(1, 1, 1, 1),   # 기본(3,6,3,3)보다 훨씬 타이트
+  cir.chr.h = 0.6              # 바깥 크로모솜 테두리 두께 축소
+)
+
+# plot 위치 및 이름 변경
+file.rename("QQplot.P.png", file.path(figs_dir, paste0("QQplot.P_", single_trait, ".png")))
+file.rename("Rect_Manhtn.P.png", file.path(figs_dir, paste0("Rect_Manhtn.P_", single_trait, ".png")))
+file.rename("Cir_Manhtn.P.png", file.path(figs_dir, paste0("Cir_Manhtn.P_", single_trait, ".png")))
+    </code></pre>
+
+  </details>
+</div>

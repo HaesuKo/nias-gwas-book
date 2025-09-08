@@ -1,0 +1,3 @@
+book_filename: "my-final-book"
+rmd_files: ["index.Rmd", "01-qc.Rmd", "02-gwas.Rmd"]
+output_dir: "docs"

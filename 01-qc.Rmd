@@ -1,0 +1,1487 @@
+---
+title: "Pre-GWAS 절차: 유전자형 데이터 QC"
+author:
+  - name: "고해수, 농학박사"
+    affiliation: "국립축산과학원(NIAS) 가축개량평가과"
+    email: "kosoo91@korea.kr"
+date: "`r format(Sys.Date())`"
+
+output:
+  rmdformats::readthedown:
+    toc_depth: 3
+    highlight: kate
+    includes:
+      in_header:
+        - copy-button.html
+    css: custom.css
+resource_files:
+  - copy-button.html
+
+lang: ko
+encoding: UTF-8
+
+params:
+  base_dir: "02_reports"
+  breeds: ["holstein", "jersey"]
+  mind_thr: 0.05
+  geno_thr: 0.05
+  hwe_thr: 1.0e-6
+  maf_thr: 0.05
+---
+# Pre-GWAS 절차: 유전자형 데이터 QC
+
+개요
+<div class="alert alert-info checklist" role="alert">
+  <p><span class="icon">📋</span> <strong>GWAS 분석을 위한 유전자형 데이터 QC 워크플로우</strong> (Windows RStudio + PLINK2 + awk)</p>
+  <ul class="tight">
+    <li>유전자형 데이터 변환 (PED/MAP → PGEN)</li>
+    <li>REF/ALT allele 오류 변이 제거</li>
+    <li>1차 필터 적용 (autosomes + X, biallelic, monomorphic 제거, 중복 제거)</li>
+    <li>품종별 IID 목록 준비 및 데이터셋 분리</li>
+    <li>품종별 QC 리포트 생성 (missingness, HWE, allele frequency)</li>
+    <li>RStudio에서 품종별 QC 리포트 확인 및 2차 필터 값 결정</li>
+    <li>품종별 2차 필터 적용 및 최종 유전자형 세트 생성 (PLINK1 binary)</li>
+  </ul>
+</div>
+
+---
+
+## [RStudio Terminal] 전체 유전자형 데이터 QC 워크플로우
+
+아래 단계들은 모두 **R 콘솔이 아니라 RStudio의 Terminal 탭**에서 실행한다.
+
+- RStudio 화면 하단의 **Console** 옆 **Terminal** 탭을 클릭
+- Windows에서는 `cmd.exe` 또는 `PowerShell`이 자동 실행되며, Mac/Linux에서는 `bash/zsh` 셸이 열림
+- 각 단계의 코드 블록 우측 상단의 📋복사 버튼을 눌러 복사한 뒤, **Terminal** 탭의 `>` 옆에 마우스 오른쪽 버튼을 클릭 한 후 <kbd style="background:#e5e7eb; color:#111; border-radius:4px; padding:2px 6px;">Paste</kbd>를 클릭하고 <kbd>Enter</kbd>를 누르면 실행
+- 실행 결과물은 각 단계의 **“생성되는 출력 파일”** 설명에 따라 확인
+
+---
+
+### 0) 결과 저장 디렉터리 준비
+작업 전 단계별 결과를 저장할 디렉토리 생성
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>0) 출력 폴더 생성 (전체 데이터셋)</strong></p>
+  <pre><code class="language-bash">mkdir 00_import 01_autosomesX 02_reports 03_qc 04_split</code></pre>
+  <p><em>생성되는 폴더:</em><br>
+  <code>00_import/</code>, <code>01_autosomesX/</code>, <code>02_reports/</code>, <code>03_qc/</code>, <code>04_split/</code></p>
+</div>
+
+---
+
+### 1) 원본 PED/MAP을 PLINK2 PGEN 세트로 변환
+PLINK1 형식(PED/MAP)을 PLINK2 형식(PGEN/PVAR/PSAM)으로 변환
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>1) PED/MAP → PGEN 변환 (전체 데이터셋)</strong></p>
+  <pre><code class="language-bash">plink2 --cow --pedmap NIAS_ibv3_296ea --sort-vars --make-pgen --out 00_import/NIAS_ibv3_296ea</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>00_import/NIAS_ibv3_296ea.[pgen|pvar|psam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --cow
+  --make-pgen
+  --out 00_import\NIAS_ibv3_296ea
+  --pedmap NIAS_ibv3_296ea
+  --sort-vars
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:23 2025
+
+Random number seed: 1755676403
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+--pedmap: 53218 variants in .map file.
+--pedmap: 296 samples present, genotypes extracted to
+00_import\NIAS_ibv3_296ea-temporary.bed.smaj .
+Transposing sample-major .bed to 00_import\NIAS_ibv3_296ea-temporary.pgen , and
+setting major alleles to provisional-REF.
+Transpose complete.
+--pedmap: 00_import\NIAS_ibv3_296ea-temporary.pgen +
+00_import\NIAS_ibv3_296ea-temporary.pvar +
+00_import\NIAS_ibv3_296ea-temporary.psam written. .bed.smaj and .fam.tmp
+temporary files deleted.
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import\NIAS_ibv3_296ea-temporary.psam.
+53218 variants loaded from 00_import\NIAS_ibv3_296ea-temporary.pvar.
+Note: No phenotype data present.
+Writing 00_import\NIAS_ibv3_296ea.pvar ... done.
+Writing 00_import\NIAS_ibv3_296ea.psam ... done.
+Writing 00_import\NIAS_ibv3_296ea.pgen ... done.
+
+End time: Wed Aug 20 16:53:24 2025
+    </code></pre>
+  </details>
+---
+
+### 2) REF/ALT `.` 오류 변이 제거
+REF 및 ALT allele이 `.`으로 지정된 변이를 제거한 데이터셋 생성
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>2-1) REF/ALT가 모두 ‘.’ 인 변이 전체 행 추출 (awk)</strong></p>
+  <pre><code class="language-bash">awk -F '\t' "NR&gt;1 &amp;&amp; $4==\".\" &amp;&amp; $5==\".\"" 00_import/NIAS_ibv3_296ea.pvar &gt; bad_refalt_ids_both_strict.txt</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>bad_refalt_ids_both_strict.txt</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 bad_refalt_ids_both_strict.txt — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+0   0   BTA-91057-no-rs   .   .   0
+2   104844698   ARS-BFGL-NGS-40237   .   .   117.9899
+3   47820211    BTB-00462798         .   .   70.45705
+3   86433347    ARS-BFGL-NGS-11769   .   .   109.0945
+3   120031577   BTB-01714430         .   .   126.98
+6   108805685   Hapmap39313-BTA-121776  .   .   112.8388
+13  21528917    ARS-BFGL-NGS-59624   .   .   1.695824
+15  49076839    ARS-BFGL-BAC-20572   .   .   47.92302
+15  57434389    ARS-BFGL-BAC-19997   .   .   54.28989
+19  27444684    ARS-BFGL-NGS-38067   .   .   48.69351
+23  39274007    BovineHD2300011347   .   .   0
+X   98185142    ARS-BFGL-NGS-2544    .   .   99.77262
+Y   0           BovineHD3100000048   .   .   0
+Y   0           BovineHD3100000210   .   .   0
+Y   0           BovineHD3100000515   .   .   0
+Y   0           BovineHD3100000517   .   .   0
+Y   0           BovineHD3100001404   .   .   0
+  </code></pre>
+</details>
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>2-2) 문제 변이의 ID만 추출 (awk)</strong></p>
+  <pre><code class="language-bash">awk -F '\t' "NR&gt;1 &amp;&amp; $4==\".\" &amp;&amp; $5==\".\" {print $3}" 00_import/NIAS_ibv3_296ea.pvar &gt; bad_refalt_ids.txt</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>bad_refalt_ids.txt</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 bad_refalt_ids.txt — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+BTA-91057-no-rs
+ARS-BFGL-NGS-40237
+BTB-00462798
+ARS-BFGL-NGS-11769
+BTB-01714430
+Hapmap39313-BTA-121776
+ARS-BFGL-NGS-59624
+ARS-BFGL-BAC-20572
+ARS-BFGL-BAC-19997
+ARS-BFGL-NGS-38067
+BovineHD2300011347
+ARS-BFGL-NGS-2544
+BovineHD3100000048
+BovineHD3100000210
+BovineHD3100000515
+BovineHD3100000517
+BovineHD3100001404
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>2-3) 문제 변이를 제외한 pfile 생성 (전체 데이터셋)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 00_import/NIAS_ibv3_296ea --exclude bad_refalt_ids.txt --make-pgen --out 00_import/NIAS_ibv3_296ea.clean</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>00_import/NIAS_ibv3_296ea.clean.[pgen|pvar|psam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --exclude bad_refalt_ids.txt
+  --make-pgen
+  --out 00_import/NIAS_ibv3_296ea.clean
+  --pfile 00_import/NIAS_ibv3_296ea
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:24 2025
+
+Random number seed: 1755676404
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.psam.
+chrSet header line: 29 autosome pairs.
+53218 variants loaded from 00_import/NIAS_ibv3_296ea.pvar.
+Note: No phenotype data present.
+--exclude: 53201 variants remaining.
+53201 variants remaining after main filters.
+Writing 00_import/NIAS_ibv3_296ea.clean.psam ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pvar ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025
+  </code></pre>
+</details>
+---
+
+### 3) 1차 필터 적용
+Autosomes + X 염색체만 남기고, 다대립성/단일형/중복 변이 제거
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">💻</span> <strong>3) Autosomes + X, biallelic only, no monomorphic or duplicate variants (전체 데이터셋)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 00_import/NIAS_ibv3_296ea.clean --chr 1-29,X --max-alleles 2 --mac 1 --rm-dup force-first --sort-vars --make-pgen --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>01_autosomesX/NIAS_ibv3_296ea.autosomesX.[pgen|pvar|psam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --chr 1-29,X
+  --mac 1
+  --make-pgen
+  --max-alleles 2
+  --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+  --pfile 00_import/NIAS_ibv3_296ea.clean
+  --rm-dup force-first
+  --sort-vars
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:25 2025
+
+Random number seed: 1755676405
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.clean.psam.
+chrSet header line: 29 autosome pairs.
+52424 out of 53201 variants loaded from 00_import/NIAS_ibv3_296ea.clean.pvar.
+Note: No phenotype data present.
+Note: Skipping --rm-dup since no duplicate IDs are present.
+Calculating allele frequencies... done.
+4848 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+47576 variants remaining after main filters.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025
+  </code></pre>
+</details>
+---
+
+### 4) 품종별 IID 목록 준비
+Holstein / Jersey 개체 ID 파일을 FID IID 목록으로 매칭(PSAM 기반)
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐄</span> <strong>4-1) Holstein (홀스타인) IID 변환</strong></p>
+  <pre><code class="language-bash">awk "NR==FNR {iid[$1]=1; next} FNR&gt;1 &amp;&amp; ($2 in iid) {print $1, $2}" holstein.txt 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam &gt; holstein_ids.txt</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>holstein_ids.txt</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 holstein_ids.txt — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+1 3530
+2 3528
+3 3527
+4 3195
+5 3994
+...
+195 4354
+196 4353
+197 4352
+198 4163
+199 4351
+200 4279
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐂</span> <strong>4-2) Jersey (저지) IID 변환</strong></p>
+  <pre><code class="language-bash">awk "NR==FNR {iid[$1]=1; next} FNR&gt;1 &amp;&amp; ($2 in iid) {print $1, $2}" jersey.txt 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam &gt; jersey_ids.txt</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>jersey_ids.txt</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 jersey_ids.txt — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+201 4273
+202 4284
+203 4289
+204 4230
+205 4292
+...
+292 4318
+293 4317
+294 4096
+295 4179
+296 4316
+  </code></pre>
+</details>
+---
+
+### 5) 품종별 서브셋 pfile 생성
+품종별 IID 목록을 기반으로 데이터셋 분리
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐄</span> <strong>5-1) Holstein (홀스타인) 서브셋</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep holstein_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.holstein</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>04_split/NIAS_ibv3_296ea.holstein.[pgen|pvar|psam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --keep holstein_ids.txt
+  --make-pgen
+  --out 04_split/NIAS_ibv3_296ea.holstein
+  --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:26 2025
+
+Random number seed: 1755676406
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar.
+Note: No phenotype data present.
+--keep: 200 samples remaining.
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Writing 04_split/NIAS_ibv3_296ea.holstein.psam ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pvar ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pgen ... done.
+
+End time: Wed Aug 20 16:53:26 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐂</span> <strong>5-2) Jersey (저지) 서브셋</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep jersey_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.jersey</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>04_split/NIAS_ibv3_296ea.jersey.[pgen|pvar|psam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --keep jersey_ids.txt
+  --make-pgen
+  --out 04_split/NIAS_ibv3_296ea.jersey
+  --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:26 2025
+
+Random number seed: 1755676406
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar.
+Note: No phenotype data present.
+--keep: 96 samples remaining.
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Writing 04_split/NIAS_ibv3_296ea.jersey.psam ... done.
+Writing 04_split/NIAS_ibv3_296ea.jersey.pvar ... done.
+Writing 04_split/NIAS_ibv3_296ea.jersey.pgen ... done.
+
+End time: Wed Aug 20 16:53:26 2025
+  </code></pre>
+</details>
+---
+
+### 6) 2차 필터 적용 및 최종 데이터셋 생성
+통용되는 QC 기준값을 적용하여 최종 PLINK1 binary 파일 생성 
+
+- mind = 0.05, geno = 0.05, hwe = 1e-6, maf = 0.05 
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐄</span> <strong>6-1) Holstein (홀스타인)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --maf 0.05 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>03_qc/NIAS_ibv3_296ea.holstein.[bed|bim|fam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --maf 0.05
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.holstein
+  --pfile 04_split/NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Mon Aug 25 19:11:34 2025
+
+Random number seed: 1756116694
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split/NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+--geno: 193 variants removed due to missing genotype data.
+--hwe: 37 variants removed due to Hardy-Weinberg exact test (founders only).
+5732 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+41614 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bed ... done.
+
+End time: Mon Aug 25 19:11:34 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐂</span> <strong>6-2) Jersey (저지)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --maf 0.05 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>03_qc/NIAS_ibv3_296ea.jersey.[bed|bim|fam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --maf 0.05
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.jersey
+  --pfile 04_split/NIAS_ibv3_296ea.jersey
+
+Hostname: RDA
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Mon Aug 25 19:11:40 2025
+
+Random number seed: 1756116700
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split/NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Calculating allele frequencies... done.
+--geno: 154 variants removed due to missing genotype data.
+--hwe: 18 variants removed due to Hardy-Weinberg exact test (founders only).
+12329 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+35075 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bed ... done.
+
+End time: Mon Aug 25 19:11:40 2025
+  </code></pre>
+</details>
+<!-- ===== 최종 산출물 한눈에 보기 ===== -->
+<h4> 📁 최종 PLINK1 Binary 세트 한눈에 보기</h4>
+<dl class="qc-glance">
+  <dt><code>.bed</code> — Binary genotype file</dt>
+  <dd>각 SNP × 개체의 유전자형 정보를 이진(binary) 형태로 저장 (압축 효율적).</dd>
+
+  <dt><code>.bim</code> — Variant information</dt>
+  <dd>각 변이의 염색체, SNP ID, 위치, 대립유전자(ref/alt) 정보를 포함.</dd>
+
+  <dt><code>.fam</code> — Sample information</dt>
+  <dd>각 개체의 FID/IID, 부·모 ID, 성별, phenotype(형질) 정보를 저장.</dd>
+</dl>
+---
+
+## 품종별 QC 리포트 활용 2차 필터 기준값 정하기
+
+<div class="alert alert-info checklist" role="alert">
+  <p><span class="icon">ℹ️</span> <strong>품종별 PLINK2 QC 리포트 만들기 및 리뷰</strong>:</p>
+  <ul class="tight">
+    <li>PLINK2 QC 보고서(<code>.smiss</code>, <code>.vmiss</code>, <code>.hardy</code>, <code>.afreq</code>) 생성</li>
+    <li>RStudio로 QC 보고서 파일 불러오기 및 미리보기</li>
+    <li>샘플별/SNP별 유전자형 결측률(missingness), 하디–바인베르크 평형(HWE), 소수 대립유전자 빈도(MAF)를 품종별로 시각화</li>
+    <li>기준미달 샘플 및 변이 정보 CSV 작성 및 기준 미달 SNP에 대한 통합 요약 생성</li>
+  </ul>
+</div>
+### 1) [RStudio Terminal] 품종별 QC 리포트 출력
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐄</span> <strong>Holstein (홀스타인)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --missing --hardy --freq --out 02_reports/holstein/NIAS_ibv3_296ea.holstein.autosomesX</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>02_reports/holstein/NIAS_ibv3_296ea.holstein.autosomesX.[smiss|vmiss|hardy|afreq]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --freq
+  --hardy
+  --missing
+  --out 02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX
+  --pfile 04_split\NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:27 2025
+
+Random number seed: 1755676407
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split\NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split\NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.afreq .
+--missing: Sample missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.smiss .
+--missing: Variant missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.vmiss .
+--hardy: Skipping 887 haploid variants.
+--hardy: Autosomal Hardy-Weinberg report (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.hardy .
+
+End time: Wed Aug 20 16:53:27 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐂</span> <strong>Jersey (저지)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --missing --hardy --freq --out 02_reports/jersey/NIAS_ibv3_296ea.jersey.autosomesX</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>02_reports/jersey/NIAS_ibv3_296ea.jersey.autosomesX.[smiss|vmiss|hardy|afreq]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --freq
+  --hardy
+  --missing
+  --out 02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX
+  --pfile 04_split\NIAS_ibv3_296ea.jersey
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:27 2025
+
+Random number seed: 1755676407
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split\NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split\NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.afreq .
+--missing: Sample missing data report written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.smiss .
+--missing: Variant missing data report written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.vmiss .
+--hardy: Skipping 887 haploid variants.
+--hardy: Autosomal Hardy-Weinberg report (founders only) written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.hardy .
+
+End time: Wed Aug 20 16:53:28 2025
+  </code></pre>
+</details>
+<!-- ===== 인자 설명 (간단; 파일 형식 재설명 없음) ===== -->
+<section id="plink2-args-compact" class="alert alert-info">
+  <h4><span class="icon">⚙️</span> 사용된 PLINK2 인자(arguments)</h4>
+  <dl class="dl-horizontal arglist">
+    <dt><code>&#45;&#45;pfile PREFIX</code></dt>
+    <dd>PGEN 데이터셋 불러오기 (<code>PREFIX.pgen/pvar/psam</code>).</dd>
+
+    <dt><code>&#45;&#45;missing</code></dt>
+    <dd>유전자형 결측 비율 계산 (<code>.smiss</code> 및 <code>.vmiss</code> 파일 생성).</dd>
+
+    <dt><code>&#45;&#45;hardy</code></dt>
+    <dd>하디–바인베르크 exact test 검정 실행 (상염색체 → <code>.hardy</code>, X 염색체 → <code>.hardy.x</code>).</dd>
+
+    <dt><code>&#45;&#45;freq</code></dt>
+    <dd>대립유전자 빈도 계산 (<code>.afreq</code> 파일 생성).</dd>
+
+    <dt><code>&#45;&#45;out PREFIX</code></dt>
+    <dd>출력 경로/접두어 지정 (디렉터리는 미리 존재해야 함).</dd>
+  </dl>
+</section>
+
+<!-- ===== QC 리포트 한눈에 보기 ===== -->
+<h4>📁 PLINK2 QC 리포트 한눈에 보기</h4>
+<dl class="qc-glance">
+  <dt><code>.smiss</code> — 샘플 결측률</dt>
+  <dd>개체별 유전자형 미호출 비율 (<code>F_MISS</code> by sample).</dd>
+
+  <dt><code>.vmiss</code> — 변이 결측률</dt>
+  <dd>변이별 유전자형 미호출 비율 (전체 샘플 기준, <code>F_MISS</code> by SNP).</dd>
+
+  <dt><code>.hardy</code> / <code>.hardy.x</code> — 하디–바인베르크 평형 검정</dt>
+  <dd>Hardy–Weinberg exact test 검정 P값 (상염색체 / X 염색체).</dd>
+
+  <dt><code>.afreq</code> — 대립유전자 빈도</dt>
+  <dd>변이별 대체(ALT) 대립유전자 빈도 (<code>.pvar</code> 파일의 대립유전자 사용; ALT는 소수 대립유전자(minor allele)가 아닐 수 있어서 빈도가 0.5 이상일 수도 있음).</dd>
+</dl>
+
+### 2) [RStudio Console] 설정
+```{r, include=FALSE}
+# 기본적으로 보고서를 깔끔하게 유지
+knitr::opts_chunk$set(
+  echo = TRUE, message = TRUE, warning = TRUE
+)
+```
+
+```{r}
+# 품종별 기본 QC 보고서
+# ---------------------------------------------------
+# ---- 필요한 패키지 설치 및 불러오기----
+need <- c("readr","dplyr","ggplot2")
+to_install <- setdiff(need, rownames(installed.packages()))
+if (length(to_install)) install.packages(to_install, repos = "https://cloud.r-project.org")
+invisible(lapply(need, library, character.only = TRUE))
+
+# ---- 보조 함수 & 기준값(=필터링 기준) ----
+neglog10 <- function(p) -log10(pmax(p, .Machine$double.xmin))  # -Inf 방지
+
+# 이대립성(biallelic) 데이터의 MAF: ALT_FREQS 사용
+# plink2 --freq의 ALT는 기본적으로 비참조 대립유전자(.pvar 파일에서 정의된 ALT)이며, 소수 대립유전자(minor allele)가 아닐 수도 있음. 
+
+maf_from_afreq <- function(df) {
+  stopifnot("ALT_FREQS" %in% names(df))
+  df %>%
+    mutate(
+      # 숫자형으로 변환 후 [0,1] 범위로 보정
+      ALT_FREQS = suppressWarnings(as.numeric(ALT_FREQS)),
+      ALT_FREQS = pmin(pmax(ALT_FREQS, 0), 1),
+      MAF_calc  = pmin(ALT_FREQS, 1 - ALT_FREQS)
+    )
+}
+
+# ---- 기준값 (필요 시 조정) ----
+mind_thr <- 0.05  # 개체 단위 유전자형 결측률
+geno_thr <- 0.05  # 변이 단위 유전자형 결측률
+hwe_thr  <- 1e-6  # 하디–바인베르크(HWE) p-값
+maf_thr  <- 0.05  # 소수 대립유전자 빈도(MAF)
+
+# ---- 기본 경로 & 품종 구분(서브디렉토리 설정용) ----
+base_dir <- "02_reports"
+breeds   <- c("holstein","jersey")
+
+```
+<details class="params-details" id="run-params">
+  <summary title="펼치려면 클릭">
+    <span class="chev" aria-hidden="true"></span>
+    🔧 <strong>실행 파라미터</strong>
+    <span class="click-hint">— 👆클릭하여 보기</span>
+  </summary>
+  <table class="table table-striped params-table">
+    <tbody>
+      <tr><td>기본 디렉터리 (base_dir)</td><td><code>`r params$base_dir`</code></td></tr>
+      <tr><td>품종 목록 (breeds)</td><td><code>`r paste(params$breeds, collapse = ", ")`</code></td></tr>
+      <tr><td>개체 단위 결측률 기준 (mind_thr)</td><td><code>`r params$mind_thr`</code></td></tr>
+      <tr><td>변이 단위 결측률 기준 (geno_thr)</td><td><code>`r params$geno_thr`</code></td></tr>
+      <tr><td>HWE p-값 기준 (hwe_thr)</td><td><code>`r format(params$hwe_thr, scientific = TRUE)`</code></td></tr>
+      <tr><td>MAF 기준 (maf_thr)</td><td><code>`r params$maf_thr`</code></td></tr>
+    </tbody>
+  </table>
+</details>
+
+### 3) [RStudio Console] 품종별 QC 리포트 점검
+```{r, include=TRUE}
+# 품종별 요약 행을 저장할 리스트
+summary_rows <- list()
+
+# ---- 품종별 실행 ----
+# 전체 품종(breeds 벡터: "holstein", "jersey")을 순차적으로 처리한다. 
+#   - breeds[1] = "holstein"
+#   - breeds[2] = "jersey"
+# 아래 for 루프에서 자동으로 두 품종이 반복 실행된다. 
+
+# ---- 모든 품종 자동 실행 ----
+for (breed in breeds) {
+  message("=== 품종 처리 중: ", breed, " ===")
+
+  prefix <- file.path(base_dir, breed, sprintf("NIAS_ibv3_296ea.%s.autosomesX", breed))
+  f_smiss <- paste0(prefix, ".smiss")
+  f_vmiss <- paste0(prefix, ".vmiss")
+  f_hardy <- paste0(prefix, ".hardy")
+  f_afreq <- paste0(prefix, ".afreq")
+
+  out_dir  <- file.path(base_dir, breed)
+  figs_dir <- file.path(out_dir, "figs")
+  dir.create(figs_dir, showWarnings = FALSE, recursive = TRUE)
+
+  # ---- 데이터 불러오기 ----
+  smiss <- readr::read_tsv(f_smiss, show_col_types = FALSE) |>
+    dplyr::rename(FID = `#FID`)  # "#FID" -> FID
+
+  vmiss <- readr::read_tsv(f_vmiss, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`)
+
+  hardy <- readr::read_tsv(f_hardy, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    dplyr::mutate(minuslog10P = neglog10(P))
+
+  afreq <- readr::read_tsv(f_afreq, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    maf_from_afreq()
+
+  message("smiss 데이터 앞부분:"); print(utils::head(smiss))
+  message("vmiss 데이터 앞부분:"); print(utils::head(vmiss))
+  message("hardy 데이터 앞부분:"); print(utils::head(hardy))
+  message("afreq 데이터 앞부분:"); print(utils::head(afreq))
+
+  # ---- 그래프 ----
+  qc_theme <- ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+      axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+      axis.text.x  = ggplot2::element_text(size = 12),
+      axis.text.y  = ggplot2::element_text(size = 12),
+      plot.title   = ggplot2::element_text(size = 16, face = "bold", hjust = 0.5)
+    )
+
+  p1 <- ggplot2::ggplot(smiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 50) +
+    ggplot2::geom_vline(xintercept = mind_thr) +
+    ggplot2::labs(title = paste0(breed, ": 개체 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p2 <- ggplot2::ggplot(vmiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = geno_thr) +
+    ggplot2::labs(title = paste0(breed, ": 변이 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p3 <- ggplot2::ggplot(hardy, ggplot2::aes(x = minuslog10P)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = -log10(hwe_thr)) +
+    ggplot2::labs(title = paste0(breed, ": 하디-바인베르크 검정 (-log10P)"),
+                  x = "-log10(P)", y = "개수") + qc_theme
+
+  p4 <- ggplot2::ggplot(afreq, ggplot2::aes(x = MAF_calc)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = maf_thr) +
+    ggplot2::labs(title = paste0(breed, ": MAF 분포"),
+                  x = "MAF", y = "개수") + qc_theme
+
+  print(p1); print(p2); print(p3); print(p4)
+
+  ggplot2::ggsave(file.path(figs_dir, "smiss_hist.png"), p1, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "vmiss_hist.png"), p2, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "hardy_hist.png"), p3, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "maf_hist.png"),   p4, width = 3, height = 3, dpi = 300)
+
+  # ---- 이상치(outlier) 테이블 ----
+  assign(paste0("bad_samples_", breed),
+         smiss |>
+           dplyr::filter(F_MISS > mind_thr) |>
+           dplyr::select(FID, IID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_miss_", breed),
+         vmiss |>
+           dplyr::filter(F_MISS > geno_thr) |>
+           dplyr::select(CHROM, ID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_hwe_", breed),
+         hardy |>
+           dplyr::filter(P < hwe_thr) |>
+           dplyr::select(CHROM, ID, P),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_maf_", breed),
+         afreq |>
+           dplyr::filter(MAF_calc < maf_thr) |>
+           dplyr::select(CHROM, ID, MAF_calc),
+         envir = .GlobalEnv)
+
+  readr::write_csv(get(paste0("bad_samples_",   breed)), file.path(out_dir, paste0("bad_samples_over_mind.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_miss_", breed)), file.path(out_dir, paste0("bad_snps_over_geno.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_hwe_",  breed)), file.path(out_dir, paste0("bad_snps_hwe.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_maf_",  breed)), file.path(out_dir, paste0("bad_snps_low_maf.", breed, ".csv")))
+
+  # ---- 품종별 변이 QC 요약 ----
+  vmiss <- vmiss |> dplyr::mutate(CHROM = as.character(CHROM))
+  hardy <- hardy |> dplyr::mutate(CHROM = as.character(CHROM))
+  afreq <- afreq |> dplyr::mutate(CHROM = as.character(CHROM))
+
+  variant_qc <- vmiss |>
+    dplyr::select(CHROM, ID, F_MISS) |>
+    dplyr::left_join(dplyr::select(hardy, CHROM, ID, P),        by = c("CHROM","ID")) |>
+    dplyr::left_join(dplyr::select(afreq, CHROM, ID, MAF_calc), by = c("CHROM","ID")) |>
+    dplyr::mutate(
+      fail_miss = F_MISS > geno_thr,
+      fail_hwe  = P < hwe_thr,
+      fail_maf  = MAF_calc < maf_thr,
+      fail_any  = fail_miss | fail_hwe | fail_maf
+    )
+
+  readr::write_csv(variant_qc, file.path(out_dir, paste0("variant_qc_summary.", breed, ".csv")))
+
+  n_fail_any   <- sum(variant_qc$fail_any, na.rm = TRUE)
+  n_snps_total <- dplyr::n_distinct(vmiss$ID)
+  cat(sprintf("[%s] 총 SNP 수: %s; 기준 실패 SNP 수: %s (%.2f%%)\n\n",
+              breed,
+              prettyNum(n_snps_total, big.mark = ","),
+              prettyNum(n_fail_any,   big.mark = ","),
+              100 * n_fail_any / n_snps_total))
+
+  # ---- 요약 행 ----
+  samples_over_mind <- sum(smiss$F_MISS > mind_thr, na.rm = TRUE)
+  snps_over_geno    <- sum(vmiss$F_MISS > geno_thr, na.rm = TRUE)
+  snps_fail_hwe     <- sum(hardy$P < hwe_thr, na.rm = TRUE)
+  snps_below_maf    <- sum(afreq$MAF_calc < maf_thr, na.rm = TRUE)
+
+  summary_row <- tibble::tibble(
+    breed = breed,
+    n_samples = nrow(smiss),
+    n_variants = nrow(vmiss),
+    samples_over_mind = samples_over_mind,
+    snps_over_geno = snps_over_geno,
+    snps_fail_hwe = snps_fail_hwe,
+    snps_below_maf_threshold = snps_below_maf,
+    snps_fail_any_filter = n_fail_any,
+    pct_fail_any = round(100 * n_fail_any / nrow(vmiss), 3)
+  )
+
+  readr::write_csv(summary_row, file.path(out_dir, "qc_summary_counts.csv"))
+  summary_rows[[breed]] <- summary_row
+}
+
+```
+
+### 4) [RStudio Console] 품종별 QC 리포트 요약 결과 통합
+```{r}
+summary_all <- dplyr::bind_rows(summary_rows)
+readr::write_csv(summary_all, file.path(base_dir, "qc_summary_by_breed.csv"))
+```
+
+```{r, echo=FALSE}
+knitr::kable(summary_all, digits = 3) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped","hover","condensed"),
+                            full_width = FALSE)
+```
+<div class="alert alert-success outputs" role="alert"> <h4 class="alert-heading">📁 최종출력물</h4> <h5 class="mt-2">품종별 (<code>02_reports/&lt;breed&gt;/</code> 내부)</h5> <table class="table table-striped table-condensed outputs-table"> <thead> <tr><th>위치</th><th>파일 이름</th><th>형식</th><th>설명</th></tr> </thead> <tbody> <tr> <td><code>02_reports/&lt;breed&gt;/figs/</code></td> <td> <code>smiss_hist.png</code>, <code>vmiss_hist.png</code>,<br> <code>hardy_hist.png</code>, <code>maf_hist.png</code> </td> <td>PNG</td> <td>히스토그램 그림: 개체/변이 결측률, 하디–바인베르크(HWE, −log10P), MAF</td> </tr> <tr> <td><code>02_reports/&lt;breed&gt;/</code></td> <td> <code>bad_samples_over_mind.&lt;breed&gt;.csv</code><br> <code>bad_snps_over_geno.&lt;breed&gt;.csv</code><br> <code>bad_snps_hwe.&lt;breed&gt;.csv</code><br> <code>bad_snps_low_maf.&lt;breed&gt;.csv</code> </td> <td>CSV</td> <td>지표별 이상치 목록 (개체 결측률, SNP 결측률, HWE, MAF)</td> </tr> <tr> <td><code>02_reports/&lt;breed&gt;/</code></td> <td><code>variant_qc_summary.&lt;breed&gt;.csv</code></td> <td>CSV</td> <td>변이 단위 요약 (플래그 포함: <code>fail_miss</code>, <code>fail_hwe</code>, <code>fail_maf</code>, <code>fail_any</code>)</td> </tr> <tr> <td><code>02_reports/&lt;breed&gt;/</code></td> <td><code>qc_summary_counts.csv</code></td> <td>CSV</td> <td>품종별 요약 (개체/변이 수 및 기준 실패 개수)</td> </tr> </tbody> </table> <h5>통합 (전체 품종)</h5> <ul class="list-unstyled mb-0"> <li>📚 <strong>전체 품종 요약</strong>: <code>02_reports/qc_summary_by_breed.csv</code> (CSV)</li> </ul> </div> 
+
+### 5) QC 리포트 결과 다시보기
+```{r outputs-recap, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+breed_icon <- function(b) {
+  b <- tolower(trimws(b))
+  if (b == "holstein") return("&#x1F404;")  # 🐄
+  if (b == "jersey")   return("&#x1F402;")  # 🐂
+  return("&#x1F9C0;")                       # 🧀
+}
+breed_class <- function(b) paste0("breed-", tolower(trimws(b)))
+
+if (exists("summary_all") && nrow(summary_all) > 0) {
+  out <- c('<div class="recap-grid">')
+  for (i in seq_len(nrow(summary_all))) {
+    r <- summary_all[i, ]
+    pct <- as.numeric(r$pct_fail_any)              # 실패 비율 (%)
+    fail_n  <- r$snps_fail_any_filter
+    pass_n  <- max(0, r$n_variants - fail_n)
+    pass_pct <- max(0, 100 - pct)
+
+    icon <- breed_icon(r$breed)
+    cls  <- breed_class(r$breed)
+
+    out <- c(out,
+      sprintf('<div class="recap-card %s">', cls),
+      sprintf('<h5>%s %s</h5>', icon, r$breed),
+      '<div class="recap-badges">',
+      sprintf('<span class="badge">샘플 개수 %s</span>', prettyNum(r$n_samples, big.mark=",")),
+      sprintf('<span class="badge">변이 개수 %s</span>',  prettyNum(r$n_variants, big.mark=",")),'</div>',
+      # tree (no footer)
+      sprintf('<div class="breakdown-tree"><div class="tree-root"><span class="badge badge-fail"><strong>실패 변이 %s (%.2f%%)</strong></span></div><div class="tree-branches"><div class="branch"><span class="pill pill-miss">miss <strong>%s</strong></span></div><div class="branch"><span class="pill pill-hwe">HWE <strong>%s</strong></span></div><div class="branch"><span class="pill pill-maf">low MAF <strong>%s</strong></span></div></div></div>',
+              prettyNum(fail_n, big.mark=","), pct,
+              prettyNum(r$snps_over_geno, big.mark=","),    # miss
+              prettyNum(r$snps_fail_hwe,  big.mark=","),    # HWE
+              prettyNum(r$snps_below_maf_threshold, big.mark=",")), # low MAF
+      # dual progress bar with labels
+      sprintf('<div class="progress progress-dual" role="img" aria-label="실패 %.2f%%, 통과 %.2f%%">', pct, pass_pct),
+      sprintf('<div class="progress-seg fail seg-striped" style="width: %.2f%%" data-label="실패 %s (%.2f%%)"></div>', pct,      prettyNum(fail_n, big.mark=","), pct),
+      sprintf('<div class="progress-seg pass"              style="width: %.2f%%" data-label="통과 %s (%.2f%%)"></div>', pass_pct, prettyNum(pass_n,  big.mark=","), pass_pct),
+      '</div>',  # close progress
+      '</div>'   # close recap-card
+    )
+  }
+  out <- c(out, '</div>')  # close recap-grid
+  knitr::asis_output(paste(out, collapse = "\n"))
+} else {
+  knitr::asis_output('<div class="recap-empty"><em>표시할 결과가 없습니다.</em></div>')
+}
+
+```
+
+---
+
+## 최종 PLINK1 Binary 세트 다시 만들기
+
+<!-- ==== 4. 최종 데이터셋 다시 만들기 — 요약 패널 ==== -->
+
+```{=html}
+<!-- 여기에 순수 HTML을 넣으면 코드가 아니라 실제 HTML로 렌더링됩니다 -->
+<div class="rebuild-summary">
+  <h4 class="rs-title">🔁 최종 세트 재생성 요약</h4>
+  <p class="rs-desc">바뀐 QC 기준값(특히 per-population <code>minor allele count (MAC) ≥ 10</code>)을 적용하여 최종 <code>PLINK1 binary</code> 파일을 다시 생성한다.</p>
+
+  <div class="rs-cols">
+    <div class="rs-col">
+      <h5>🐄 Holstein <span class="rs-tag rs-tag-change">변경</span></h5>
+      <ul class="rs-chips">
+        <li><span class="k">mind</span> <b>0.05</b></li>
+        <li><span class="k">geno</span> <b>0.05</b></li>
+        <li><span class="k">hwe</span> <b>1e-6</b></li>
+        <li class="changed"><span class="k">mac</span> <b>10</b> <em>(MAF 0.025)</em></li>
+      </ul>
+    </div>
+
+    <div class="rs-col">
+      <h5>🐂 Jersey <span class="rs-tag rs-tag-change">변경</span></h5>
+      <ul class="rs-chips">
+        <li><span class="k">mind</span> <b>0.05</b></li>
+        <li><span class="k">geno</span> <b>0.05</b></li>
+        <li><span class="k">hwe</span> <b>1e-6</b></li>
+        <li class="changed"><span class="k">mac</span> <b>10</b> <em>(MAF 0.052)</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rs-note">
+    <p>📝 <b>Per-population MAC ≥ 10</b> 해석:</p>
+    <ul>
+      <li>Holstein (n=200 → 400 chromosomes): MAC 10 ≈ MAF <code>10/400 = 0.025</code></li>
+      <li>Jersey (n=96 → 192 chromosomes): MAC 10 ≈ MAF <code>10/192 ≈ 0.052</code></li>
+    </ul>
+    <p>즉, 표본 크기에 따라 실질 MAF 컷이 자동으로 맞춰진다. </p>
+  </div>
+</div>
+```
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐄</span> <strong>7-1) Holstein (홀스타인)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>03_qc/NIAS_ibv3_296ea.holstein.[bed|bim|fam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log (Holstein) — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --mac 10
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.holstein
+  --pfile 04_split/NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Sun Aug 24 20:03:32 2025
+
+Random number seed: 1756033412
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split/NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+--geno: 193 variants removed due to missing genotype data.
+--hwe: 37 variants removed due to Hardy-Weinberg exact test (founders only).
+3660 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+43686 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bed ... done.
+
+End time: Sun Aug 24 20:03:33 2025
+    </code></pre>
+  </details>
+
+
+<div class="alert alert-info cmd" role="alert">
+  <p><span class="icon">🐂</span> <strong>7-2) Jersey (저지)</strong></p>
+  <pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+  <p><em>생성되는 출력 파일:</em><br>
+  <code>03_qc/NIAS_ibv3_296ea.jersey.[bed|bim|fam]</code></p>
+</div>
+<details class="alert alert-secondary log">
+  <summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+    📄 PLINK2 run log (Jersey) — 👆 클릭하여 보기
+  </summary>
+  <pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --mac 10
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.jersey
+  --pfile 04_split/NIAS_ibv3_296ea.jersey
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Sun Aug 24 20:03:46 2025
+
+Random number seed: 1756033426
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split/NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Calculating allele frequencies... done.
+--geno: 154 variants removed due to missing genotype data.
+--hwe: 18 variants removed due to Hardy-Weinberg exact test (founders only).
+12329 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+35075 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bed ... done.
+
+End time: Sun Aug 24 20:03:46 2025
+    </code></pre>
+  </details>
+
+<div class="alert alert-success comparison" role="alert">
+  <p><span class="icon">📊</span> <strong>QC summary comparison: Holstein vs Jersey</strong></p>
+
+  <table class="table table-sm table-bordered rs-compare">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>🐄 Holstein</th>
+        <th>🐂 Jersey</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Samples loaded</td>
+        <td><b>200</b> (200 founders)</td>
+        <td><b>96</b> (96 founders)</td>
+      </tr>
+      <tr>
+        <td>Variants loaded</td>
+        <td><b>47,576</b></td>
+        <td><b>47,576</b></td>
+      </tr>
+      <tr>
+        <td>Removed by <code>--mind 0.05</code></td>
+        <td><b>0</b></td>
+        <td><b>0</b></td>
+      </tr>
+      <tr>
+        <td>Removed by <code>--geno 0.05</code></td>
+        <td><b>193</b></td>
+        <td><b>154</b></td>
+      </tr>
+      <tr>
+        <td>Removed by <code>--hwe 1e-6</code></td>
+        <td><b>37</b></td>
+        <td><b>18</b></td>
+      </tr>
+      <tr>
+        <td>Removed by <code>--mac 10</code></td>
+        <td><b>3,660</b></td>
+        <td><b>12,329</b></td>
+      </tr>
+      <tr class="final-row">
+        <td><b>Final variants</b></td>
+        <td><b>43,686</b></td>
+        <td><b>35,075</b></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr style="margin:1.25rem 0" />
+
+## 🎉 QC 과정 완료
+
+<div class="alert alert-success" role="alert" style="margin-top:.5rem">
+  <h4 class="alert-heading" style="margin-top:0;margin-bottom:.5rem">✅ QC 절차를 끝까지 잘 마쳤다!</h4>
+  <p style="margin-bottom:.75rem">
+    모든 단계(데이터 변환 → 오류 변이 제거 → 1차/2차 필터링 → 품종별 QC 리포트 리뷰 후 2차 필터링)를 거쳐
+    최종 <code>PLINK1 binary</code> 세트(<code>.bed/.bim/.fam</code>)를 만들었다. 🍀
+  </p>
+  <hr style="margin:.75rem 0" />
+  <p class="mb-0">이제 이 유전자형 데이터로 GWAS 분석을 시작할 수 있다. 🚀🔥</p>
+</div>
+
+<hr style="margin:1.25rem 0" />
+
+## 스크립트 전체 보기
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+  <p><span style="font-size:1.1em">💻 <strong>Plink Genotype QC</strong></span></p>
+
+  <details>
+    <summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+      <code>cmd_plink_qc.bat</code> 파일 — 👆 클릭하여 보기
+    </summary>
+    <pre><code class="language-bash">:: ============================================
+:: Plink genotype data QC (run in RStudio Terminal on Windows CMD)
+:: ============================================
+
+:: 0) 출력 폴더 생성
+mkdir 00_import 01_autosomesX 02_reports 03_qc 04_split
+
+:: 1) PED/MAP → PGEN 변환
+::    --cow        : 소(cattle) 빌트/염색체 규칙 사용
+::    --pedmap     : 입력 prefix (NIAS_ibv3_296ea.ped/.map)
+::    --sort-vars  : 변이를 유전체 좌표 순으로 정렬
+::    --make-pgen  : 출력 형식은 PLINK2(.pgen/.pvar/.psam)
+::    --out        : 출력 접두어
+plink2 --cow --pedmap NIAS_ibv3_296ea --sort-vars --make-pgen --out 00_import\NIAS_ibv3_296ea
+
+:: 2) PVAR에서 REF/ALT가 둘 다 '.'인 문제 변이 목록 추출 및 제거
+::    (이 상태는 "Duplicate allele code" 오류를 유발함)
+
+:: 2-1) REF(4열)과 ALT(5열)가 모두 '.'인 전체 행 저장(헤더 제외)
+awk -F '\t' "NR>1 && $4==\".\" && $5==\".\"" 00_import\NIAS_ibv3_296ea.pvar > bad_refalt_ids_both_strict.txt
+
+:: 2-2) 같은 조건의 변이 ID(3열)만 추출
+awk -F '\t' "NR>1 && $4==\".\" && $5==\".\" {print $3}" 00_import\NIAS_ibv3_296ea.pvar > bad_refalt_ids.txt
+
+:: 2-3) 문제 변이 제외 후 깨끗한 pfile로 저장
+plink2 --pfile 00_import/NIAS_ibv3_296ea --exclude bad_refalt_ids.txt --make-pgen --out 00_import/NIAS_ibv3_296ea.clean
+
+:: 3) 1차 필터(필수): 오토솜+X염색체, biallelic, 단일형 제거, 중복 ID 제거 → 이후 단계에서 사용하는 autosomesX 생성
+::    --chr 1-29,X         : 염색체 1–29 + X만 사용
+::    --max-alleles 2      : 대립유전자 ≤ 2 (biallelic만 유지)
+::    --mac 1              : 최소 소수 대립유전자 수 ≥ 1 (단일형 변이 제거)
+::    --rm-dup force-first : 중복 변이 발견 시 첫 번째 것만 유지 (좌표/allele 기준)
+::    --sort-vars          : 좌표 순으로 정렬
+::    --make-pgen          : pgen/pvar/psam 출력
+::    --out                : autosomesX 세트 출력 위치
+
+plink2 --pfile 00_import/NIAS_ibv3_296ea.clean --chr 1-29,X --max-alleles 2 --mac 1 --rm-dup force-first --sort-vars --make-pgen --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+:: 3-추가) 품종별 데이터셋 분리 준비: Holstein/Jersey IID 목록을 FID IID 두 열로 변환
+::        (holstein.txt / jersey.txt에는 IID만 있다고 가정, .psam에서 FID를 매칭해온다)
+
+:: Holstein: 첫 번째 파일(holstein.txt)의 IID를 해시에 저장하고, .psam에서 일치하는 IID 행의 FID IID를 출력
+awk "NR==FNR {iid[$1]=1; next} FNR>1 && ($2 in iid) {print $1, $2}" holstein.txt 01_autosomesX\NIAS_ibv3_296ea.autosomesX.psam > holstein_ids.txt
+
+:: Jersey: 동일 처리
+awk "NR==FNR {iid[$1]=1; next} FNR>1 && ($2 in iid) {print $1, $2}" jersey.txt 01_autosomesX\NIAS_ibv3_296ea.autosomesX.psam > jersey_ids.txt
+
+:: 4) 품종별 서브셋 pfile 만들기
+
+:: Holstein 서브셋 pfile 생성 (--keep: FID IID 목록의 샘플만 유지)
+plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep holstein_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.holstein
+
+:: Jersey 서브셋 pfile 생성
+plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep jersey_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.jersey
+
+:: 5) 품종별 기본 QC 리포트 만들기
+::    --missing : 샘플/변이 결측률(missing genotype rate)
+::    --hardy   : HWE(하디–바인베르그) 검정
+::    --freq    : 대립유전자 빈도
+
+:: 5-1) 품종별 QC 리포트 폴더 생성
+mkdir 02_reports\holstein 02_reports\jersey
+
+:: Holstein QC 리포트
+plink2 --pfile 04_split\NIAS_ibv3_296ea.holstein --missing --hardy --freq --out 02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX
+
+:: Jersey QC 리포트
+plink2 --pfile 04_split\NIAS_ibv3_296ea.jersey --missing --hardy --freq --out 02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX
+
+:: 6) RStudio에서 품종별 QC 리포트 확인 및 2차 필터 값 결정
+:: check_genotype_data.R script 실행
+
+:: 7) 품종별 2차 필터 적용(값은 연구 목적/샘플 크기에 맞게 조정)
+::    --mind 0.05 : 개체 결측률 ≤ 5%만 유지(0.05 초과 개체 제외)
+::    --geno 0.05 : 변이 결측률 ≤ 5%만 유지(0.05 초과 변이 제외)
+::    --mac 10: MAF ≥ 0.025 (Holstein) 및 0.052(Jersey) 변이만 유지
+::    --hwe  1e-6 : HWE p < 1e-6 변이 제외
+::    --make-bed  : PLINK1 바이너리(.bed/.bim/.fam) 파일로 저장
+
+:: Holstein
+plink2 --pfile 04_split\NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein
+
+:: Jersey 
+plink2 --pfile 04_split\NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+  </details>
+</div>
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+  <p><span style="font-size:1.1em">📘 <strong>Breed-wise QC Report Review</strong></span></p>
+
+  <details>
+    <summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+      <code>check_genotype_data.R</code> 파일 — 👆 클릭하여 보기
+    </summary>
+    <pre><code class="language-r"># 품종별 기본 QC 보고서
+# ---------------------------------------------------
+# ---- 필요한 패키지 설치 및 불러오기----
+need <- c("readr","dplyr","ggplot2")
+to_install <- setdiff(need, rownames(installed.packages()))
+if (length(to_install)) install.packages(to_install, repos = "https://cloud.r-project.org")
+invisible(lapply(need, library, character.only = TRUE))
+
+# ---- 보조 함수 & 기준값(=필터링 기준) ----
+neglog10 <- function(p) -log10(pmax(p, .Machine$double.xmin))  # -Inf 방지
+
+# 이대립성(biallelic) 데이터의 MAF: ALT_FREQS 사용
+# plink2 --freq의 ALT는 기본적으로 비참조 대립유전자(.pvar 파일에서 정의된 ALT)이며, 소수 대립유전자(minor allele)가 아닐 수도 있음. 
+
+maf_from_afreq <- function(df) {
+  stopifnot("ALT_FREQS" %in% names(df))
+  df %>%
+    mutate(
+      # 숫자형으로 변환 후 [0,1] 범위로 보정
+      ALT_FREQS = suppressWarnings(as.numeric(ALT_FREQS)),
+      ALT_FREQS = pmin(pmax(ALT_FREQS, 0), 1),
+      MAF_calc  = pmin(ALT_FREQS, 1 - ALT_FREQS)
+    )
+}
+
+# ---- 기준값 (필요 시 조정) ----
+mind_thr <- 0.05  # 개체 단위 유전자형 결측률
+geno_thr <- 0.05  # 변이 단위 유전자형 결측률
+hwe_thr  <- 1e-6  # 하디–바인베르크(HWE) p-값
+maf_thr  <- 0.05  # 소수 대립유전자 빈도(MAF)
+
+# ---- 기본 경로 & 품종 구분(서브디렉토리 설정용) ----
+base_dir <- "02_reports"
+breeds   <- c("holstein","jersey")
+
+# 품종별 요약 행을 저장할 리스트
+summary_rows <- list()
+
+# ---- 품종별 실행 ----
+# 전체 품종(breeds 벡터: "holstein", "jersey")을 순차적으로 처리한다. 
+#   - breeds[1] = "holstein"
+#   - breeds[2] = "jersey"
+# 아래 for 루프에서 자동으로 두 품종이 반복 실행된다. 
+# ---- 모든 품종 자동 실행 ----
+for (breed in breeds) {
+  message("=== 품종 처리 중: ", breed, " ===")
+
+  prefix <- file.path(base_dir, breed, sprintf("NIAS_ibv3_296ea.%s.autosomesX", breed))
+  f_smiss <- paste0(prefix, ".smiss")
+  f_vmiss <- paste0(prefix, ".vmiss")
+  f_hardy <- paste0(prefix, ".hardy")
+  f_afreq <- paste0(prefix, ".afreq")
+
+  out_dir  <- file.path(base_dir, breed)
+  figs_dir <- file.path(out_dir, "figs")
+  dir.create(figs_dir, showWarnings = FALSE, recursive = TRUE)
+
+  # ---- 데이터 불러오기 ----
+  smiss <- readr::read_tsv(f_smiss, show_col_types = FALSE) |>
+    dplyr::rename(FID = `#FID`)  # "#FID" -> FID
+
+  vmiss <- readr::read_tsv(f_vmiss, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`)
+
+  hardy <- readr::read_tsv(f_hardy, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    dplyr::mutate(minuslog10P = neglog10(P))
+
+  afreq <- readr::read_tsv(f_afreq, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    maf_from_afreq()
+
+  message("smiss 데이터 앞부분:"); print(utils::head(smiss))
+  message("vmiss 데이터 앞부분:"); print(utils::head(vmiss))
+  message("hardy 데이터 앞부분:"); print(utils::head(hardy))
+  message("afreq 데이터 앞부분:"); print(utils::head(afreq))
+
+  # ---- 그래프 ----
+  qc_theme <- ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+      axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+      axis.text.x  = ggplot2::element_text(size = 12),
+      axis.text.y  = ggplot2::element_text(size = 12),
+      plot.title   = ggplot2::element_text(size = 16, face = "bold", hjust = 0.5)
+    )
+
+  p1 <- ggplot2::ggplot(smiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 50) +
+    ggplot2::geom_vline(xintercept = mind_thr) +
+    ggplot2::labs(title = paste0(breed, ": 개체 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p2 <- ggplot2::ggplot(vmiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = geno_thr) +
+    ggplot2::labs(title = paste0(breed, ": 변이 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p3 <- ggplot2::ggplot(hardy, ggplot2::aes(x = minuslog10P)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = -log10(hwe_thr)) +
+    ggplot2::labs(title = paste0(breed, ": 하디-바인베르크 검정 (-log10P)"),
+                  x = "-log10(P)", y = "개수") + qc_theme
+
+  p4 <- ggplot2::ggplot(afreq, ggplot2::aes(x = MAF_calc)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = maf_thr) +
+    ggplot2::labs(title = paste0(breed, ": MAF 분포"),
+                  x = "MAF", y = "개수") + qc_theme
+
+  print(p1); print(p2); print(p3); print(p4)
+
+  ggplot2::ggsave(file.path(figs_dir, "smiss_hist.png"), p1, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "vmiss_hist.png"), p2, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "hardy_hist.png"), p3, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "maf_hist.png"),   p4, width = 3, height = 3, dpi = 300)
+
+  # ---- 이상치(outlier) 테이블 ----
+  assign(paste0("bad_samples_", breed),
+         smiss |>
+           dplyr::filter(F_MISS > mind_thr) |>
+           dplyr::select(FID, IID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_miss_", breed),
+         vmiss |>
+           dplyr::filter(F_MISS > geno_thr) |>
+           dplyr::select(CHROM, ID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_hwe_", breed),
+         hardy |>
+           dplyr::filter(P < hwe_thr) |>
+           dplyr::select(CHROM, ID, P),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_maf_", breed),
+         afreq |>
+           dplyr::filter(MAF_calc < maf_thr) |>
+           dplyr::select(CHROM, ID, MAF_calc),
+         envir = .GlobalEnv)
+
+  readr::write_csv(get(paste0("bad_samples_",   breed)), file.path(out_dir, paste0("bad_samples_over_mind.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_miss_", breed)), file.path(out_dir, paste0("bad_snps_over_geno.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_hwe_",  breed)), file.path(out_dir, paste0("bad_snps_hwe.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_maf_",  breed)), file.path(out_dir, paste0("bad_snps_low_maf.", breed, ".csv")))
+
+  # ---- 품종별 변이 QC 요약 ----
+  vmiss <- vmiss |> dplyr::mutate(CHROM = as.character(CHROM))
+  hardy <- hardy |> dplyr::mutate(CHROM = as.character(CHROM))
+  afreq <- afreq |> dplyr::mutate(CHROM = as.character(CHROM))
+
+  variant_qc <- vmiss |>
+    dplyr::select(CHROM, ID, F_MISS) |>
+    dplyr::left_join(dplyr::select(hardy, CHROM, ID, P),        by = c("CHROM","ID")) |>
+    dplyr::left_join(dplyr::select(afreq, CHROM, ID, MAF_calc), by = c("CHROM","ID")) |>
+    dplyr::mutate(
+      fail_miss = F_MISS > geno_thr,
+      fail_hwe  = P < hwe_thr,
+      fail_maf  = MAF_calc < maf_thr,
+      fail_any  = fail_miss | fail_hwe | fail_maf
+    )
+
+  readr::write_csv(variant_qc, file.path(out_dir, paste0("variant_qc_summary.", breed, ".csv")))
+
+  n_fail_any   <- sum(variant_qc$fail_any, na.rm = TRUE)
+  n_snps_total <- dplyr::n_distinct(vmiss$ID)
+  cat(sprintf("[%s] 총 SNP 수: %s; 기준 실패 SNP 수: %s (%.2f%%)\n\n",
+              breed,
+              prettyNum(n_snps_total, big.mark = ","),
+              prettyNum(n_fail_any,   big.mark = ","),
+              100 * n_fail_any / n_snps_total))
+
+  # ---- 요약 행 ----
+  samples_over_mind <- sum(smiss$F_MISS > mind_thr, na.rm = TRUE)
+  snps_over_geno    <- sum(vmiss$F_MISS > geno_thr, na.rm = TRUE)
+  snps_fail_hwe     <- sum(hardy$P < hwe_thr, na.rm = TRUE)
+  snps_below_maf    <- sum(afreq$MAF_calc < maf_thr, na.rm = TRUE)
+
+  summary_row <- tibble::tibble(
+    breed = breed,
+    n_samples = nrow(smiss),
+    n_variants = nrow(vmiss),
+    samples_over_mind = samples_over_mind,
+    snps_over_geno = snps_over_geno,
+    snps_fail_hwe = snps_fail_hwe,
+    snps_below_maf_threshold = snps_below_maf,
+    snps_fail_any_filter = n_fail_any,
+    pct_fail_any = round(100 * n_fail_any / nrow(vmiss), 3)
+  )
+
+  readr::write_csv(summary_row, file.path(out_dir, "qc_summary_counts.csv"))
+  summary_rows[[breed]] <- summary_row
+}
+
+summary_all <- dplyr::bind_rows(summary_rows)
+readr::write_csv(summary_all, file.path(base_dir, "qc_summary_by_breed.csv"))</code></pre>
+
+  </details>
+</div>

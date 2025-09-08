@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 GWAS 절차 | GWAS 절차</title>
+  <meta name="description" content="3 GWAS 절차 | GWAS 절차" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 GWAS 절차 | GWAS 절차" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 GWAS 절차 | GWAS 절차" />
+  
+  
+  
+
+
+
+<meta name="date" content="2025-09-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="pre-gwas-절차-유전자형-데이터-qc.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path=""><a href="#%EC%A0%80%EC%9E%90-%EC%A0%95%EB%B3%B4"><i class="fa fa-check"></i>저자 정보</a></li>
+<li class="chapter" data-level="1" data-path="02-gwas.html"><a href="#gwas-%EB%B6%84%EC%84%9D-%EC%82%AC%EC%A0%84-%EC%A4%80%EB%B9%84-%EC%A0%88%EC%B0%A8"><i class="fa fa-check"></i><b>1</b> GWAS 분석 사전 준비 절차</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="02-gwas.html"><a href="#genotype-data-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>1.1</b> Genotype data (유전자형 데이터) 준비</a></li>
+<li class="chapter" data-level="1.2" data-path="02-gwas.html"><a href="#phenotype-data-%ED%91%9C%ED%98%84%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>1.2</b> Phenotype data (표현형 데이터) 준비</a></li>
+<li class="chapter" data-level="1.3" data-path="02-gwas.html"><a href="#rrstudio-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.3</b> R/Rstudio 프로그램 다운로드 및 설치</a></li>
+<li class="chapter" data-level="1.4" data-path="02-gwas.html"><a href="#plink2-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.4</b> plink2 프로그램 다운로드 및 설치</a></li>
+<li class="chapter" data-level="1.5" data-path="02-gwas.html"><a href="#r-package-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.5</b> R package 설치</a></li>
+<li class="chapter" data-level="1.6" data-path="02-gwas.html"><a href="#gwas-%EB%B6%84%EC%84%9D-%EC%82%AC%EC%A0%84-%EC%A4%80%EB%B9%84-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>1.6</b> 🎉 GWAS 분석 사전 준비 완료</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="02-gwas.html"><a href="#pre-gwas-%EC%A0%88%EC%B0%A8-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc"><i class="fa fa-check"></i><b>2</b> Pre-GWAS 절차: 유전자형 데이터 QC</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="02-gwas.html"><a href="#rstudio-terminal-%EC%A0%84%EC%B2%B4-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0"><i class="fa fa-check"></i><b>2.1</b> [RStudio Terminal] 전체 유전자형 데이터 QC 워크플로우</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="02-gwas.html"><a href="#%EA%B2%B0%EA%B3%BC-%EC%A0%80%EC%9E%A5-%EB%94%94%EB%A0%89%ED%84%B0%EB%A6%AC-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>2.1.1</b> 0) 결과 저장 디렉터리 준비</a></li>
+<li class="chapter" data-level="2.1.2" data-path="02-gwas.html"><a href="#%EC%9B%90%EB%B3%B8-pedmap%EC%9D%84-plink2-pgen-%EC%84%B8%ED%8A%B8%EB%A1%9C-%EB%B3%80%ED%99%98"><i class="fa fa-check"></i><b>2.1.2</b> 1) 원본 PED/MAP을 PLINK2 PGEN 세트로 변환</a></li>
+<li class="chapter" data-level="2.1.3" data-path="02-gwas.html"><a href="#refalt-.-%EC%98%A4%EB%A5%98-%EB%B3%80%EC%9D%B4-%EC%A0%9C%EA%B1%B0"><i class="fa fa-check"></i><b>2.1.3</b> 2) REF/ALT <code>.</code> 오류 변이 제거</a></li>
+<li class="chapter" data-level="2.1.4" data-path="02-gwas.html"><a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9"><i class="fa fa-check"></i><b>2.1.4</b> 3) 1차 필터 적용</a></li>
+<li class="chapter" data-level="2.1.5" data-path="02-gwas.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-iid-%EB%AA%A9%EB%A1%9D-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>2.1.5</b> 4) 품종별 IID 목록 준비</a></li>
+<li class="chapter" data-level="2.1.6" data-path="02-gwas.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-%EC%84%9C%EB%B8%8C%EC%85%8B-pfile-%EC%83%9D%EC%84%B1"><i class="fa fa-check"></i><b>2.1.6</b> 5) 품종별 서브셋 pfile 생성</a></li>
+<li class="chapter" data-level="2.1.7" data-path="02-gwas.html"><a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9-%EB%B0%8F-%EC%B5%9C%EC%A2%85-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B-%EC%83%9D%EC%84%B1"><i class="fa fa-check"></i><b>2.1.7</b> 6) 2차 필터 적용 및 최종 데이터셋 생성</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="02-gwas.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%ED%99%9C%EC%9A%A9-2%EC%B0%A8-%ED%95%84%ED%84%B0-%EA%B8%B0%EC%A4%80%EA%B0%92-%EC%A0%95%ED%95%98%EA%B8%B0"><i class="fa fa-check"></i><b>2.2</b> 품종별 QC 리포트 활용 2차 필터 기준값 정하기</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="02-gwas.html"><a href="#rstudio-terminal-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%B6%9C%EB%A0%A5"><i class="fa fa-check"></i><b>2.2.1</b> 1) [RStudio Terminal] 품종별 QC 리포트 출력</a></li>
+<li class="chapter" data-level="2.2.2" data-path="02-gwas.html"><a href="#rstudio-console-%EC%84%A4%EC%A0%95"><i class="fa fa-check"></i><b>2.2.2</b> 2) [RStudio Console] 설정</a></li>
+<li class="chapter" data-level="2.2.3" data-path="02-gwas.html"><a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%A0%90%EA%B2%80"><i class="fa fa-check"></i><b>2.2.3</b> 3) [RStudio Console] 품종별 QC 리포트 점검</a></li>
+<li class="chapter" data-level="2.2.4" data-path="02-gwas.html"><a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%9A%94%EC%95%BD-%EA%B2%B0%EA%B3%BC-%ED%86%B5%ED%95%A9"><i class="fa fa-check"></i><b>2.2.4</b> 4) [RStudio Console] 품종별 QC 리포트 요약 결과 통합</a></li>
+<li class="chapter" data-level="2.2.5" data-path="02-gwas.html"><a href="#qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EA%B2%B0%EA%B3%BC-%EB%8B%A4%EC%8B%9C%EB%B3%B4%EA%B8%B0"><i class="fa fa-check"></i><b>2.2.5</b> 5) QC 리포트 결과 다시보기</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="02-gwas.html"><a href="#%EC%B5%9C%EC%A2%85-plink1-binary-%EC%84%B8%ED%8A%B8-%EB%8B%A4%EC%8B%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0"><i class="fa fa-check"></i><b>2.3</b> 최종 PLINK1 Binary 세트 다시 만들기</a></li>
+<li class="chapter" data-level="2.4" data-path="02-gwas.html"><a href="#qc-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>2.4</b> 🎉 QC 과정 완료</a></li>
+<li class="chapter" data-level="2.5" data-path="02-gwas.html"><a href="#%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%A0%84%EC%B2%B4-%EB%B3%B4%EA%B8%B0"><i class="fa fa-check"></i><b>2.5</b> 스크립트 전체 보기</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="02-gwas.html"><a href="#gwas-%EC%A0%88%EC%B0%A8"><i class="fa fa-check"></i><b>3</b> GWAS 절차</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="02-gwas.html"><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EC%B9%98-%EB%A1%9C%EB%94%A9"><i class="fa fa-check"></i><b>3.1</b> 패키지 설치 &amp; 로딩</a></li>
+<li class="chapter" data-level="3.2" data-path="02-gwas.html"><a href="#%EA%B2%BD%EB%A1%9C%EC%9E%85%EB%A0%A5-%EC%A0%95%EC%9D%98"><i class="fa fa-check"></i><b>3.2</b> 경로/입력 정의</a></li>
+<li class="chapter" data-level="3.3" data-path="02-gwas.html"><a href="#plink-binary-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><i class="fa fa-check"></i><b>3.3</b> PLINK binary 데이터 불러오기</a></li>
+<li class="chapter" data-level="3.4" data-path="02-gwas.html"><a href="#%ED%91%9C%ED%98%84%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A1%9C%EB%94%A9-%EC%A0%95%EB%A0%AC"><i class="fa fa-check"></i><b>3.4</b> 표현형 데이터 로딩 &amp; 정렬</a></li>
+<li class="chapter" data-level="3.5" data-path="02-gwas.html"><a href="#grm%EC%9C%A0%EC%A0%84%EC%B2%B4-%EA%B4%80%EA%B3%84-%ED%96%89%EB%A0%AC-%EA%B3%84%EC%82%B0-%EA%B0%84%EB%8B%A8-%EC%8B%9C%EA%B0%81%ED%99%94"><i class="fa fa-check"></i><b>3.5</b> GRM(유전체 관계 행렬) 계산 &amp; 간단 시각화</a></li>
+<li class="chapter" data-level="3.6" data-path="02-gwas.html"><a href="#gwas-%EB%B6%84%EC%84%9D%EC%9A%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B0%9D%EC%B2%B4-%EB%A7%8C%EB%93%A4%EA%B8%B0"><i class="fa fa-check"></i><b>3.6</b> GWAS 분석용 데이터 객체 만들기</a></li>
+<li class="chapter" data-level="3.7" data-path="02-gwas.html"><a href="#gwas-%EA%B7%80%EB%AC%B4%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-%EC%9C%A0%EC%A0%84%EB%A0%A5snp-heritability-%EA%B3%84%EC%82%B0"><i class="fa fa-check"></i><b>3.7</b> GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="02-gwas.html"><a href="#%ED%95%A8%EC%88%98%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9C%A0%EC%A0%84%EB%A0%A5-%EA%B3%84%EC%82%B0"><i class="fa fa-check"></i><b>3.7.1</b> 함수를 이용한 유전력 계산</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="02-gwas.html"><a href="#gwas-%EC%B5%9C%EC%A2%85-null-%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-gwas"><i class="fa fa-check"></i><b>3.8</b> GWAS 최종 null 모형 적합 및 GWAS</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="gwas-절차.html"><a href="gwas-절차.html"><i class="fa fa-check"></i><b>3.8.1</b> Null model이란? 왜 먼저 적합하는가?</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="02-gwas.html"><a href="#gwas-%EA%B2%B0%EA%B3%BC-%EC%8B%9C%EA%B0%81%ED%99%94"><i class="fa fa-check"></i><b>3.9</b> GWAS 결과 시각화</a></li>
+<li class="chapter" data-level="3.10" data-path="02-gwas.html"><a href="#r%EB%A1%9C-gwas-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>3.10</b> 🎉 R로 GWAS 과정 완료</a></li>
+<li class="chapter" data-level="3.11" data-path="gwas-절차.html"><a href="gwas-절차.html#script-full"><i class="fa fa-check"></i><b>3.11</b> 스크립트 전체 보기</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS 절차</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="gwas-절차" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> GWAS 절차<a href="#gwas-%EC%A0%88%EC%B0%A8" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+개요
+<div class="alert alert-info checklist" role="alert">
+<p>
+<span class="icon">📋</span> <strong>단계별 튜토리얼: R에서 GWAS 수행</strong>
+</p>
+<ul class="tight">
+<li>
+필요 패키지 설치/로딩
+</li>
+<li>
+PLINK 유전자형 데이터 &amp; 표현형 데이터 로딩 및 정리
+</li>
+<li>
+GRM 계산 및 시각화
+</li>
+<li>
+lme4breeding + GWASTools + GENESIS 기반 GWAS 귀무모형(Null model) 적합
+</li>
+<li>
+단일 마커 연관성 검정, P 값 보정, 결과 시각화
+</li>
+</ul>
+</div>
+<div id="패키지-설치-로딩" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> 패키지 설치 &amp; 로딩<a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EC%B9%98-%EB%A1%9C%EB%94%A9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="gwas-절차.html#cb26-1" tabindex="-1"></a><span class="co"># ---- 설치어시스턴트 -------------------------------------------------------</span></span>
+<span id="cb26-2"><a href="gwas-절차.html#cb26-2" tabindex="-1"></a>cran_pkgs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;genio&quot;</span>, <span class="st">&quot;qqman&quot;</span>, <span class="st">&quot;sommer&quot;</span>, <span class="st">&quot;lme4breeding&quot;</span>, <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;CMplot&quot;</span>, <span class="st">&quot;stringr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;tibble&quot;</span>, <span class="st">&quot;readr&quot;</span>)</span>
+<span id="cb26-3"><a href="gwas-절차.html#cb26-3" tabindex="-1"></a>bioc_pkgs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;GENESIS&quot;</span>,<span class="st">&quot;GWASTools&quot;</span>,<span class="st">&quot;BiocParallel&quot;</span>)</span>
+<span id="cb26-4"><a href="gwas-절차.html#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="gwas-절차.html#cb26-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
+<span id="cb26-6"><a href="gwas-절차.html#cb26-6" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="gwas-절차.html#cb26-7" tabindex="-1"></a>install_if_missing <span class="ot">&lt;-</span> <span class="cf">function</span>(pkgs, installer) {</span>
+<span id="cb26-8"><a href="gwas-절차.html#cb26-8" tabindex="-1"></a>  need <span class="ot">&lt;-</span> pkgs[<span class="sc">!</span><span class="fu">vapply</span>(pkgs, requireNamespace, <span class="fu">logical</span>(<span class="dv">1</span>), <span class="at">quietly =</span> <span class="cn">TRUE</span>)]</span>
+<span id="cb26-9"><a href="gwas-절차.html#cb26-9" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(need)) <span class="fu">installer</span>(need, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb26-10"><a href="gwas-절차.html#cb26-10" tabindex="-1"></a>}</span>
+<span id="cb26-11"><a href="gwas-절차.html#cb26-11" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="gwas-절차.html#cb26-12" tabindex="-1"></a><span class="fu">install_if_missing</span>(cran_pkgs, install.packages)</span>
+<span id="cb26-13"><a href="gwas-절차.html#cb26-13" tabindex="-1"></a><span class="fu">install_if_missing</span>(bioc_pkgs, BiocManager<span class="sc">::</span>install)</span>
+<span id="cb26-14"><a href="gwas-절차.html#cb26-14" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="gwas-절차.html#cb26-15" tabindex="-1"></a><span class="co"># ---- 라이브러리 로드 ------------------------------------------------------</span></span>
+<span id="cb26-16"><a href="gwas-절차.html#cb26-16" tabindex="-1"></a><span class="fu">library</span>(genio)</span>
+<span id="cb26-17"><a href="gwas-절차.html#cb26-17" tabindex="-1"></a><span class="fu">library</span>(GENESIS)</span>
+<span id="cb26-18"><a href="gwas-절차.html#cb26-18" tabindex="-1"></a><span class="fu">library</span>(GWASTools)</span>
+<span id="cb26-19"><a href="gwas-절차.html#cb26-19" tabindex="-1"></a><span class="fu">library</span>(qqman)</span>
+<span id="cb26-20"><a href="gwas-절차.html#cb26-20" tabindex="-1"></a><span class="fu">library</span>(CMplot)</span>
+<span id="cb26-21"><a href="gwas-절차.html#cb26-21" tabindex="-1"></a><span class="fu">library</span>(lme4breeding)</span>
+<span id="cb26-22"><a href="gwas-절차.html#cb26-22" tabindex="-1"></a><span class="fu">library</span>(sommer)</span>
+<span id="cb26-23"><a href="gwas-절차.html#cb26-23" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb26-24"><a href="gwas-절차.html#cb26-24" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb26-25"><a href="gwas-절차.html#cb26-25" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb26-26"><a href="gwas-절차.html#cb26-26" tabindex="-1"></a><span class="fu">library</span>(tibble)</span></code></pre></div>
+</div>
+<div id="경로입력-정의" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> 경로/입력 정의<a href="#%EA%B2%BD%EB%A1%9C%EC%9E%85%EB%A0%A5-%EC%A0%95%EC%9D%98" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="gwas-절차.html#cb27-1" tabindex="-1"></a>breed        <span class="ot">&lt;-</span> <span class="st">&quot;holstein&quot;</span></span>
+<span id="cb27-2"><a href="gwas-절차.html#cb27-2" tabindex="-1"></a>plink_prefix <span class="ot">&lt;-</span> <span class="st">&quot;03_qc/NIAS_ibv3_296ea.holstein&quot;</span></span>
+<span id="cb27-3"><a href="gwas-절차.html#cb27-3" tabindex="-1"></a>pheno_file   <span class="ot">&lt;-</span> <span class="st">&quot;NIAS_ibv3_296ea_pheno.csv&quot;</span></span>
+<span id="cb27-4"><a href="gwas-절차.html#cb27-4" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="gwas-절차.html#cb27-5" tabindex="-1"></a>report_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;05_gwas&quot;</span>, breed)</span>
+<span id="cb27-6"><a href="gwas-절차.html#cb27-6" tabindex="-1"></a>figs_dir   <span class="ot">&lt;-</span> <span class="fu">file.path</span>(report_dir, <span class="st">&quot;figs&quot;</span>)</span>
+<span id="cb27-7"><a href="gwas-절차.html#cb27-7" tabindex="-1"></a>gwas_dir   <span class="ot">&lt;-</span> <span class="fu">file.path</span>(report_dir, <span class="st">&quot;gwas&quot;</span>)</span>
+<span id="cb27-8"><a href="gwas-절차.html#cb27-8" tabindex="-1"></a>tables_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(report_dir, <span class="st">&quot;tables&quot;</span>)</span>
+<span id="cb27-9"><a href="gwas-절차.html#cb27-9" tabindex="-1"></a><span class="cf">for</span> (d <span class="cf">in</span> <span class="fu">c</span>(report_dir, figs_dir, gwas_dir, tables_dir)) <span class="fu">dir.create</span>(d, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+</div>
+<div id="plink-binary-데이터-불러오기" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> PLINK binary 데이터 불러오기<a href="#plink-binary-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="gwas-절차.html#cb28-1" tabindex="-1"></a><span class="co"># read_plink()는 SNP x Sample 행렬(X), bim(마커정보), fam(개체정보)을 불러온다.</span></span>
+<span id="cb28-2"><a href="gwas-절차.html#cb28-2" tabindex="-1"></a>plink <span class="ot">&lt;-</span> <span class="fu">read_plink</span>(plink_prefix)</span>
+<span id="cb28-3"><a href="gwas-절차.html#cb28-3" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="gwas-절차.html#cb28-4" tabindex="-1"></a>X <span class="ot">&lt;-</span> plink<span class="sc">$</span>X             <span class="co"># 행: SNP, 열: 샘플, 값: 0/1/2</span></span>
+<span id="cb28-5"><a href="gwas-절차.html#cb28-5" tabindex="-1"></a>bim <span class="ot">&lt;-</span> plink<span class="sc">$</span>bim         <span class="co"># chr, id, pos, alt, ref 등</span></span>
+<span id="cb28-6"><a href="gwas-절차.html#cb28-6" tabindex="-1"></a>fam <span class="ot">&lt;-</span> plink<span class="sc">$</span>fam         <span class="co"># family/sample id 등</span></span>
+<span id="cb28-7"><a href="gwas-절차.html#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="gwas-절차.html#cb28-8" tabindex="-1"></a><span class="co"># 미리보기</span></span>
+<span id="cb28-9"><a href="gwas-절차.html#cb28-9" tabindex="-1"></a>X[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>#&gt;                                 3530 3528 3527 3195 3994
+#&gt; Hapmap43437-BTA-101873             1    1    1    1    0
+#&gt; ARS-BFGL-NGS-16466                 0    0    0    0    0
+#&gt; ARS-BFGL-NGS-105096                1    0    1    0    0
+#&gt; Hapmap34944-BES1_Contig627_1906    0    0    1    0    0
+#&gt; ARS-BFGL-NGS-98142                 1    0    2    0    0</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="gwas-절차.html#cb30-1" tabindex="-1"></a><span class="fu">head</span>(bim)</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 6 × 6
+#&gt;   chr   id                               posg    pos alt   ref  
+#&gt;   &lt;chr&gt; &lt;chr&gt;                           &lt;dbl&gt;  &lt;int&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt; 1 1     Hapmap43437-BTA-101873              0 135098 A     G    
+#&gt; 2 1     ARS-BFGL-NGS-16466                  0 267940 A     G    
+#&gt; 3 1     ARS-BFGL-NGS-105096                 0 353745 A     G    
+#&gt; 4 1     Hapmap34944-BES1_Contig627_1906     0 393248 A     C    
+#&gt; 5 1     ARS-BFGL-NGS-98142                  0 471078 A     G    
+#&gt; 6 1     Hapmap53946-rs29015852              0 516404 A     G</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="gwas-절차.html#cb32-1" tabindex="-1"></a><span class="fu">head</span>(fam)</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 6 × 6
+#&gt;   fam   id    pat   mat     sex pheno
+#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt;
+#&gt; 1 1     3530  0     0         0    -9
+#&gt; 2 2     3528  0     0         0    -9
+#&gt; 3 3     3527  0     0         0    -9
+#&gt; 4 4     3195  0     0         0    -9
+#&gt; 5 5     3994  0     0         0    -9
+#&gt; 6 6     3786  0     0         0    -9</code></pre>
+</div>
+<div id="표현형-데이터-로딩-정렬" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> 표현형 데이터 로딩 &amp; 정렬<a href="#%ED%91%9C%ED%98%84%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A1%9C%EB%94%A9-%EC%A0%95%EB%A0%AC" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="gwas-절차.html#cb34-1" tabindex="-1"></a>pheno <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(pheno_file, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-2"><a href="gwas-절차.html#cb34-2" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="gwas-절차.html#cb34-3" tabindex="-1"></a>sample_id_chr <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)  <span class="co"># PLINK 열이 샘플 ID</span></span>
+<span id="cb34-4"><a href="gwas-절차.html#cb34-4" tabindex="-1"></a>scanID <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(sample_id_chr)</span>
+<span id="cb34-5"><a href="gwas-절차.html#cb34-5" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="gwas-절차.html#cb34-6" tabindex="-1"></a>pheno_ord <span class="ot">&lt;-</span> pheno[<span class="fu">match</span>(sample_id_chr, pheno<span class="sc">$</span>individual_id), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb34-7"><a href="gwas-절차.html#cb34-7" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">any</span>(<span class="fu">is.na</span>(pheno_ord<span class="sc">$</span>individual_id)))</span>
+<span id="cb34-8"><a href="gwas-절차.html#cb34-8" tabindex="-1"></a>pheno_ord<span class="sc">$</span>sample_id <span class="ot">&lt;-</span> sample_id_chr</span>
+<span id="cb34-9"><a href="gwas-절차.html#cb34-9" tabindex="-1"></a>pheno_ord<span class="sc">$</span>scanID    <span class="ot">&lt;-</span> scanID</span>
+<span id="cb34-10"><a href="gwas-절차.html#cb34-10" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">identical</span>(<span class="fu">as.character</span>(pheno_ord<span class="sc">$</span>individual_id), pheno_ord<span class="sc">$</span>sample_id))</span>
+<span id="cb34-11"><a href="gwas-절차.html#cb34-11" tabindex="-1"></a><span class="co"># 미리보기</span></span>
+<span id="cb34-12"><a href="gwas-절차.html#cb34-12" tabindex="-1"></a><span class="fu">str</span>(pheno_ord)</span></code></pre></div>
+<pre><code>#&gt; tibble [200 × 15] (S3: tbl_df/tbl/data.frame)
+#&gt;  $ individual_id              : num [1:200] 3530 3528 3527 3195 3994 ...
+#&gt;  $ breed                      : chr [1:200] &quot;holstein&quot; &quot;holstein&quot; &quot;holstein&quot; &quot;holstein&quot; ...
+#&gt;  $ sire_id                    : num [1:200] 3074 2930 3048 3056 3050 ...
+#&gt;  $ dam_id                     : num [1:200] 3210 3343 3281 3016 3799 ...
+#&gt;  $ birth_date                 : Date[1:200], format: &quot;2009-03-02&quot; &quot;2009-01-17&quot; ...
+#&gt;  $ HYS                        : num [1:200] 1.16e+10 1.18e+10 1.18e+10 1.18e+10 1.16e+10 ...
+#&gt;  $ farm_id                    : num [1:200] 116482 117952 117952 117952 116482 ...
+#&gt;  $ parity                     : num [1:200] 1 1 1 1 1 1 1 1 1 1 ...
+#&gt;  $ days_in_milk               : num [1:200] 482 531 382 556 264 447 425 400 345 385 ...
+#&gt;  $ milk_yield_305.days        : num [1:200] 7965 9717 12554 9951 7982 ...
+#&gt;  $ milk_fat_yield_305.days    : num [1:200] 281 314 468 445 271 297 305 347 359 355 ...
+#&gt;  $ milk_protein_yield_305.days: num [1:200] 260 302 384 334 260 240 230 327 293 309 ...
+#&gt;  $ somatic_cell_count         : num [1:200] 1.39 1.89 2.14 4.31 3.9 ...
+#&gt;  $ sample_id                  : chr [1:200] &quot;3530&quot; &quot;3528&quot; &quot;3527&quot; &quot;3195&quot; ...
+#&gt;  $ scanID                     : int [1:200] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="gwas-절차.html#cb36-1" tabindex="-1"></a><span class="co"># 표현형 분포 확인</span></span>
+<span id="cb36-2"><a href="gwas-절차.html#cb36-2" tabindex="-1"></a><span class="co"># --- 분석할 형질을 이 변수에 지정 ---</span></span>
+<span id="cb36-3"><a href="gwas-절차.html#cb36-3" tabindex="-1"></a>single_trait <span class="ot">&lt;-</span> <span class="st">&quot;days_in_milk&quot;</span></span>
+<span id="cb36-4"><a href="gwas-절차.html#cb36-4" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="gwas-절차.html#cb36-5" tabindex="-1"></a>p<span class="ot">=</span><span class="fu">ggplot</span>(pheno_ord, <span class="fu">aes</span>(<span class="at">x =</span> .data[[single_trait]])) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="gwas-절차.html#cb36-6" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">&quot;grey70&quot;</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb36-7"><a href="gwas-절차.html#cb36-7" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb36-8"><a href="gwas-절차.html#cb36-8" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb36-9"><a href="gwas-절차.html#cb36-9" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">&quot;Distribution of&quot;</span>, single_trait),</span>
+<span id="cb36-10"><a href="gwas-절차.html#cb36-10" tabindex="-1"></a>    <span class="at">x =</span> single_trait, </span>
+<span id="cb36-11"><a href="gwas-절차.html#cb36-11" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Density&quot;</span></span>
+<span id="cb36-12"><a href="gwas-절차.html#cb36-12" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-13"><a href="gwas-절차.html#cb36-13" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb36-14"><a href="gwas-절차.html#cb36-14" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="gwas-절차.html#cb36-15" tabindex="-1"></a><span class="co"># 변수에 저장된 플롯 확인</span></span>
+<span id="cb36-16"><a href="gwas-절차.html#cb36-16" tabindex="-1"></a><span class="fu">print</span>(p)</span></code></pre></div>
+<p><img src="my-final-book_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="gwas-절차.html#cb37-1" tabindex="-1"></a><span class="co"># ggsave() 함수를 사용하여 플롯을 png 파일로 저장</span></span>
+<span id="cb37-2"><a href="gwas-절차.html#cb37-2" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
+<span id="cb37-3"><a href="gwas-절차.html#cb37-3" tabindex="-1"></a>  <span class="at">filename =</span> <span class="fu">file.path</span>(figs_dir, <span class="fu">paste0</span>(<span class="st">&quot;pheno_distribution_&quot;</span>, single_trait, <span class="st">&quot;.png&quot;</span>)),</span>
+<span id="cb37-4"><a href="gwas-절차.html#cb37-4" tabindex="-1"></a>  <span class="at">plot =</span> p,</span>
+<span id="cb37-5"><a href="gwas-절차.html#cb37-5" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">6</span>,</span>
+<span id="cb37-6"><a href="gwas-절차.html#cb37-6" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">4</span>,</span>
+<span id="cb37-7"><a href="gwas-절차.html#cb37-7" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">300</span></span>
+<span id="cb37-8"><a href="gwas-절차.html#cb37-8" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="grm유전체-관계-행렬-계산-간단-시각화" class="section level2 hasAnchor" number="3.5">
+<h2><span class="header-section-number">3.5</span> GRM(유전체 관계 행렬) 계산 &amp; 간단 시각화<a href="#grm%EC%9C%A0%EC%A0%84%EC%B2%B4-%EA%B4%80%EA%B3%84-%ED%96%89%EB%A0%AC-%EA%B3%84%EC%82%B0-%EA%B0%84%EB%8B%A8-%EC%8B%9C%EA%B0%81%ED%99%94" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="gwas-절차.html#cb38-1" tabindex="-1"></a><span class="co"># A.mat은 -1/0/1 코딩된 genotype matrix 이용</span></span>
+<span id="cb38-2"><a href="gwas-절차.html#cb38-2" tabindex="-1"></a>G_mat <span class="ot">&lt;-</span> <span class="fu">t</span>(X)              <span class="co"># 샘플 x SNP</span></span>
+<span id="cb38-3"><a href="gwas-절차.html#cb38-3" tabindex="-1"></a><span class="fu">colnames</span>(G_mat) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(X)</span>
+<span id="cb38-4"><a href="gwas-절차.html#cb38-4" tabindex="-1"></a><span class="fu">rownames</span>(G_mat) <span class="ot">&lt;-</span> sample_id_chr</span>
+<span id="cb38-5"><a href="gwas-절차.html#cb38-5" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="gwas-절차.html#cb38-6" tabindex="-1"></a>G_code <span class="ot">&lt;-</span> G_mat <span class="sc">-</span> <span class="dv">1</span>        <span class="co"># 0/1/2 -&gt; -1/0/1</span></span>
+<span id="cb38-7"><a href="gwas-절차.html#cb38-7" tabindex="-1"></a>KI     <span class="ot">&lt;-</span> sommer<span class="sc">::</span><span class="fu">A.mat</span>(G_code)</span></code></pre></div>
+<pre><code>#&gt; Imputing markers with mean value</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="gwas-절차.html#cb40-1" tabindex="-1"></a><span class="co"># 수치안정성(아주 작은 ridge)</span></span>
+<span id="cb40-2"><a href="gwas-절차.html#cb40-2" tabindex="-1"></a><span class="fu">diag</span>(KI) <span class="ot">&lt;-</span> <span class="fu">diag</span>(KI) <span class="sc">+</span> <span class="fl">1e-4</span></span>
+<span id="cb40-3"><a href="gwas-절차.html#cb40-3" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="gwas-절차.html#cb40-4" tabindex="-1"></a><span class="co"># scanID 기준의 dimnames 지정</span></span>
+<span id="cb40-5"><a href="gwas-절차.html#cb40-5" tabindex="-1"></a><span class="fu">rownames</span>(KI) <span class="ot">&lt;-</span> <span class="fu">as.character</span>(scanID)</span>
+<span id="cb40-6"><a href="gwas-절차.html#cb40-6" tabindex="-1"></a><span class="fu">colnames</span>(KI) <span class="ot">&lt;-</span> <span class="fu">as.character</span>(scanID)</span>
+<span id="cb40-7"><a href="gwas-절차.html#cb40-7" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="gwas-절차.html#cb40-8" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb40-9"><a href="gwas-절차.html#cb40-9" tabindex="-1"></a>  <span class="fu">identical</span>(<span class="fu">rownames</span>(KI), <span class="fu">as.character</span>(scanID)),</span>
+<span id="cb40-10"><a href="gwas-절차.html#cb40-10" tabindex="-1"></a>  <span class="fu">identical</span>(<span class="fu">colnames</span>(KI), <span class="fu">as.character</span>(scanID))</span>
+<span id="cb40-11"><a href="gwas-절차.html#cb40-11" tabindex="-1"></a>)</span>
+<span id="cb40-12"><a href="gwas-절차.html#cb40-12" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="gwas-절차.html#cb40-13" tabindex="-1"></a><span class="co"># 상위 5x5 확인</span></span>
+<span id="cb40-14"><a href="gwas-절차.html#cb40-14" tabindex="-1"></a>KI[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>#&gt;             1            2           3            4           5
+#&gt; 1  1.01954033 -0.026190312 -0.01241066  0.090020422 -0.04370613
+#&gt; 2 -0.02619031  0.974199397  0.07949861 -0.009271238  0.03287250
+#&gt; 3 -0.01241066  0.079498610  0.93486718 -0.051821286  0.01365447
+#&gt; 4  0.09002042 -0.009271238 -0.05182129  0.997304816  0.04189677
+#&gt; 5 -0.04370613  0.032872500  0.01365447  0.041896774  1.09127396</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="gwas-절차.html#cb42-1" tabindex="-1"></a><span class="co"># 히트맵</span></span>
+<span id="cb42-2"><a href="gwas-절차.html#cb42-2" tabindex="-1"></a>colfunc <span class="ot">&lt;-</span> grDevices<span class="sc">::</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;steelblue4&quot;</span>,<span class="st">&quot;springgreen&quot;</span>,<span class="st">&quot;yellow&quot;</span>))</span>
+<span id="cb42-3"><a href="gwas-절차.html#cb42-3" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="gwas-절차.html#cb42-4" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">file.path</span>(report_dir, <span class="st">&quot;A_matrix_heatmap.png&quot;</span>), <span class="at">width=</span><span class="dv">2000</span>, <span class="at">height=</span><span class="dv">1400</span>, <span class="at">res=</span><span class="dv">200</span>)</span>
+<span id="cb42-5"><a href="gwas-절차.html#cb42-5" tabindex="-1"></a>stats<span class="sc">::</span><span class="fu">heatmap</span>(KI, <span class="at">col =</span> <span class="fu">colfunc</span>(<span class="dv">100</span>), <span class="at">Colv =</span> <span class="st">&quot;Rowv&quot;</span>, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-6"><a href="gwas-절차.html#cb42-6" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<pre><code>#&gt; png 
+#&gt;   2</code></pre>
+<p>
+<em>GRM 히트맵</em>
+</p>
+<p><img src="05_gwas/holstein/A_matrix_heatmap.png" width="1000" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gwas-분석용-데이터-객체-만들기" class="section level2 hasAnchor" number="3.6">
+<h2><span class="header-section-number">3.6</span> GWAS 분석용 데이터 객체 만들기<a href="#gwas-%EB%B6%84%EC%84%9D%EC%9A%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B0%9D%EC%B2%B4-%EB%A7%8C%EB%93%A4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="gwas-절차.html#cb44-1" tabindex="-1"></a>bim <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">index =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(bim)), bim)</span>
+<span id="cb44-2"><a href="gwas-절차.html#cb44-2" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all.equal</span>(<span class="fu">rownames</span>(X), bim<span class="sc">$</span>id))</span>
+<span id="cb44-3"><a href="gwas-절차.html#cb44-3" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all.equal</span>(<span class="fu">colnames</span>(X), pheno_ord<span class="sc">$</span>sample_id))</span>
+<span id="cb44-4"><a href="gwas-절차.html#cb44-4" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="gwas-절차.html#cb44-5" tabindex="-1"></a><span class="fu">rownames</span>(X) <span class="ot">&lt;-</span> bim<span class="sc">$</span>index</span>
+<span id="cb44-6"><a href="gwas-절차.html#cb44-6" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> scanID</span>
+<span id="cb44-7"><a href="gwas-절차.html#cb44-7" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="gwas-절차.html#cb44-8" tabindex="-1"></a><span class="co"># GENESIS 패키지에서 요구하는 데이터 객체 만들기</span></span>
+<span id="cb44-9"><a href="gwas-절차.html#cb44-9" tabindex="-1"></a>mg <span class="ot">&lt;-</span> GWASTools<span class="sc">::</span><span class="fu">MatrixGenotypeReader</span>(</span>
+<span id="cb44-10"><a href="gwas-절차.html#cb44-10" tabindex="-1"></a>  <span class="at">genotype   =</span> X,</span>
+<span id="cb44-11"><a href="gwas-절차.html#cb44-11" tabindex="-1"></a>  <span class="at">snpID      =</span> bim<span class="sc">$</span>index,</span>
+<span id="cb44-12"><a href="gwas-절차.html#cb44-12" tabindex="-1"></a>  <span class="at">chromosome =</span> <span class="fu">as.integer</span>(bim<span class="sc">$</span>chr),</span>
+<span id="cb44-13"><a href="gwas-절차.html#cb44-13" tabindex="-1"></a>  <span class="at">position   =</span> <span class="fu">as.integer</span>(bim<span class="sc">$</span>pos),</span>
+<span id="cb44-14"><a href="gwas-절차.html#cb44-14" tabindex="-1"></a>  <span class="at">scanID     =</span> scanID,</span>
+<span id="cb44-15"><a href="gwas-절차.html#cb44-15" tabindex="-1"></a>  <span class="at">autosomeCode =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">29</span><span class="dt">L</span>,</span>
+<span id="cb44-16"><a href="gwas-절차.html#cb44-16" tabindex="-1"></a>  <span class="at">XchromCode   =</span> <span class="dv">30</span><span class="dt">L</span>, <span class="at">YchromCode =</span> <span class="dv">31</span><span class="dt">L</span>, <span class="at">XYchromCode =</span> <span class="dv">32</span><span class="dt">L</span>, <span class="at">MchromCode =</span> <span class="dv">33</span><span class="dt">L</span></span>
+<span id="cb44-17"><a href="gwas-절차.html#cb44-17" tabindex="-1"></a>)</span>
+<span id="cb44-18"><a href="gwas-절차.html#cb44-18" tabindex="-1"></a><span class="co"># 유전자형 데이터 객체 생성</span></span>
+<span id="cb44-19"><a href="gwas-절차.html#cb44-19" tabindex="-1"></a>genoData <span class="ot">&lt;-</span> GWASTools<span class="sc">::</span><span class="fu">GenotypeData</span>(mg)</span>
+<span id="cb44-20"><a href="gwas-절차.html#cb44-20" tabindex="-1"></a><span class="co"># 표현형 데이터 객체 생성</span></span>
+<span id="cb44-21"><a href="gwas-절차.html#cb44-21" tabindex="-1"></a>scanAnno <span class="ot">&lt;-</span> GWASTools<span class="sc">::</span><span class="fu">ScanAnnotationDataFrame</span>(pheno_ord)</span>
+<span id="cb44-22"><a href="gwas-절차.html#cb44-22" tabindex="-1"></a><span class="co"># 객체 구조 확인</span></span>
+<span id="cb44-23"><a href="gwas-절차.html#cb44-23" tabindex="-1"></a><span class="fu">str</span>(genoData)</span></code></pre></div>
+<pre><code>#&gt; Formal class &#39;GenotypeData&#39; [package &quot;GWASTools&quot;] with 3 slots
+#&gt;   ..@ data     :Formal class &#39;MatrixGenotypeReader&#39; [package &quot;GWASTools&quot;] with 10 slots
+#&gt;   .. .. ..@ snpID       : int [1:43686] 1 2 3 4 5 6 7 8 9 10 ...
+#&gt;   .. .. ..@ chromosome  : int [1:43686] 1 1 1 1 1 1 1 1 1 1 ...
+#&gt;   .. .. ..@ position    : int [1:43686] 135098 267940 353745 393248 471078 516404 845494 883895 929617 950841 ...
+#&gt;   .. .. ..@ scanID      : int [1:200] 1 2 3 4 5 6 7 8 9 10 ...
+#&gt;   .. .. ..@ genotype    : int [1:43686, 1:200] 1 0 1 0 1 1 0 0 0 0 ...
+#&gt;   .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+#&gt;   .. .. .. .. ..$ : chr [1:43686] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+#&gt;   .. .. .. .. ..$ : chr [1:200] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+#&gt;   .. .. ..@ autosomeCode: int [1:29] 1 2 3 4 5 6 7 8 9 10 ...
+#&gt;   .. .. ..@ XchromCode  : int 30
+#&gt;   .. .. ..@ YchromCode  : int 31
+#&gt;   .. .. ..@ XYchromCode : int 32
+#&gt;   .. .. ..@ MchromCode  : int 33
+#&gt;   ..@ snpAnnot : NULL
+#&gt;   ..@ scanAnnot: NULL</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="gwas-절차.html#cb46-1" tabindex="-1"></a><span class="fu">str</span>(scanAnno<span class="sc">@</span>data)   </span></code></pre></div>
+<pre><code>#&gt; tibble [200 × 15] (S3: tbl_df/tbl/data.frame)
+#&gt;  $ individual_id              : num [1:200] 3530 3528 3527 3195 3994 ...
+#&gt;  $ breed                      : chr [1:200] &quot;holstein&quot; &quot;holstein&quot; &quot;holstein&quot; &quot;holstein&quot; ...
+#&gt;  $ sire_id                    : num [1:200] 3074 2930 3048 3056 3050 ...
+#&gt;  $ dam_id                     : num [1:200] 3210 3343 3281 3016 3799 ...
+#&gt;  $ birth_date                 : Date[1:200], format: &quot;2009-03-02&quot; &quot;2009-01-17&quot; ...
+#&gt;  $ HYS                        : num [1:200] 1.16e+10 1.18e+10 1.18e+10 1.18e+10 1.16e+10 ...
+#&gt;  $ farm_id                    : num [1:200] 116482 117952 117952 117952 116482 ...
+#&gt;  $ parity                     : num [1:200] 1 1 1 1 1 1 1 1 1 1 ...
+#&gt;  $ days_in_milk               : num [1:200] 482 531 382 556 264 447 425 400 345 385 ...
+#&gt;  $ milk_yield_305.days        : num [1:200] 7965 9717 12554 9951 7982 ...
+#&gt;  $ milk_fat_yield_305.days    : num [1:200] 281 314 468 445 271 297 305 347 359 355 ...
+#&gt;  $ milk_protein_yield_305.days: num [1:200] 260 302 384 334 260 240 230 327 293 309 ...
+#&gt;  $ somatic_cell_count         : num [1:200] 1.39 1.89 2.14 4.31 3.9 ...
+#&gt;  $ sample_id                  : chr [1:200] &quot;3530&quot; &quot;3528&quot; &quot;3527&quot; &quot;3195&quot; ...
+#&gt;  $ scanID                     : int [1:200] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+</div>
+<div id="gwas-귀무모형-적합-및-유전력snp-heritability-계산" class="section level2 hasAnchor" number="3.7">
+<h2><span class="header-section-number">3.7</span> GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산<a href="#gwas-%EA%B7%80%EB%AC%B4%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-%EC%9C%A0%EC%A0%84%EB%A0%A5snp-heritability-%EA%B3%84%EC%82%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="gwas-절차.html#cb48-1" tabindex="-1"></a><span class="co"># --- 분석할 형질을 이 변수에 지정 ---</span></span>
+<span id="cb48-2"><a href="gwas-절차.html#cb48-2" tabindex="-1"></a>single_trait <span class="ot">&lt;-</span> <span class="st">&quot;days_in_milk&quot;</span></span>
+<span id="cb48-3"><a href="gwas-절차.html#cb48-3" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="gwas-절차.html#cb48-4" tabindex="-1"></a><span class="co"># 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단</span></span>
+<span id="cb48-5"><a href="gwas-절차.html#cb48-5" tabindex="-1"></a><span class="fu">stopifnot</span>(single_trait <span class="sc">%in%</span> <span class="fu">colnames</span>(scanAnno<span class="sc">@</span>data))</span>
+<span id="cb48-6"><a href="gwas-절차.html#cb48-6" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="gwas-절차.html#cb48-7" tabindex="-1"></a><span class="co"># --- 데이터 전처리 ---</span></span>
+<span id="cb48-8"><a href="gwas-절차.html#cb48-8" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="gwas-절차.html#cb48-9" tabindex="-1"></a><span class="co"># 1. 모델에서 효과를 분석할 변수들을 factor(범주형 변수)로 변환</span></span>
+<span id="cb48-10"><a href="gwas-절차.html#cb48-10" tabindex="-1"></a>pheno_ord<span class="sc">$</span>farm_id <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(pheno_ord<span class="sc">$</span>farm_id)</span>
+<span id="cb48-11"><a href="gwas-절차.html#cb48-11" tabindex="-1"></a>pheno_ord<span class="sc">$</span>scanID <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(pheno_ord<span class="sc">$</span>scanID)</span>
+<span id="cb48-12"><a href="gwas-절차.html#cb48-12" tabindex="-1"></a></span>
+<span id="cb48-13"><a href="gwas-절차.html#cb48-13" tabindex="-1"></a><span class="co"># 2. 분석할 형질(days_in_milk)에 결측치(NA)가 있는 샘플을 제거하여</span></span>
+<span id="cb48-14"><a href="gwas-절차.html#cb48-14" tabindex="-1"></a><span class="co">#    최종 분석 데이터셋 &#39;PH&#39;를 생성</span></span>
+<span id="cb48-15"><a href="gwas-절차.html#cb48-15" tabindex="-1"></a><span class="co">#    droplevels() 함수는 PH 데이터셋에 더 이상 존재하지 않는 샘플이나 농장의 레벨 정보를 제거</span></span>
+<span id="cb48-16"><a href="gwas-절차.html#cb48-16" tabindex="-1"></a>PH <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(<span class="fu">subset</span>(pheno_ord, <span class="sc">!</span><span class="fu">is.na</span>(days_in_milk)))</span>
+<span id="cb48-17"><a href="gwas-절차.html#cb48-17" tabindex="-1"></a></span>
+<span id="cb48-18"><a href="gwas-절차.html#cb48-18" tabindex="-1"></a><span class="co"># 3. Kinship 행렬(KI)을 최종 분석 데이터셋 &#39;PH&#39;에 맞춰 자른다.</span></span>
+<span id="cb48-19"><a href="gwas-절차.html#cb48-19" tabindex="-1"></a><span class="co">#    반드시 &#39;PH&#39;의 샘플 목록과 순서를 기준으로 잘라야,</span></span>
+<span id="cb48-20"><a href="gwas-절차.html#cb48-20" tabindex="-1"></a><span class="co">#    표현형 데이터와 Kinship 데이터의 샘플이 1:1로 정확하게 일치한다.</span></span>
+<span id="cb48-21"><a href="gwas-절차.html#cb48-21" tabindex="-1"></a>K_scan <span class="ot">&lt;-</span> KI[<span class="fu">levels</span>(PH<span class="sc">$</span>scanID), <span class="fu">levels</span>(PH<span class="sc">$</span>scanID)]</span>
+<span id="cb48-22"><a href="gwas-절차.html#cb48-22" tabindex="-1"></a></span>
+<span id="cb48-23"><a href="gwas-절차.html#cb48-23" tabindex="-1"></a><span class="co"># 농장 효과와 개체별 유전 효과를 임의 효과(random effect)로 설정하여 모델을 만든다.</span></span>
+<span id="cb48-24"><a href="gwas-절차.html#cb48-24" tabindex="-1"></a><span class="co"># lmebreed 함수는 혈연관계(kinship)를 고려한 혼합 모델을 적합해준다.</span></span>
+<span id="cb48-25"><a href="gwas-절차.html#cb48-25" tabindex="-1"></a>mix <span class="ot">&lt;-</span> lme4breeding<span class="sc">::</span><span class="fu">lmebreed</span>(</span>
+<span id="cb48-26"><a href="gwas-절차.html#cb48-26" tabindex="-1"></a>  <span class="co"># 모델 공식: days_in_milk를 개체 효과(scanID)와 농장 효과(farm_id)로 설명</span></span>
+<span id="cb48-27"><a href="gwas-절차.html#cb48-27" tabindex="-1"></a>  days_in_milk <span class="sc">~</span> (<span class="dv">1</span><span class="sc">|</span>scanID) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>farm_id),</span>
+<span id="cb48-28"><a href="gwas-절차.html#cb48-28" tabindex="-1"></a>  </span>
+<span id="cb48-29"><a href="gwas-절차.html#cb48-29" tabindex="-1"></a>  <span class="co"># relmat 인자: scanID의 임의 효과는 K_scan 행렬에 정의된 유전적 관계를 따르도록 지정한다.</span></span>
+<span id="cb48-30"><a href="gwas-절차.html#cb48-30" tabindex="-1"></a>  <span class="at">relmat  =</span> <span class="fu">list</span>(<span class="at">scanID =</span> K_scan),</span>
+<span id="cb48-31"><a href="gwas-절차.html#cb48-31" tabindex="-1"></a>  </span>
+<span id="cb48-32"><a href="gwas-절차.html#cb48-32" tabindex="-1"></a>  <span class="co"># verbose=TRUE: 모델 계산 과정을 화면에 출력</span></span>
+<span id="cb48-33"><a href="gwas-절차.html#cb48-33" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb48-34"><a href="gwas-절차.html#cb48-34" tabindex="-1"></a>  </span>
+<span id="cb48-35"><a href="gwas-절차.html#cb48-35" tabindex="-1"></a>  <span class="co"># data 인자: 모델에 사용할 데이터셋으로 PH를 지정</span></span>
+<span id="cb48-36"><a href="gwas-절차.html#cb48-36" tabindex="-1"></a>  <span class="at">data    =</span> PH</span>
+<span id="cb48-37"><a href="gwas-절차.html#cb48-37" tabindex="-1"></a>)</span>
+<span id="cb48-38"><a href="gwas-절차.html#cb48-38" tabindex="-1"></a></span>
+<span id="cb48-39"><a href="gwas-절차.html#cb48-39" tabindex="-1"></a><span class="co"># 모델 분석 결과 요약본 출력</span></span>
+<span id="cb48-40"><a href="gwas-절차.html#cb48-40" tabindex="-1"></a><span class="fu">summary</span>(mix)</span></code></pre></div>
+<pre><code>#&gt; Linear mixed model fit by REML [&#39;lmerlmebreed&#39;]
+#&gt; Formula: days_in_milk ~ (1 | scanID) + (1 | farm_id)
+#&gt;    Data: PH
+#&gt; 
+#&gt; REML criterion at convergence: 2551.3
+#&gt; 
+#&gt; Scaled residuals: 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -1.7342 -0.4654 -0.2040  0.3307  7.6392 
+#&gt; 
+#&gt; Random effects:
+#&gt;  Groups   Name        Variance Std.Dev.
+#&gt;  scanID   (Intercept)  3794.3   61.60  
+#&gt;  farm_id  (Intercept)   289.4   17.01  
+#&gt;  Residual             17284.7  131.47  
+#&gt; Number of obs: 200, groups:  scanID, 200; farm_id, 20
+#&gt; 
+#&gt; Fixed effects:
+#&gt;             Estimate Std. Error t value
+#&gt; (Intercept)   360.25      10.71   33.65</code></pre>
+<!-- ===== 헤더 바가 있는 카드 버전 ===== -->
+<style>
+.gwas-card{
+  border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; margin:18px 0;
+  background:#fcfcff; box-shadow:0 1px 0 rgba(17,24,39,.04);
+}
+.gwas-header{
+  padding:10px 16px; background:#e0e7ff; border-bottom:1px solid #c7d2fe;
+  display:flex; align-items:center; gap:.6rem;
+}
+.gwas-header .title{ font-weight:700; }
+.gwas-body{ padding:16px 18px; }
+
+/* 나머지 스타일은 위와 동일 */
+.gwas-sub{ color:#4b5563; margin:0 0 .8rem; font-size:.95rem; }
+.gwas-dl{ margin:0; }
+.gwas-dl dt{ font-weight:700; margin-top:.6rem; }
+.gwas-dl dd{ margin:.15rem 0 .5rem 0; color:#374151; }
+.gwas-kpis{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.6rem 0 .2rem; }
+.kpi{ display:inline-flex; align-items:center; gap:.35rem;
+      padding:.3rem .55rem; border-radius:999px; background:#c7d2fe; font-weight:600;
+      border:1px solid #818cf8; color:#1f2937; }
+.badge{ font-size:.8rem; padding:.05rem .35rem; border-radius:6px; background:#9ca3af; color:#fff; }
+.gwas-grid{ display:grid; grid-template-columns: 1fr; gap:.6rem; }
+@media(min-width:700px){ .gwas-grid{ grid-template-columns:1fr 1fr; } }
+.gwas-table{ width:100%; border-collapse:collapse; font-size:.95rem; }
+.gwas-table th, .gwas-table td{ padding:.4rem .55rem; border-bottom:1px solid #e5e7eb; text-align:left; }
+.gwas-note{ margin-top:.6rem; color:#374151; }
+.hr-soft{ border:0; border-top:1px dashed #e5e7eb; margin:1rem 0; }
+</style>
+
+<div class="gwas-card" id="null-model-summary">
+  <div class="gwas-header">
+    <div class="title icon-wrap"><span class="emoji">❓</span><span>Null model 요약 — days_in_milk</span></div>
+    <div class="meta" style="margin-left:auto; font-size:.9rem; color:#374151;">Vg/Vc/Ve & h²</div>
+  </div>
+  <div class="gwas-body">
+    <h4 style="margin:.2rem 0 .8rem;"> 1. 임의 효과 (Random effects) 분석</h4>
+    <p class="gwas-sub">이 부분이 결과 해석의 핵심이다. <code>days_in_milk</code> 형질의 전체 변이가 어떤 요인들로 구성되어 있는지 보여준다.</p>
+
+    <div class="gwas-dl">
+      <div class="gwas-kpis">
+        <span class="kpi">scanID Variance: <b>3794.3</b> <span class="badge">Vg</span></span>
+        <span class="kpi">farm_id Variance: <b>289.4</b> <span class="badge">Vc</span></span>
+        <span class="kpi">Residual Variance: <b>17284.7</b> <span class="badge">Ve</span></span>
+      </div>
+
+      <dl class="gwas-dl">
+        <dt>scanID (유전 효과)</dt>
+        <dd>개체 간 유전적 차이(혈연관계 고려)로 인한 분산 → <b>유전 분산(Vg)</b>.</dd>
+        <dt>farm_id (농장 효과)</dt>
+        <dd>농장 간 환경 차이로 인한 분산 → <b>공통 환경 분산(Vc)</b>.</dd>
+        <dt>Residual (잔차)</dt>
+        <dd>유전 및 농장 효과로 설명되지 않는 나머지 오차 → <b>환경 분산(Ve)</b>.</dd>
+      </dl>
+    </div>
+
+    <hr class="hr-soft"/>
+
+    <h4 style="margin:.2rem 0 .8rem;">📐 2. 유전력 (Heritability) 계산</h4>
+    <div class="gwas-grid">
+      <div>
+        <table class="gwas-table">
+          <thead><tr><th>성분</th><th>값</th><th>설명</th></tr></thead>
+          <tbody>
+            <tr><td>Vg</td><td>3794.3</td><td>유전 분산</td></tr>
+            <tr><td>Vc</td><td>289.4</td><td>농장(공통 환경) 분산</td></tr>
+            <tr><td>Ve</td><td>17284.7</td><td>잔차(환경) 분산</td></tr>
+            <tr><td>Vp = Vg + Vc + Ve</td><td><b>21368.4</b></td><td>전체 표현형 분산</td></tr>
+            <tr><td>h² = Vg / Vp</td><td><b>0.178</b></td><td>유전력</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gwas-note">
+        <p><b>결론:</b> <code>days_in_milk</code>의 <b>SNP 유전력은 약 17.8%</b>로 추정된다. 이는 이 형질의 전체 변이 중 약 17.8%가 우리가 측정한 SNP 마커로 설명되는 유전적 요인에 의해 결정된다는 의미이다.</p>
+        <p>추가로, 농장 환경이 설명하는 변이의 비율은 289.4 / 21368.4 ≈ <b>1.4%</b>로 상대적으로 작다는 것을 알 수 있다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="함수를-이용한-유전력-계산" class="section level3 hasAnchor" number="3.7.1">
+<h3><span class="header-section-number">3.7.1</span> 함수를 이용한 유전력 계산<a href="#%ED%95%A8%EC%88%98%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9C%A0%EC%A0%84%EB%A0%A5-%EA%B3%84%EC%82%B0" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="gwas-절차.html#cb50-1" tabindex="-1"></a><span class="co"># VarCorr() 함수로 모델(&#39;mix&#39;)에서 분산 성분(Variance Components)을 추출</span></span>
+<span id="cb50-2"><a href="gwas-절차.html#cb50-2" tabindex="-1"></a>vc <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(mix)</span>
+<span id="cb50-3"><a href="gwas-절차.html#cb50-3" tabindex="-1"></a><span class="fu">print</span>(vc, <span class="at">comp =</span> <span class="fu">c</span>(<span class="st">&quot;Variance&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt;  Groups   Name        Variance
+#&gt;  scanID   (Intercept)  3794.3 
+#&gt;  farm_id  (Intercept)   289.4 
+#&gt;  Residual             17284.7</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="gwas-절차.html#cb52-1" tabindex="-1"></a><span class="co"># 잔차 분산(Residual variance)을 추출</span></span>
+<span id="cb52-2"><a href="gwas-절차.html#cb52-2" tabindex="-1"></a><span class="co"># VarCorr 결과의 속성(attribute) &quot;sc&quot;는 잔차의 표준편차이므로 제곱하여 분산을 구한다. </span></span>
+<span id="cb52-3"><a href="gwas-절차.html#cb52-3" tabindex="-1"></a>ve <span class="ot">&lt;-</span> <span class="fu">attr</span>(<span class="fu">VarCorr</span>(mix), <span class="st">&quot;sc&quot;</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb52-4"><a href="gwas-절차.html#cb52-4" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="gwas-절차.html#cb52-5" tabindex="-1"></a><span class="co"># SNP 유전력(h2) 계산</span></span>
+<span id="cb52-6"><a href="gwas-절차.html#cb52-6" tabindex="-1"></a><span class="co"># h2 = 유전분산 / (유전분산 + 농장분산 + 잔차분산)</span></span>
+<span id="cb52-7"><a href="gwas-절차.html#cb52-7" tabindex="-1"></a>h2 <span class="ot">&lt;-</span> vc<span class="sc">$</span>scanID <span class="sc">/</span> (vc<span class="sc">$</span>scanID <span class="sc">+</span>  vc<span class="sc">$</span>farm_id <span class="sc">+</span> ve)</span>
+<span id="cb52-8"><a href="gwas-절차.html#cb52-8" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;SNP Heritability (h2):&quot;</span>, base<span class="sc">::</span><span class="fu">as.numeric</span>(h2)))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;SNP Heritability (h2): 0.177565708276822&quot;</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="gwas-절차.html#cb54-1" tabindex="-1"></a><span class="co"># 전체 표현형 분산 중 농장 효과(farm ID)가 차지하는 분산 비율 계산</span></span>
+<span id="cb54-2"><a href="gwas-절차.html#cb54-2" tabindex="-1"></a>farm_var <span class="ot">&lt;-</span> vc<span class="sc">$</span>farm_id <span class="sc">/</span> (vc<span class="sc">$</span>scanID <span class="sc">+</span> vc<span class="sc">$</span>farm_id <span class="sc">+</span> ve)</span>
+<span id="cb54-3"><a href="gwas-절차.html#cb54-3" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Farm Variance ratio:&quot;</span>, base<span class="sc">::</span><span class="fu">as.numeric</span>(farm_var)))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Farm Variance ratio: 0.0135431802521894&quot;</code></pre>
+</div>
+</div>
+<div id="gwas-최종-null-모형-적합-및-gwas" class="section level2 hasAnchor" number="3.8">
+<h2><span class="header-section-number">3.8</span> GWAS 최종 null 모형 적합 및 GWAS<a href="#gwas-%EC%B5%9C%EC%A2%85-null-%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-gwas" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="gwas-절차.html#cb56-1" tabindex="-1"></a><span class="co"># --- 분석할 형질을 이 변수에 지정 ---</span></span>
+<span id="cb56-2"><a href="gwas-절차.html#cb56-2" tabindex="-1"></a>single_trait <span class="ot">&lt;-</span> <span class="st">&quot;days_in_milk&quot;</span></span>
+<span id="cb56-3"><a href="gwas-절차.html#cb56-3" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="gwas-절차.html#cb56-4" tabindex="-1"></a><span class="co"># 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단</span></span>
+<span id="cb56-5"><a href="gwas-절차.html#cb56-5" tabindex="-1"></a><span class="fu">stopifnot</span>(single_trait <span class="sc">%in%</span> <span class="fu">colnames</span>(scanAnno<span class="sc">@</span>data))</span>
+<span id="cb56-6"><a href="gwas-절차.html#cb56-6" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="gwas-절차.html#cb56-7" tabindex="-1"></a><span class="co"># 귀무모형</span></span>
+<span id="cb56-8"><a href="gwas-절차.html#cb56-8" tabindex="-1"></a>null_single <span class="ot">&lt;-</span> GENESIS<span class="sc">::</span><span class="fu">fitNullModel</span>(</span>
+<span id="cb56-9"><a href="gwas-절차.html#cb56-9" tabindex="-1"></a>  <span class="at">x        =</span> scanAnno,</span>
+<span id="cb56-10"><a href="gwas-절차.html#cb56-10" tabindex="-1"></a>  <span class="at">outcome  =</span> single_trait,</span>
+<span id="cb56-11"><a href="gwas-절차.html#cb56-11" tabindex="-1"></a>  <span class="at">cov.mat  =</span> <span class="fu">list</span>(<span class="at">gen =</span> KI),</span>
+<span id="cb56-12"><a href="gwas-절차.html#cb56-12" tabindex="-1"></a>  <span class="at">family   =</span> <span class="st">&quot;gaussian&quot;</span></span>
+<span id="cb56-13"><a href="gwas-절차.html#cb56-13" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt; [1] 10779.434372 10779.434372 -1278.687547     1.071434
+#&gt; [1]  1144.527824 18338.039393 -1276.652397     1.094402
+#&gt; [1]  3645.393100 17248.267336 -1275.789581     1.019586
+#&gt; [1]  4223.460337 17110.722529 -1275.775915     1.000707
+#&gt; [1]  4101.06852 17235.09102 -1275.77526     1.00002
+#&gt; [1]  4140.354608 17200.070348 -1275.775190     1.000002
+#&gt; [1]  4128.278 17210.979 -1275.775     1.000
+#&gt; [1]  4132.027 17207.607 -1275.775     1.000</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="gwas-절차.html#cb58-1" tabindex="-1"></a><span class="co"># 모형에서 추정된 분산 성분(유전분산, 잔차분산)을 확인</span></span>
+<span id="cb58-2"><a href="gwas-절차.html#cb58-2" tabindex="-1"></a>null_single<span class="sc">$</span>varComp </span></code></pre></div>
+<pre><code>#&gt;       V_gen V_resid.var 
+#&gt;    4132.027   17207.607</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="gwas-절차.html#cb60-1" tabindex="-1"></a><span class="co"># SNP heritability 계산 (h2, CI value)</span></span>
+<span id="cb60-2"><a href="gwas-절차.html#cb60-2" tabindex="-1"></a>GENESIS<span class="sc">::</span><span class="fu">varCompCI</span>(null_single, <span class="at">prop =</span> <span class="cn">TRUE</span>)                             </span></code></pre></div>
+<pre><code>#&gt;             Proportion    Lower 95  Upper 95
+#&gt; V_gen        0.1936316 -0.06226513 0.4495283
+#&gt; V_resid.var  0.8063684  0.55047174 1.0622651</code></pre>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="gwas-절차.html#cb62-1" tabindex="-1"></a><span class="co"># GWAS 실행</span></span>
+<span id="cb62-2"><a href="gwas-절차.html#cb62-2" tabindex="-1"></a><span class="co"># 유전체 데이터를 **블록 단위(여기서는 10,000 SNP씩)**로 순차 처리하기 위한 이터레이터 생성: 메모리 사용을 줄이기 위함</span></span>
+<span id="cb62-3"><a href="gwas-절차.html#cb62-3" tabindex="-1"></a>genoIt <span class="ot">&lt;-</span> GWASTools<span class="sc">::</span><span class="fu">GenotypeBlockIterator</span>(genoData, <span class="at">snpBlock =</span> <span class="dv">10000</span>)</span>
+<span id="cb62-4"><a href="gwas-절차.html#cb62-4" tabindex="-1"></a><span class="co"># 위에서 적합한 귀무모형을 고정한 상태에서, 각 SNP에 대해 단일변량 Score test로 연관성을 계산</span></span>
+<span id="cb62-5"><a href="gwas-절차.html#cb62-5" tabindex="-1"></a>assoc_single <span class="ot">&lt;-</span> GENESIS<span class="sc">::</span><span class="fu">assocTestSingle</span>(</span>
+<span id="cb62-6"><a href="gwas-절차.html#cb62-6" tabindex="-1"></a>  genoIt, <span class="at">null.model =</span> null_single, <span class="at">BPPARAM =</span> BiocParallel<span class="sc">::</span><span class="fu">SerialParam</span>()</span>
+<span id="cb62-7"><a href="gwas-절차.html#cb62-7" tabindex="-1"></a>)</span>
+<span id="cb62-8"><a href="gwas-절차.html#cb62-8" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="gwas-절차.html#cb62-9" tabindex="-1"></a><span class="co"># ---- P-값 보정 &amp; 유의 SNP 선별 ---------------------------------</span></span>
+<span id="cb62-10"><a href="gwas-절차.html#cb62-10" tabindex="-1"></a>assoc_single<span class="sc">$</span>p_adj_BH<span class="ot">=</span><span class="fu">p.adjust</span>(assoc_single<span class="sc">$</span>Score.pval, <span class="at">method=</span><span class="st">&quot;BH&quot;</span>)</span>
+<span id="cb62-11"><a href="gwas-절차.html#cb62-11" tabindex="-1"></a>assoc_single<span class="sc">$</span>p_adj_bonferroni<span class="ot">=</span><span class="fu">p.adjust</span>(assoc_single<span class="sc">$</span>Score.pval, <span class="at">method=</span><span class="st">&quot;bonferroni&quot;</span>)</span>
+<span id="cb62-12"><a href="gwas-절차.html#cb62-12" tabindex="-1"></a></span>
+<span id="cb62-13"><a href="gwas-절차.html#cb62-13" tabindex="-1"></a><span class="co"># 저장</span></span>
+<span id="cb62-14"><a href="gwas-절차.html#cb62-14" tabindex="-1"></a><span class="fu">saveRDS</span>(assoc_single, <span class="at">file =</span> <span class="fu">file.path</span>(gwas_dir, <span class="fu">paste0</span>(<span class="st">&quot;assoc_&quot;</span>, single_trait, <span class="st">&quot;.rds&quot;</span>)))</span>
+<span id="cb62-15"><a href="gwas-절차.html#cb62-15" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(assoc_single, <span class="fu">file.path</span>(tables_dir, <span class="fu">paste0</span>(<span class="st">&quot;assoc_&quot;</span>, single_trait, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb62-16"><a href="gwas-절차.html#cb62-16" tabindex="-1"></a></span>
+<span id="cb62-17"><a href="gwas-절차.html#cb62-17" tabindex="-1"></a><span class="fu">head</span>(assoc_single, <span class="dv">5</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+<span id="tab:assoc-single-table">Table 3.1: </span><span id="tab:assoc-single-table">Table 3.2: </span>GWAS 연관 분석 결과 (5개 SNP 예시)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+variant.id <sup>a</sup>
+</th>
+<th style="text-align:left;">
+chr <sup>b</sup>
+</th>
+<th style="text-align:right;">
+pos <sup>c</sup>
+</th>
+<th style="text-align:right;">
+n.obs <sup>d</sup>
+</th>
+<th style="text-align:right;">
+freq <sup>e</sup>
+</th>
+<th style="text-align:right;">
+MAC <sup>f</sup>
+</th>
+<th style="text-align:right;">
+Score <sup>g</sup>
+</th>
+<th style="text-align:right;">
+Score.SE <sup>h</sup>
+</th>
+<th style="text-align:right;">
+Score.Stat <sup>i</sup>
+</th>
+<th style="text-align:right;">
+Score.pval <sup>j</sup>
+</th>
+<th style="text-align:right;">
+Est <sup>k</sup>
+</th>
+<th style="text-align:right;">
+Est.SE <sup>l</sup>
+</th>
+<th style="text-align:right;">
+PVE <sup>m</sup>
+</th>
+<th style="text-align:right;">
+p_adj_BH <sup>n</sup>
+</th>
+<th style="text-align:right;">
+p_adj_bonferroni <sup>o</sup>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+135098
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.615
+</td>
+<td style="text-align:right;">
+154
+</td>
+<td style="text-align:right;">
+-0.124
+</td>
+<td style="text-align:right;">
+0.067
+</td>
+<td style="text-align:right;">
+-1.858
+</td>
+<td style="text-align:right;">
+0.063
+</td>
+<td style="text-align:right;">
+-27.866
+</td>
+<td style="text-align:right;">
+15.002
+</td>
+<td style="text-align:right;">
+0.017
+</td>
+<td style="text-align:right;">
+0.991
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+267940
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.065
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+-0.009
+</td>
+<td style="text-align:right;">
+0.032
+</td>
+<td style="text-align:right;">
+-0.293
+</td>
+<td style="text-align:right;">
+0.770
+</td>
+<td style="text-align:right;">
+-9.212
+</td>
+<td style="text-align:right;">
+31.457
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+353745
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+-0.035
+</td>
+<td style="text-align:right;">
+0.035
+</td>
+<td style="text-align:right;">
+-1.017
+</td>
+<td style="text-align:right;">
+0.309
+</td>
+<td style="text-align:right;">
+-29.238
+</td>
+<td style="text-align:right;">
+28.762
+</td>
+<td style="text-align:right;">
+0.005
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+393248
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.215
+</td>
+<td style="text-align:right;">
+86
+</td>
+<td style="text-align:right;">
+-0.107
+</td>
+<td style="text-align:right;">
+0.054
+</td>
+<td style="text-align:right;">
+-1.984
+</td>
+<td style="text-align:right;">
+0.047
+</td>
+<td style="text-align:right;">
+-36.830
+</td>
+<td style="text-align:right;">
+18.561
+</td>
+<td style="text-align:right;">
+0.020
+</td>
+<td style="text-align:right;">
+0.991
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+471078
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.292
+</td>
+<td style="text-align:right;">
+117
+</td>
+<td style="text-align:right;">
+-0.145
+</td>
+<td style="text-align:right;">
+0.061
+</td>
+<td style="text-align:right;">
+-2.396
+</td>
+<td style="text-align:right;">
+0.017
+</td>
+<td style="text-align:right;">
+-39.544
+</td>
+<td style="text-align:right;">
+16.506
+</td>
+<td style="text-align:right;">
+0.029
+</td>
+<td style="text-align:right;">
+0.991
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>a</sup> SNP 고유 ID (인덱스) <sup>b</sup> 염색체 번호 <sup>c</sup> 염색체 내 위치 (base pair) <sup>d</sup> 해당 SNP 분석에 사용된 개체 수 <sup>e</sup> 대립유전자 빈도 (Allele Frequency) <sup>f</sup> 부대립유전자 개수 (Minor Allele Count) <sup>g</sup> 연관성 검정의 Score 통계량 <sup>h</sup> Score 통계량의 표준 오차 <sup>i</sup> 표준화된 Score 통계량 (Z-값) <sup>j</sup> 연관성 검정의 P-값 <sup>k</sup> 대립유전자의 효과 추정치 (Effect Size) <sup>l</sup> 효과 추정치의 표준 오차 <sup>m</sup> 해당 SNP이 설명하는 표현형 분산의 비율 (PVE) <sup>n</sup> BH 방법으로 보정된 P-값 (FDR) <sup>o</sup> Bonferroni 방법으로 보정된 P-값
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div id="nullmodel-explainer" class="section level3 hasAnchor" number="3.8.1">
+<h3><span class="header-section-number">3.8.1</span> Null model이란? 왜 먼저 적합하는가?<a href="gwas-절차.html#nullmodel-explainer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div class="alert alert-info null-explainer">
+<div id="모형식" class="section level3 hasAnchor" number="3.8.2">
+<h3><span class="header-section-number">3.8.2</span> 📐 모형식<a href="#%EB%AA%A8%ED%98%95%EC%8B%9D" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>전체(혼합) 모형<br />
+<span class="math display">\[
+y = X\beta + Zu + G\gamma + \varepsilon
+\]</span></p>
+<p>Null 모형(검정할 SNP 제거)<br />
+<span class="math display">\[
+y = X\beta + Zu + \varepsilon
+\]</span></p>
+<p><strong>모형항 풀이</strong></p>
+<ul>
+<li><span class="math inline">\(y\)</span> : 관측한 형질 값(예: days_in_milk).<br />
+</li>
+<li><span class="math inline">\(X\)</span> : <strong>고정효과 설계행렬(입력 행렬)</strong> — 절편(1), 성별/연령, 주성분(PC) 등의 공변량 열로 구성.<br />
+</li>
+<li><span class="math inline">\(\beta\)</span> : 고정효과 계수(공변량의 평균적인 영향 크기).<br />
+</li>
+<li><span class="math inline">\(Z\)</span> : <strong>임의효과 인시던스 행렬</strong> — 개체가 어떤 레벨(개체 자신/농장 등)에 속하는지 0/1로 표시.<br />
+</li>
+<li><span class="math inline">\(u\)</span> : 임의효과 벡터.
+<ul>
+<li>개체 유전효과는 <strong>GRM <span class="math inline">\(K\)</span></strong>(친족도 행렬)로 상관구조를 반영해 모델링.<br />
+</li>
+<li>농장 효과처럼 서로 독립·분산 동일로 보는 효과는 <strong>항등행렬 <span class="math inline">\(I\)</span></strong>(상관 0, 분산 동일)로 둠.<br />
+</li>
+</ul></li>
+<li><span class="math inline">\(G\)</span> : <strong>검정 중인 단일 SNP</strong>의 유전자형(0/1/2 또는 통계적으로 추정된 유전자량, dosage). <code>assocTestSingle()</code>가 SNP마다 이 <span class="math inline">\(G\)</span>를 바꿔가며 사용.<br />
+</li>
+<li><span class="math inline">\(\gamma\)</span> : 해당 SNP의 효과 크기(귀무가설 <span class="math inline">\(H_0:\gamma=0\)</span>).<br />
+</li>
+<li><span class="math inline">\(\varepsilon\)</span> : 잔차(아직 설명되지 않은 변동).</li>
+</ul>
+</div>
+<div id="한눈에-보기" class="section level3 hasAnchor" number="3.8.3">
+<h3><span class="header-section-number">3.8.3</span> 💡 한눈에 보기<a href="#%ED%95%9C%EB%88%88%EC%97%90-%EB%B3%B4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>Null model</strong>: SNP 효과 없이 공변량/친족구조만으로 <strong>오차구조·분산성분</strong>을 먼저 추정<br />
+</li>
+<li><strong>GWAS per-SNP</strong>: 위 Null을 <strong>고정</strong>하고 각 SNP를 <strong>Score 계열 검정(Score, Score.SPA 등)</strong>으로 빠르게 평가</li>
+</ul>
+<p>GWAS에서 Null model(귀무모형)을 먼저 적합하는 것은 <strong>정확하고 효율적인 분석</strong>을 위한 핵심 전략이다.</p>
+<ol style="list-style-type: decimal">
+<li><strong>통계적 타당성(제1종 오류 통제)</strong>
+<ul>
+<li>집단 구조((population stratification)나 친족 관계(cryptic relatedness)가 있으면, 이를 보정하지 않을 때 <strong>genomic inflation(λ)</strong>이 커지고 거짓양성(제1종 오류)이 늘어난다.<br />
+</li>
+<li>Null model은 <strong>GRM, <span class="math inline">\(K\)</span></strong> 등으로 <strong>오차 구조와 분산성분</strong>을 먼저 추정해 이 교란을 제거/완화한다. 그 결과, 이후 SNP 검정에서 <strong>λ가 안정</strong>되고 <strong>거짓양성</strong>이 억제된다.</li>
+</ul></li>
+<li><strong>계산 효율성(속도)</strong>
+<ul>
+<li>혼합모형의 분산성분 추정은 고비용 작업(큰 GRM 역행렬 계산 등)이다.<br />
+</li>
+<li>Null에서 <strong>한 번만</strong> 분산성분을 추정·고정해 두고, 이후 각 SNP는 <strong>Score 계열 검정</strong>으로 처리하면 <strong>수십만~수백만 SNP</strong>도 빠르게 평가할 수 있다(매 SNP마다 혼합모형을 재적합할 필요 없음).</li>
+</ul></li>
+<li><strong>가정(Infinitesimal 가정)</strong>
+<ul>
+<li>이 방법은 “<strong>개별 SNP 하나가 전체 유전분산 <span class="math inline">\(\sigma_g^2\)</span>에 미치는 영향은 매우 작다</strong>”는 가정에 기반한다.<br />
+</li>
+<li>드물게 특정 SNP 효과가 매우 크면(예: 유전력의 큰 비율) 약간의 정확도 손실이 있을 수 있으나, 일반적으로 Null→Score 절차가 가장 합리적이다.</li>
+</ul></li>
+</ol>
+<div id="genomic-inflation-lambda" class="section level4 hasAnchor" number="3.8.3.1">
+<h4><span class="header-section-number">3.8.3.1</span> 📈 Genomic Inflation, <span class="math inline">\(\lambda\)</span><a href="#genomic-inflation-lambda" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li><strong>정의</strong>: GWAS에서 관측된 검정 통계량(또는 P-값)들이 <strong>귀무가설 하의 기대치보다 전반적으로 더 유의</strong>하게 나오는 현상. 이는 모델이 데이터 속 <strong>집단 계층화</strong>, <strong>잠재적 친족 관계</strong> 등을 충분히 통제하지 못했을 때 나타나는 <strong>체계적 편향(systematic bias)</strong>의 신호이다.</li>
+</ul>
+<p><strong>결론</strong>: Null model을 먼저 적합하면 <strong>genomic inflation을 방지</strong>하고 <strong>제1종 오류를 통제</strong>하면서, 대규모 SNP를 <strong>고속으로</strong> 분석할 수 있다.</p>
+</div>
+</div>
+</div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="gwas-절차.html#cb63-1" tabindex="-1"></a><span class="co"># 결과 요약</span></span>
+<span id="cb63-2"><a href="gwas-절차.html#cb63-2" tabindex="-1"></a><span class="co"># genomic inflation 구하기</span></span>
+<span id="cb63-3"><a href="gwas-절차.html#cb63-3" tabindex="-1"></a>chisq  <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">1</span> <span class="sc">-</span> assoc_single<span class="sc">$</span>Score.pval, <span class="at">df =</span> <span class="dv">1</span>)</span>
+<span id="cb63-4"><a href="gwas-절차.html#cb63-4" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">median</span>(chisq, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">/</span>stats<span class="sc">::</span><span class="fu">qchisq</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)</span>
+<span id="cb63-5"><a href="gwas-절차.html#cb63-5" tabindex="-1"></a><span class="co"># 요약 표로 정리하기</span></span>
+<span id="cb63-6"><a href="gwas-절차.html#cb63-6" tabindex="-1"></a>summary_single <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb63-7"><a href="gwas-절차.html#cb63-7" tabindex="-1"></a>  <span class="at">trait =</span> single_trait,</span>
+<span id="cb63-8"><a href="gwas-절차.html#cb63-8" tabindex="-1"></a>  <span class="at">n_snps =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(assoc_single<span class="sc">$</span>Score.pval)),</span>
+<span id="cb63-9"><a href="gwas-절차.html#cb63-9" tabindex="-1"></a>  <span class="at">lambda =</span> lambda,</span>
+<span id="cb63-10"><a href="gwas-절차.html#cb63-10" tabindex="-1"></a>  <span class="at">n_sig_BH =</span> <span class="fu">sum</span>(assoc_single<span class="sc">$</span>p_adj_BH <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb63-11"><a href="gwas-절차.html#cb63-11" tabindex="-1"></a>  <span class="at">n_sig_bonf =</span> <span class="fu">sum</span>(assoc_single<span class="sc">$</span>p_adj_bonferroni <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb63-12"><a href="gwas-절차.html#cb63-12" tabindex="-1"></a>  <span class="at">min_p =</span> <span class="fu">min</span>(assoc_single<span class="sc">$</span>Score.pval, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb63-13"><a href="gwas-절차.html#cb63-13" tabindex="-1"></a>  <span class="at">min_p_SNP =</span> assoc_single<span class="sc">$</span>variant.id[<span class="fu">which.min</span>(assoc_single<span class="sc">$</span>Score.pval)],</span>
+<span id="cb63-14"><a href="gwas-절차.html#cb63-14" tabindex="-1"></a>  <span class="at">min_BH =</span> <span class="fu">min</span>(assoc_single<span class="sc">$</span>p_adj_BH, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb63-15"><a href="gwas-절차.html#cb63-15" tabindex="-1"></a>)</span>
+<span id="cb63-16"><a href="gwas-절차.html#cb63-16" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(summary_single, <span class="fu">file.path</span>(tables_dir, <span class="fu">paste0</span>(<span class="st">&quot;gwas_summary_&quot;</span>, single_trait, <span class="st">&quot;.csv&quot;</span>)))</span></code></pre></div>
+<div class="alert alert-success" role="alert">
+<h4 class="alert-heading">
+📁 GWAS 요약 결과
+</h4>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<thead>
+<tr>
+<th style="text-align:left;">
+trait <sup>a</sup>
+</th>
+<th style="text-align:right;">
+n_snps <sup>b</sup>
+</th>
+<th style="text-align:right;">
+lambda <sup>c</sup>
+</th>
+<th style="text-align:right;">
+n_sig_BH <sup>d</sup>
+</th>
+<th style="text-align:right;">
+n_sig_bonf <sup>e</sup>
+</th>
+<th style="text-align:right;">
+min_p <sup>f</sup>
+</th>
+<th style="text-align:right;">
+min_p_SNP <sup>g</sup>
+</th>
+<th style="text-align:right;">
+min_BH <sup>h</sup>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+days_in_milk
+</td>
+<td style="text-align:right;">
+43686
+</td>
+<td style="text-align:right;">
+0.986
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+37174
+</td>
+<td style="text-align:right;">
+0.443
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>a</sup> 분석 대상 형질 이름 <sup>b</sup> 분석에 사용된 총 SNP 개수 <sup>c</sup> Genomic Inflation Factor (λ): 집단 구조화가 잘 보정되었는지 확인하는 지표. 1에 가까울수록 좋음. <sup>d</sup> BH 보정 기준(FDR &lt; 0.05)을 만족하는 유의 SNP 개수 <sup>e</sup> Bonferroni 보정 기준을 만족하는 유의 SNP 개수 <sup>f</sup> 가장 낮은 P-값 (min P-value) <sup>g</sup> 가장 낮은 P-값을 보이는 SNP의 index ID <sup>h</sup> 가장 낮은 BH 보정 P-값 (min FDR)
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<style type="text/css">
+/* R 코드 청크(echo=TRUE)의 스타일을 지정합니다 */
+pre.sourceCode {
+  background-color: #e7f3ff !important; /* 연한 하늘색 배경 */
+  border: 1px solid #cce0ff !important;   /* 배경색과 어울리는 연한 파란색 테두리 */
+  border-radius: 5px;                      /* 모서리를 살짝 둥글게 (선택 사항) */
+}
+
+/* 테이블 헤더(th)의 텍스트가 줄바꿈되지 않도록 설정 */
+.table th {
+  white-space: nowrap;
+}
+</style>
+</div>
+<div id="gwas-결과-시각화" class="section level2 hasAnchor" number="3.9">
+<h2><span class="header-section-number">3.9</span> GWAS 결과 시각화<a href="#gwas-%EA%B2%B0%EA%B3%BC-%EC%8B%9C%EA%B0%81%ED%99%94" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="gwas-절차.html#cb64-1" tabindex="-1"></a><span class="co"># PVE 분포 확인</span></span>
+<span id="cb64-2"><a href="gwas-절차.html#cb64-2" tabindex="-1"></a>p <span class="ot">=</span> <span class="fu">ggplot</span>(assoc_single, <span class="fu">aes</span>(<span class="at">x =</span> PVE<span class="sc">*</span><span class="dv">100</span>)) <span class="sc">+</span> <span class="co"># PVE를 퍼센트로 변환</span></span>
+<span id="cb64-3"><a href="gwas-절차.html#cb64-3" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">&quot;grey70&quot;</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb64-4"><a href="gwas-절차.html#cb64-4" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb64-5"><a href="gwas-절차.html#cb64-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Distribution of Variance Explained (PVE) by Single Variants&quot;</span>, <span class="at">x =</span> <span class="st">&quot;PVE (%)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>) <span class="sc">+</span></span>
+<span id="cb64-6"><a href="gwas-절차.html#cb64-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb64-7"><a href="gwas-절차.html#cb64-7" tabindex="-1"></a></span>
+<span id="cb64-8"><a href="gwas-절차.html#cb64-8" tabindex="-1"></a><span class="fu">print</span>(p)</span></code></pre></div>
+<p><img src="my-final-book_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="gwas-절차.html#cb65-1" tabindex="-1"></a><span class="co"># 플롯 저장</span></span>
+<span id="cb65-2"><a href="gwas-절차.html#cb65-2" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(figs_dir, <span class="fu">paste0</span>(<span class="st">&quot;pve_hist_&quot;</span>, single_trait, <span class="st">&quot;.png&quot;</span>)), p, <span class="at">dpi=</span><span class="dv">300</span>, <span class="at">width=</span><span class="dv">6</span>, <span class="at">height=</span><span class="dv">4</span>)</span>
+<span id="cb65-3"><a href="gwas-절차.html#cb65-3" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="gwas-절차.html#cb65-4" tabindex="-1"></a><span class="co"># ---- QQ 플롯 &amp; 맨해튼 플롯 -------------------------------</span></span>
+<span id="cb65-5"><a href="gwas-절차.html#cb65-5" tabindex="-1"></a>manplot <span class="ot">&lt;-</span> assoc_single <span class="sc">|&gt;</span></span>
+<span id="cb65-6"><a href="gwas-절차.html#cb65-6" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="at">SNP =</span> variant.id, <span class="at">Chromosome =</span> chr, <span class="at">Position =</span> pos, <span class="at">P =</span> Score.pval)</span>
+<span id="cb65-7"><a href="gwas-절차.html#cb65-7" tabindex="-1"></a></span>
+<span id="cb65-8"><a href="gwas-절차.html#cb65-8" tabindex="-1"></a><span class="co"># 염색체 분류 확인</span></span>
+<span id="cb65-9"><a href="gwas-절차.html#cb65-9" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">distinct</span>(manplot, Chromosome)</span></code></pre></div>
+<pre><code>#&gt;    Chromosome
+#&gt; 1           1
+#&gt; 2           2
+#&gt; 3           3
+#&gt; 4           4
+#&gt; 5           5
+#&gt; 6           6
+#&gt; 7           7
+#&gt; 8           8
+#&gt; 9           9
+#&gt; 10         10
+#&gt; 11         11
+#&gt; 12         12
+#&gt; 13         13
+#&gt; 14         14
+#&gt; 15         15
+#&gt; 16         16
+#&gt; 17         17
+#&gt; 18         18
+#&gt; 19         19
+#&gt; 20         20
+#&gt; 21         21
+#&gt; 22         22
+#&gt; 23         23
+#&gt; 24         24
+#&gt; 25         25
+#&gt; 26         26
+#&gt; 27         27
+#&gt; 28         28
+#&gt; 29         29
+#&gt; 30          U</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="gwas-절차.html#cb67-1" tabindex="-1"></a><span class="co"># U 염색체 코딩 변경</span></span>
+<span id="cb67-2"><a href="gwas-절차.html#cb67-2" tabindex="-1"></a>manplot <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(manplot, <span class="at">Chromosome =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(Chromosome <span class="sc">==</span> <span class="st">&quot;U&quot;</span> <span class="sc">~</span> <span class="st">&quot;X&quot;</span>, <span class="cn">TRUE</span> <span class="sc">~</span> Chromosome))</span>
+<span id="cb67-3"><a href="gwas-절차.html#cb67-3" tabindex="-1"></a></span>
+<span id="cb67-4"><a href="gwas-절차.html#cb67-4" tabindex="-1"></a><span class="do">## QQ plot</span></span>
+<span id="cb67-5"><a href="gwas-절차.html#cb67-5" tabindex="-1"></a>CMplot<span class="sc">::</span><span class="fu">CMplot</span>(                                                           <span class="co">#</span></span>
+<span id="cb67-6"><a href="gwas-절차.html#cb67-6" tabindex="-1"></a>  <span class="at">Pmap =</span> manplot,</span>
+<span id="cb67-7"><a href="gwas-절차.html#cb67-7" tabindex="-1"></a>  <span class="at">plot.type =</span> <span class="st">&quot;q&quot;</span>,</span>
+<span id="cb67-8"><a href="gwas-절차.html#cb67-8" tabindex="-1"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb67-9"><a href="gwas-절차.html#cb67-9" tabindex="-1"></a>  <span class="at">box =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb67-10"><a href="gwas-절차.html#cb67-10" tabindex="-1"></a>  <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">&quot;QQ Plot (λ = &quot;</span>, <span class="fu">round</span>(lambda, <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>),</span>
+<span id="cb67-11"><a href="gwas-절차.html#cb67-11" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;png&quot;</span>,</span>
+<span id="cb67-12"><a href="gwas-절차.html#cb67-12" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">width =</span> <span class="dv">4</span>, <span class="at">height =</span> <span class="dv">4</span>,</span>
+<span id="cb67-13"><a href="gwas-절차.html#cb67-13" tabindex="-1"></a>  <span class="co"># ↓↓↓ 크기 조절</span></span>
+<span id="cb67-14"><a href="gwas-절차.html#cb67-14" tabindex="-1"></a>  <span class="at">axis.cex =</span> <span class="fl">0.7</span>,   <span class="co"># 축 눈금 글자 크기(기본 1 → 더 작게)</span></span>
+<span id="cb67-15"><a href="gwas-절차.html#cb67-15" tabindex="-1"></a>  <span class="at">lab.cex  =</span> <span class="fl">0.9</span>,   <span class="co"># 축 라벨(제목) 크기(기본 1.5 → 더 작게)</span></span>
+<span id="cb67-16"><a href="gwas-절차.html#cb67-16" tabindex="-1"></a>  <span class="at">main.cex =</span> <span class="fl">1.0</span>,   <span class="co"># 타이틀 크기(기본 1.5 → 더 작게)</span></span>
+<span id="cb67-17"><a href="gwas-절차.html#cb67-17" tabindex="-1"></a> <span class="co"># 라벨 위치 미세조정</span></span>
+<span id="cb67-18"><a href="gwas-절차.html#cb67-18" tabindex="-1"></a>  <span class="at">xticks.pos =</span> <span class="fl">0.5</span>,    <span class="co"># x축 눈금과 축 간격</span></span>
+<span id="cb67-19"><a href="gwas-절차.html#cb67-19" tabindex="-1"></a>  <span class="at">ylab.pos   =</span> <span class="fl">1.5</span>,    <span class="co"># y축 라벨과 축 간격</span></span>
+<span id="cb67-20"><a href="gwas-절차.html#cb67-20" tabindex="-1"></a> <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="fl">2.5</span>, <span class="dv">2</span>)  <span class="co"># 아래-왼-위-오른 여백(클립 방지/밀착 조절)</span></span>
+<span id="cb67-21"><a href="gwas-절차.html#cb67-21" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt;  Q-Q plotting P.</code></pre>
+<pre><code>#&gt;  Plots are stored in: G:/Rhome/NIAS_ibv3_296ea/PLINK_120825_0322</code></pre>
+<p>
+<em>QQ plot</em>
+</p>
+<p><img src="05_gwas/holstein/figs/QQplot.P.png" width="600" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="gwas-절차.html#cb70-1" tabindex="-1"></a><span class="do">## Manhattan plot</span></span>
+<span id="cb70-2"><a href="gwas-절차.html#cb70-2" tabindex="-1"></a>CMplot<span class="sc">::</span><span class="fu">CMplot</span>(</span>
+<span id="cb70-3"><a href="gwas-절차.html#cb70-3" tabindex="-1"></a>  manplot,</span>
+<span id="cb70-4"><a href="gwas-절차.html#cb70-4" tabindex="-1"></a>  <span class="at">plot.type =</span> <span class="st">&quot;m&quot;</span>,</span>
+<span id="cb70-5"><a href="gwas-절차.html#cb70-5" tabindex="-1"></a>  <span class="at">LOG10 =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb70-6"><a href="gwas-절차.html#cb70-6" tabindex="-1"></a>  <span class="at">chr.den.col =</span> <span class="cn">NULL</span>,</span>
+<span id="cb70-7"><a href="gwas-절차.html#cb70-7" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;png&quot;</span>,</span>
+<span id="cb70-8"><a href="gwas-절차.html#cb70-8" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">4</span></span>
+<span id="cb70-9"><a href="gwas-절차.html#cb70-9" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt;  Rectangular Manhattan plotting P.</code></pre>
+<pre><code>#&gt;  Plots are stored in: G:/Rhome/NIAS_ibv3_296ea/PLINK_120825_0322</code></pre>
+<p>
+<em>Manhattan plot</em>
+</p>
+<p><img src="05_gwas/holstein/figs/Rect_Manhtn.P.png" width="1800" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="gwas-절차.html#cb73-1" tabindex="-1"></a><span class="do">## Circular Manhattan plot</span></span>
+<span id="cb73-2"><a href="gwas-절차.html#cb73-2" tabindex="-1"></a>CMplot<span class="sc">::</span><span class="fu">CMplot</span>(</span>
+<span id="cb73-3"><a href="gwas-절차.html#cb73-3" tabindex="-1"></a>  manplot,</span>
+<span id="cb73-4"><a href="gwas-절차.html#cb73-4" tabindex="-1"></a>  <span class="at">plot.type =</span> <span class="st">&quot;c&quot;</span>,</span>
+<span id="cb73-5"><a href="gwas-절차.html#cb73-5" tabindex="-1"></a>  <span class="at">LOG10 =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb73-6"><a href="gwas-절차.html#cb73-6" tabindex="-1"></a>  <span class="at">chr.den.col =</span> <span class="cn">NULL</span>,</span>
+<span id="cb73-7"><a href="gwas-절차.html#cb73-7" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;png&quot;</span>,</span>
+<span id="cb73-8"><a href="gwas-절차.html#cb73-8" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">width =</span> <span class="dv">4</span>, <span class="at">height =</span> <span class="dv">4</span>,</span>
+<span id="cb73-9"><a href="gwas-절차.html#cb73-9" tabindex="-1"></a>  <span class="at">axis.cex =</span> <span class="fl">0.7</span>,   <span class="co"># 축 눈금 글자 크기(기본 1 → 더 작게)</span></span>
+<span id="cb73-10"><a href="gwas-절차.html#cb73-10" tabindex="-1"></a>  <span class="at">lab.cex  =</span> <span class="fl">0.9</span>,   <span class="co"># 축 라벨(제목) 크기(기본 1.5 → 더 작게)</span></span>
+<span id="cb73-11"><a href="gwas-절차.html#cb73-11" tabindex="-1"></a>  <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),   <span class="co"># 기본(3,6,3,3)보다 훨씬 타이트</span></span>
+<span id="cb73-12"><a href="gwas-절차.html#cb73-12" tabindex="-1"></a>  <span class="at">cir.chr.h =</span> <span class="fl">0.6</span>              <span class="co"># 바깥 크로모솜 테두리 두께 축소</span></span>
+<span id="cb73-13"><a href="gwas-절차.html#cb73-13" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt;  Circular Manhattan plotting P.
+#&gt;  Plots are stored in: G:/Rhome/NIAS_ibv3_296ea/PLINK_120825_0322</code></pre>
+<p>
+<em>Circular Manhattan plot</em>
+</p>
+<p><img src="05_gwas/holstein/figs/Cir_Manhtn.P.png" width="600" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="gwas-절차.html#cb75-1" tabindex="-1"></a><span class="co"># plot 위치 및 이름 변경</span></span>
+<span id="cb75-2"><a href="gwas-절차.html#cb75-2" tabindex="-1"></a><span class="fu">file.rename</span>(<span class="st">&quot;QQplot.P.png&quot;</span>, <span class="fu">file.path</span>(figs_dir, <span class="fu">paste0</span>(<span class="st">&quot;QQplot.P_&quot;</span>, single_trait, <span class="st">&quot;.png&quot;</span>)))</span>
+<span id="cb75-3"><a href="gwas-절차.html#cb75-3" tabindex="-1"></a><span class="fu">file.rename</span>(<span class="st">&quot;Rect_Manhtn.P.png&quot;</span>, <span class="fu">file.path</span>(figs_dir, <span class="fu">paste0</span>(<span class="st">&quot;Rect_Manhtn.P_&quot;</span>, single_trait, <span class="st">&quot;.png&quot;</span>)))</span>
+<span id="cb75-4"><a href="gwas-절차.html#cb75-4" tabindex="-1"></a><span class="fu">file.rename</span>(<span class="st">&quot;Cir_Manhtn.P.png&quot;</span>, <span class="fu">file.path</span>(figs_dir, <span class="fu">paste0</span>(<span class="st">&quot;Cir_Manhtn.P_&quot;</span>, single_trait, <span class="st">&quot;.png&quot;</span>)))</span></code></pre></div>
+<style>
+  /* 이 출력 블록 전체의 기본 폰트/줄높이 통일 */
+  .outputs { font-size: .95rem; line-height: 1.5; }
+
+  /* 표와 표 내부 요소들이 동일한 크기를 상속받도록 강제 */
+  .outputs .outputs-table,
+  .outputs .outputs-table td,
+  .outputs .outputs-table th,
+  .outputs .outputs-table ul,
+  .outputs .outputs-table li,
+  .outputs .outputs-table code {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+
+  /* 표 안 리스트 여백 정리 */
+  .outputs .outputs-table td ul { margin: 0; padding-left: 1rem; }
+
+  /* 표 폭 자동 */
+  .outputs .outputs-table { table-layout: auto !important; width: 100%; }
+
+  /* 절대 줄바꿈 금지(셀 + 내부 모든 요소) */
+  .outputs .outputs-table td.nowrap,
+  .outputs .outputs-table td.nowrap *,
+  .outputs .outputs-table td.nowrap code {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Bootstrap 없는 환경 대비 (안전장치) */
+  .mb-0 { margin-bottom: 0 !important; }
+  .list-unstyled { list-style: none; padding-left: 0; }
+</style>
+<div class="alert alert-success outputs" role="alert">
+<h4 class="alert-heading">
+📁 최종출력물
+</h4>
+<h5 class="mt-2">
+품종별 (<code>05_gwas/&lt;breed&gt;/</code> 내부)
+</h5>
+<table class="table table-striped table-condensed outputs-table">
+<thead>
+<tr>
+<th>
+위치
+</th>
+<th>
+파일 이름
+</th>
+<th>
+형식
+</th>
+<th>
+설명
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>05_gwas/&lt;breed&gt;/</code>
+</td>
+<td>
+<code>A_matrix_heatmap.png</code>
+</td>
+<td>
+PNG
+</td>
+<td>
+GRM(유전체 관계 행렬) 히트맵
+</td>
+</tr>
+<!-- 플롯 행: 플롯별 1줄씩 표시 -->
+<tr>
+<td>
+<code>05_gwas/&lt;breed&gt;/figs/</code>
+</td>
+<td>
+<ul class="list-unstyled mb-0">
+<li>
+<code>pheno_distribution_&lt;trait&gt;.png</code>
+</li>
+<li>
+<code>pve_hist_&lt;trait&gt;.png</code>
+</li>
+<li>
+<code>QQplot.P_&lt;trait&gt;.png</code>
+</li>
+<li>
+<code>Rect_Manhtn.P_&lt;trait&gt;.png</code>
+</li>
+<li>
+<code>Cir_Manhtn.P_&lt;trait&gt;.png</code>
+</li>
+</ul>
+</td>
+<td>
+PNG
+</td>
+<td>
+<ul class="list-unstyled mb-0">
+<li>
+표현형 분포 플롯
+</li>
+<li>
+PVE 분포 플롯
+</li>
+<li>
+QQ 플롯(λ 포함)
+</li>
+<li>
+맨해튼 플롯(직사각형)
+</li>
+<li>
+맨해튼 플롯(원형)
+</li>
+</ul>
+</td>
+</tr>
+<!-- GENESIS 설명: 한 줄 고정 -->
+<tr>
+<td>
+<code>05_gwas/&lt;breed&gt;/gwas/</code>
+</td>
+<td>
+<code>assoc_&lt;trait&gt;.rds</code>
+</td>
+<td>
+RDS
+</td>
+<td class="nowrap">
+GENESIS::assocTestSingle() 결과 객체 (재분석/추가 가공용)
+</td>
+</tr>
+<tr>
+<td>
+<code>05_gwas/&lt;breed&gt;/tables/</code>
+</td>
+<td>
+<code>assoc_&lt;trait&gt;.csv</code>
+</td>
+<td>
+CSV
+</td>
+<td>
+단일 마커 연관성 표: P-value, 효과, 표준오차, PVE, FDR(BH), Bonferroni 등
+</td>
+</tr>
+<tr>
+<td>
+<code>05_gwas/&lt;breed&gt;/tables/</code>
+</td>
+<td>
+<code>gwas_summary_&lt;trait&gt;.csv</code>
+</td>
+<td>
+CSV
+</td>
+<td>
+요약 지표: SNP 수, λ, 유의 SNP 개수(FDR/Bonferroni), 최소 P, 해당 SNP index ID
+</td>
+</tr>
+</tbody>
+</table>
+<h5 class="mt-3">
+참고
+</h5>
+<ul class="list-unstyled mb-0">
+<li>
+🔧 현재 설정
+<ul class="list-unstyled mb-0" style="margin-left:1.1rem">
+<li>
+<code>&lt;breed&gt; = holstein</code>
+</li>
+<li>
+<code>&lt;trait&gt; = days_in_milk</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<style>
+  /* 'outputs' 상자 내부의 h5와, 그 다음에 오는 ul 및 li의 폰트를 조절 */
+  .outputs h5 {
+    font-size: 1.2em !important; /* 이 값을 조절하여 '참고' 글씨 크기 변경 */
+    font-weight: 700; /* 글씨를 좀 더 굵게 (선택 사항) */
+  }
+  
+  .outputs h5 + ul,
+  .outputs h5 + ul li {
+    font-size: 1.2em !important; 
+    line-height: inherit !important;
+  }
+</style>
+</div>
+<div id="r로-gwas-과정-완료" class="section level2 hasAnchor" number="3.10">
+<h2><span class="header-section-number">3.10</span> 🎉 R로 GWAS 과정 완료<a href="#r%EB%A1%9C-gwas-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="alert alert-success" role="alert" style="margin-top:.5rem">
+<h4 class="alert-heading" style="margin-top:0;margin-bottom:.5rem">
+✅ R로 하는 GWAS 절차를 끝까지 잘 마쳤다!
+</h4>
+<p style="margin-bottom:.75rem">
+모든 단계를 거쳐 최종 출력물을 만들었다. 🍀
+</p>
+<hr style="margin:.75rem 0" />
+<p class="mb-0">
+이제 Holstein의 다른 형질들과 Jersey 데이터셋에 대해서도 GWAS 분석을 할 수 있다. 🚀🔥
+</p>
+</div>
+</div>
+<div id="script-full" class="section level2 hasAnchor" number="3.11">
+<h2><span class="header-section-number">3.11</span> 스크립트 전체 보기<a href="gwas-절차.html#script-full" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span></span></p>
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+<p>
+<span style="font-size:1.1em">📘 <strong> GWAS R script</strong></span>
+</p>
+<details>
+<summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+<code>gwas_workflow.R</code> 파일 — 👆 클릭하여 보기
+</summary>
+<pre><code class="language-r">## 1. 패키지 설치 & 로딩
+# ---- 설치어시스턴트 -------------------------------------------------------
+cran_pkgs <- c("genio", "qqman", "sommer", "lme4breeding", "dplyr", "CMplot", "stringr", "ggplot2", "tibble", "readr")
+bioc_pkgs <- c("GENESIS","GWASTools","BiocParallel")
+
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+install_if_missing <- function(pkgs, installer) {
+  need <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+  if (length(need)) installer(need, ask = FALSE)
+}
+
+install_if_missing(cran_pkgs, install.packages)
+install_if_missing(bioc_pkgs, BiocManager::install)
+
+# ---- 라이브러리 로드 ------------------------------------------------------
+library(genio)
+library(GENESIS)
+library(GWASTools)
+library(qqman)
+library(CMplot)
+library(lme4breeding)
+library(sommer)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(tibble)
+
+## 2. 경로/입력 정의
+breed        <- "holstein"
+plink_prefix <- "03_qc/NIAS_ibv3_296ea.holstein"
+pheno_file   <- "NIAS_ibv3_296ea_pheno.csv"
+
+report_dir <- file.path("05_gwas", breed)
+figs_dir   <- file.path(report_dir, "figs")
+gwas_dir   <- file.path(report_dir, "gwas")
+tables_dir <- file.path(report_dir, "tables")
+for (d in c(report_dir, figs_dir, gwas_dir, tables_dir)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
+
+## 3. PLINK binary 데이터 불러오기
+# read_plink()는 SNP x Sample 행렬(X), bim(마커정보), fam(개체정보)을 불러온다.
+plink <- read_plink(plink_prefix)
+
+X <- plink$X             # 행: SNP, 열: 샘플, 값: 0/1/2
+bim <- plink$bim         # chr, id, pos, alt, ref 등
+fam <- plink$fam         # family/sample id 등
+
+# 미리보기
+X[1:5, 1:5]
+head(bim)
+head(fam)
+
+## 4. 표현형 데이터 로딩 & 정렬
+pheno <- readr::read_csv(pheno_file, show_col_types = FALSE)
+
+sample_id_chr <- colnames(X)  # PLINK 열이 샘플 ID
+scanID <- seq_along(sample_id_chr)
+
+pheno_ord <- pheno[match(sample_id_chr, pheno$individual_id), , drop = FALSE]
+stopifnot(!any(is.na(pheno_ord$individual_id)))
+pheno_ord$sample_id <- sample_id_chr
+pheno_ord$scanID    <- scanID
+stopifnot(identical(as.character(pheno_ord$individual_id), pheno_ord$sample_id))
+# 미리보기
+str(pheno_ord)
+
+# 표현형 분포 확인
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+p=ggplot(pheno_ord, aes(x = .data[[single_trait]])) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(
+    title = paste("Distribution of", single_trait),
+    x = single_trait, 
+    y = "Density"
+  ) +
+  theme_minimal()
+
+# 변수에 저장된 플롯 확인
+print(p)
+# ggsave() 함수를 사용하여 플롯을 png 파일로 저장
+ggsave(
+  filename = file.path(figs_dir, paste0("pheno_distribution_", single_trait, ".png")),
+  plot = p,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
+
+## 5. GRM(유전체 관계 행렬) 계산 & 간단 시각화
+# A.mat은 -1/0/1 코딩된 genotype matrix 이용
+G_mat <- t(X)              # 샘플 x SNP
+colnames(G_mat) <- rownames(X)
+rownames(G_mat) <- sample_id_chr
+
+G_code <- G_mat - 1        # 0/1/2 -> -1/0/1
+KI     <- sommer::A.mat(G_code)
+# 수치안정성(아주 작은 ridge)
+diag(KI) <- diag(KI) + 1e-4
+
+# scanID 기준의 dimnames 지정
+rownames(KI) <- as.character(scanID)
+colnames(KI) <- as.character(scanID)
+
+stopifnot(
+  identical(rownames(KI), as.character(scanID)),
+  identical(colnames(KI), as.character(scanID))
+)
+
+# 상위 5x5 확인
+KI[1:5, 1:5]
+
+# 히트맵
+colfunc <- grDevices::colorRampPalette(c("steelblue4","springgreen","yellow"))
+
+png(file.path(report_dir, "A_matrix_heatmap.png"), width=2000, height=1400, res=200)
+stats::heatmap(KI, col = colfunc(100), Colv = "Rowv", symmetric = TRUE)
+dev.off()
+
+## 6. GWAS 분석용 데이터 객체 만들기
+bim <- cbind(index = seq_len(nrow(bim)), bim)
+stopifnot(all.equal(rownames(X), bim$id))
+stopifnot(all.equal(colnames(X), pheno_ord$sample_id))
+
+rownames(X) <- bim$index
+colnames(X) <- scanID
+
+# GENESIS 패키지에서 요구하는 데이터 객체 만들기
+mg <- GWASTools::MatrixGenotypeReader(
+  genotype   = X,
+  snpID      = bim$index,
+  chromosome = as.integer(bim$chr),
+  position   = as.integer(bim$pos),
+  scanID     = scanID,
+  autosomeCode = 1L:29L,
+  XchromCode   = 30L, YchromCode = 31L, XYchromCode = 32L, MchromCode = 33L
+)
+# 유전자형 데이터 객체 생성
+genoData <- GWASTools::GenotypeData(mg)
+# 표현형 데이터 객체 생성
+scanAnno <- GWASTools::ScanAnnotationDataFrame(pheno_ord)
+# 객체 구조 확인
+str(genoData)
+str(scanAnno@data)   
+
+## 7. GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# --- 데이터 전처리 ---
+
+# 1. 모델에서 효과를 분석할 변수들을 factor(범주형 변수)로 변환
+pheno_ord$farm_id <- as.factor(pheno_ord$farm_id)
+pheno_ord$scanID <- as.factor(pheno_ord$scanID)
+
+# 2. 분석할 형질(days_in_milk)에 결측치(NA)가 있는 샘플을 제거하여
+#    최종 분석 데이터셋 'PH'를 생성
+#    droplevels() 함수는 PH 데이터셋에 더 이상 존재하지 않는 샘플이나 농장의 레벨 정보를 제거
+PH <- droplevels(subset(pheno_ord, !is.na(days_in_milk)))
+
+# 3. Kinship 행렬(KI)을 최종 분석 데이터셋 'PH'에 맞춰 자른다.
+#    반드시 'PH'의 샘플 목록과 순서를 기준으로 잘라야,
+#    표현형 데이터와 Kinship 데이터의 샘플이 1:1로 정확하게 일치한다.
+K_scan <- KI[levels(PH$scanID), levels(PH$scanID)]
+
+# 농장 효과와 개체별 유전 효과를 임의 효과(random effect)로 설정하여 모델을 만든다.
+# lmebreed 함수는 혈연관계(kinship)를 고려한 혼합 모델을 적합해준다.
+mix <- lme4breeding::lmebreed(
+  # 모델 공식: days_in_milk를 개체 효과(scanID)와 농장 효과(farm_id)로 설명
+  days_in_milk ~ (1|scanID) + (1|farm_id),
+  
+  # relmat 인자: scanID의 임의 효과는 K_scan 행렬에 정의된 유전적 관계를 따르도록 지정한다.
+  relmat  = list(scanID = K_scan),
+  
+  # verbose=TRUE: 모델 계산 과정을 화면에 출력
+  verbose = TRUE,
+  
+  # data 인자: 모델에 사용할 데이터셋으로 PH를 지정
+  data    = PH
+)
+
+# 모델 분석 결과 요약본 출력
+summary(mix)
+
+### 함수를 이용한 유전력 계산
+# VarCorr() 함수로 모델('mix')에서 분산 성분(Variance Components)을 추출
+vc <- VarCorr(mix)
+print(vc, comp = c("Variance"))
+
+# 잔차 분산(Residual variance)을 추출
+# VarCorr 결과의 속성(attribute) "sc"는 잔차의 표준편차이므로 제곱하여 분산을 구한다. 
+ve <- attr(VarCorr(mix), "sc")^2
+
+# SNP 유전력(h2) 계산
+# h2 = 유전분산 / (유전분산 + 농장분산 + 잔차분산)
+h2 <- vc$scanID / (vc$scanID +  vc$farm_id + ve)
+print(paste("SNP Heritability (h2):", base::as.numeric(h2)))
+
+# 전체 표현형 분산 중 농장 효과(farm ID)가 차지하는 분산 비율 계산
+farm_var <- vc$farm_id / (vc$scanID + vc$farm_id + ve)
+print(paste("Farm Variance ratio:", base::as.numeric(farm_var)))
+
+## 8. GWAS 최종 null 모형 적합 및 GWAS
+# --- 분석할 형질을 이 변수에 지정 ---
+single_trait <- "days_in_milk"
+
+# 분석할 형질이 데이터에 존재하는지 확인. 없으면 에러를 발생시키고 중단
+stopifnot(single_trait %in% colnames(scanAnno@data))
+
+# 귀무모형
+null_single <- GENESIS::fitNullModel(
+  x        = scanAnno,
+  outcome  = single_trait,
+  cov.mat  = list(gen = KI),
+  family   = "gaussian"
+)
+
+# 모형에서 추정된 분산 성분(유전분산, 잔차분산)을 확인
+null_single$varComp 
+# SNP heritability 계산 (h2, CI value)
+GENESIS::varCompCI(null_single, prop = TRUE)       
+
+# GWAS 실행
+# 유전체 데이터를 **블록 단위(여기서는 10,000 SNP씩)**로 순차 처리하기 위한 이터레이터 생성: 메모리 사용을 줄이기 위함
+genoIt <- GWASTools::GenotypeBlockIterator(genoData, snpBlock = 10000)
+# 위에서 적합한 귀무모형을 고정한 상태에서, 각 SNP에 대해 단일변량 Score test로 연관성을 계산
+assoc_single <- GENESIS::assocTestSingle(
+  genoIt, null.model = null_single, BPPARAM = BiocParallel::SerialParam()
+)
+
+# ---- P-값 보정 & 유의 SNP 선별 ---------------------------------
+assoc_single$p_adj_BH=p.adjust(assoc_single$Score.pval, method="BH")
+assoc_single$p_adj_bonferroni=p.adjust(assoc_single$Score.pval, method="bonferroni")
+
+# 저장
+saveRDS(assoc_single, file = file.path(gwas_dir, paste0("assoc_", single_trait, ".rds")))
+readr::write_csv(assoc_single, file.path(tables_dir, paste0("assoc_", single_trait, ".csv")))
+
+head(assoc_single, 5)
+
+# 결과 요약
+# genomic inflation 구하기
+chisq  <- stats::qchisq(1 - assoc_single$Score.pval, df = 1)
+lambda <- median(chisq, na.rm = TRUE)/stats::qchisq(0.5, 1)
+# 요약 표로 정리하기
+summary_single <- tibble::tibble(
+  trait = single_trait,
+  n_snps = sum(!is.na(assoc_single$Score.pval)),
+  lambda = lambda,
+  n_sig_BH = sum(assoc_single$p_adj_BH < 0.05, na.rm = TRUE),
+  n_sig_bonf = sum(assoc_single$p_adj_bonferroni < 0.05, na.rm = TRUE),
+  min_p = min(assoc_single$Score.pval, na.rm = TRUE),
+  min_p_SNP = assoc_single$variant.id[which.min(assoc_single$Score.pval)],
+  min_BH = min(assoc_single$p_adj_BH, na.rm = TRUE)
+)
+readr::write_csv(summary_single, file.path(tables_dir, paste0("gwas_summary_", single_trait, ".csv")))
+
+## 9. GWAS 결과 시각화
+# PVE 분포 확인
+p=ggplot(assoc_single, aes(x = PVE*100)) + # PVE를 퍼센트로 변환
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "grey70", color = "white") +
+  geom_density(linewidth = 1) +
+  labs(title = "Distribution of Variance Explained (PVE) by Single Variants", x = "PVE (%)", y = "Density") +
+  theme_minimal()
+
+# 플롯 저장
+ggsave(file.path(figs_dir, paste0("pve_hist_", single_trait, ".png")), p, dpi=300, width=6, height=4)
+
+# ---- QQ 플롯 & 맨해튼 플롯 -------------------------------
+manplot <- assoc_single |>
+  dplyr::select(SNP = variant.id, Chromosome = chr, Position = pos, P = Score.pval)
+
+# 염색체 분류 확인
+dplyr::distinct(manplot, Chromosome)
+
+# U 염색체 코딩 변경
+manplot <- dplyr::mutate(manplot, Chromosome = dplyr::case_when(Chromosome == "U" ~ "X", TRUE ~ Chromosome))
+
+## QQ plot
+CMplot::CMplot(                                                           #
+  Pmap = manplot,
+  plot.type = "q",
+  conf.int = TRUE,
+  box = TRUE,
+  main = paste0("QQ Plot (λ = ", round(lambda, 3), ")"),
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  # ↓↓↓ 크기 조절
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  main.cex = 1.0,   # 타이틀 크기(기본 1.5 → 더 작게)
+  # 라벨 위치 미세조정
+  xticks.pos = 0.5,    # x축 눈금과 축 간격
+  ylab.pos   = 1.5,    # y축 라벨과 축 간격
+  mar = c(3, 4, 2.5, 2)  # 아래-왼-위-오른 여백(클립 방지/밀착 조절)
+)
+
+## Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "m",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 12, height = 4
+)
+
+## Circular Manhattan plot
+CMplot::CMplot(
+  manplot,
+  plot.type = "c",
+  LOG10 = TRUE,
+  chr.den.col = NULL,
+  file = "png",
+  dpi = 300, width = 4, height = 4,
+  axis.cex = 0.7,   # 축 눈금 글자 크기(기본 1 → 더 작게)
+  lab.cex  = 0.9,   # 축 라벨(제목) 크기(기본 1.5 → 더 작게)
+  mar = c(1, 1, 1, 1),   # 기본(3,6,3,3)보다 훨씬 타이트
+  cir.chr.h = 0.6              # 바깥 크로모솜 테두리 두께 축소
+)
+
+# plot 위치 및 이름 변경
+file.rename("QQplot.P.png", file.path(figs_dir, paste0("QQplot.P_", single_trait, ".png")))
+file.rename("Rect_Manhtn.P.png", file.path(figs_dir, paste0("Rect_Manhtn.P_", single_trait, ".png")))
+file.rename("Cir_Manhtn.P.png", file.path(figs_dir, paste0("Cir_Manhtn.P_", single_trait, ".png")))
+    </code></pre>
+</details>
+</div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="pre-gwas-절차-유전자형-데이터-qc.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

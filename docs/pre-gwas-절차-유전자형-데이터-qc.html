@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Pre-GWAS 절차: 유전자형 데이터 QC | GWAS 절차</title>
+  <meta name="description" content="2 Pre-GWAS 절차: 유전자형 데이터 QC | GWAS 절차" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Pre-GWAS 절차: 유전자형 데이터 QC | GWAS 절차" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Pre-GWAS 절차: 유전자형 데이터 QC | GWAS 절차" />
+  
+  
+  
+
+
+
+<meta name="date" content="2025-09-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="gwas-분석-사전-준비-절차.html"/>
+<link rel="next" href="gwas-절차.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path=""><a href="#%EC%A0%80%EC%9E%90-%EC%A0%95%EB%B3%B4"><i class="fa fa-check"></i>저자 정보</a></li>
+<li class="chapter" data-level="1" data-path="01-qc.html"><a href="#gwas-%EB%B6%84%EC%84%9D-%EC%82%AC%EC%A0%84-%EC%A4%80%EB%B9%84-%EC%A0%88%EC%B0%A8"><i class="fa fa-check"></i><b>1</b> GWAS 분석 사전 준비 절차</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="01-qc.html"><a href="#genotype-data-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>1.1</b> Genotype data (유전자형 데이터) 준비</a></li>
+<li class="chapter" data-level="1.2" data-path="01-qc.html"><a href="#phenotype-data-%ED%91%9C%ED%98%84%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>1.2</b> Phenotype data (표현형 데이터) 준비</a></li>
+<li class="chapter" data-level="1.3" data-path="01-qc.html"><a href="#rrstudio-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.3</b> R/Rstudio 프로그램 다운로드 및 설치</a></li>
+<li class="chapter" data-level="1.4" data-path="01-qc.html"><a href="#plink2-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.4</b> plink2 프로그램 다운로드 및 설치</a></li>
+<li class="chapter" data-level="1.5" data-path="01-qc.html"><a href="#r-package-%EC%84%A4%EC%B9%98"><i class="fa fa-check"></i><b>1.5</b> R package 설치</a></li>
+<li class="chapter" data-level="1.6" data-path="01-qc.html"><a href="#gwas-%EB%B6%84%EC%84%9D-%EC%82%AC%EC%A0%84-%EC%A4%80%EB%B9%84-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>1.6</b> 🎉 GWAS 분석 사전 준비 완료</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="01-qc.html"><a href="#pre-gwas-%EC%A0%88%EC%B0%A8-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc"><i class="fa fa-check"></i><b>2</b> Pre-GWAS 절차: 유전자형 데이터 QC</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="01-qc.html"><a href="#rstudio-terminal-%EC%A0%84%EC%B2%B4-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0"><i class="fa fa-check"></i><b>2.1</b> [RStudio Terminal] 전체 유전자형 데이터 QC 워크플로우</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="01-qc.html"><a href="#%EA%B2%B0%EA%B3%BC-%EC%A0%80%EC%9E%A5-%EB%94%94%EB%A0%89%ED%84%B0%EB%A6%AC-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>2.1.1</b> 0) 결과 저장 디렉터리 준비</a></li>
+<li class="chapter" data-level="2.1.2" data-path="01-qc.html"><a href="#%EC%9B%90%EB%B3%B8-pedmap%EC%9D%84-plink2-pgen-%EC%84%B8%ED%8A%B8%EB%A1%9C-%EB%B3%80%ED%99%98"><i class="fa fa-check"></i><b>2.1.2</b> 1) 원본 PED/MAP을 PLINK2 PGEN 세트로 변환</a></li>
+<li class="chapter" data-level="2.1.3" data-path="01-qc.html"><a href="#refalt-.-%EC%98%A4%EB%A5%98-%EB%B3%80%EC%9D%B4-%EC%A0%9C%EA%B1%B0"><i class="fa fa-check"></i><b>2.1.3</b> 2) REF/ALT <code>.</code> 오류 변이 제거</a></li>
+<li class="chapter" data-level="2.1.4" data-path="01-qc.html"><a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9"><i class="fa fa-check"></i><b>2.1.4</b> 3) 1차 필터 적용</a></li>
+<li class="chapter" data-level="2.1.5" data-path="01-qc.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-iid-%EB%AA%A9%EB%A1%9D-%EC%A4%80%EB%B9%84"><i class="fa fa-check"></i><b>2.1.5</b> 4) 품종별 IID 목록 준비</a></li>
+<li class="chapter" data-level="2.1.6" data-path="01-qc.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-%EC%84%9C%EB%B8%8C%EC%85%8B-pfile-%EC%83%9D%EC%84%B1"><i class="fa fa-check"></i><b>2.1.6</b> 5) 품종별 서브셋 pfile 생성</a></li>
+<li class="chapter" data-level="2.1.7" data-path="01-qc.html"><a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9-%EB%B0%8F-%EC%B5%9C%EC%A2%85-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B-%EC%83%9D%EC%84%B1"><i class="fa fa-check"></i><b>2.1.7</b> 6) 2차 필터 적용 및 최종 데이터셋 생성</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="01-qc.html"><a href="#%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%ED%99%9C%EC%9A%A9-2%EC%B0%A8-%ED%95%84%ED%84%B0-%EA%B8%B0%EC%A4%80%EA%B0%92-%EC%A0%95%ED%95%98%EA%B8%B0"><i class="fa fa-check"></i><b>2.2</b> 품종별 QC 리포트 활용 2차 필터 기준값 정하기</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="01-qc.html"><a href="#rstudio-terminal-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%B6%9C%EB%A0%A5"><i class="fa fa-check"></i><b>2.2.1</b> 1) [RStudio Terminal] 품종별 QC 리포트 출력</a></li>
+<li class="chapter" data-level="2.2.2" data-path="01-qc.html"><a href="#rstudio-console-%EC%84%A4%EC%A0%95"><i class="fa fa-check"></i><b>2.2.2</b> 2) [RStudio Console] 설정</a></li>
+<li class="chapter" data-level="2.2.3" data-path="01-qc.html"><a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%A0%90%EA%B2%80"><i class="fa fa-check"></i><b>2.2.3</b> 3) [RStudio Console] 품종별 QC 리포트 점검</a></li>
+<li class="chapter" data-level="2.2.4" data-path="01-qc.html"><a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%9A%94%EC%95%BD-%EA%B2%B0%EA%B3%BC-%ED%86%B5%ED%95%A9"><i class="fa fa-check"></i><b>2.2.4</b> 4) [RStudio Console] 품종별 QC 리포트 요약 결과 통합</a></li>
+<li class="chapter" data-level="2.2.5" data-path="01-qc.html"><a href="#qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EA%B2%B0%EA%B3%BC-%EB%8B%A4%EC%8B%9C%EB%B3%B4%EA%B8%B0"><i class="fa fa-check"></i><b>2.2.5</b> 5) QC 리포트 결과 다시보기</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="01-qc.html"><a href="#%EC%B5%9C%EC%A2%85-plink1-binary-%EC%84%B8%ED%8A%B8-%EB%8B%A4%EC%8B%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0"><i class="fa fa-check"></i><b>2.3</b> 최종 PLINK1 Binary 세트 다시 만들기</a></li>
+<li class="chapter" data-level="2.4" data-path="01-qc.html"><a href="#qc-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>2.4</b> 🎉 QC 과정 완료</a></li>
+<li class="chapter" data-level="2.5" data-path="01-qc.html"><a href="#%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%A0%84%EC%B2%B4-%EB%B3%B4%EA%B8%B0"><i class="fa fa-check"></i><b>2.5</b> 스크립트 전체 보기</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="01-qc.html"><a href="#gwas-%EC%A0%88%EC%B0%A8"><i class="fa fa-check"></i><b>3</b> GWAS 절차</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="01-qc.html"><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EC%B9%98-%EB%A1%9C%EB%94%A9"><i class="fa fa-check"></i><b>3.1</b> 패키지 설치 &amp; 로딩</a></li>
+<li class="chapter" data-level="3.2" data-path="01-qc.html"><a href="#%EA%B2%BD%EB%A1%9C%EC%9E%85%EB%A0%A5-%EC%A0%95%EC%9D%98"><i class="fa fa-check"></i><b>3.2</b> 경로/입력 정의</a></li>
+<li class="chapter" data-level="3.3" data-path="01-qc.html"><a href="#plink-binary-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><i class="fa fa-check"></i><b>3.3</b> PLINK binary 데이터 불러오기</a></li>
+<li class="chapter" data-level="3.4" data-path="01-qc.html"><a href="#%ED%91%9C%ED%98%84%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A1%9C%EB%94%A9-%EC%A0%95%EB%A0%AC"><i class="fa fa-check"></i><b>3.4</b> 표현형 데이터 로딩 &amp; 정렬</a></li>
+<li class="chapter" data-level="3.5" data-path="01-qc.html"><a href="#grm%EC%9C%A0%EC%A0%84%EC%B2%B4-%EA%B4%80%EA%B3%84-%ED%96%89%EB%A0%AC-%EA%B3%84%EC%82%B0-%EA%B0%84%EB%8B%A8-%EC%8B%9C%EA%B0%81%ED%99%94"><i class="fa fa-check"></i><b>3.5</b> GRM(유전체 관계 행렬) 계산 &amp; 간단 시각화</a></li>
+<li class="chapter" data-level="3.6" data-path="01-qc.html"><a href="#gwas-%EB%B6%84%EC%84%9D%EC%9A%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B0%9D%EC%B2%B4-%EB%A7%8C%EB%93%A4%EA%B8%B0"><i class="fa fa-check"></i><b>3.6</b> GWAS 분석용 데이터 객체 만들기</a></li>
+<li class="chapter" data-level="3.7" data-path="01-qc.html"><a href="#gwas-%EA%B7%80%EB%AC%B4%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-%EC%9C%A0%EC%A0%84%EB%A0%A5snp-heritability-%EA%B3%84%EC%82%B0"><i class="fa fa-check"></i><b>3.7</b> GWAS 귀무모형 적합 및 유전력(SNP heritability) 계산</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="01-qc.html"><a href="#%ED%95%A8%EC%88%98%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9C%A0%EC%A0%84%EB%A0%A5-%EA%B3%84%EC%82%B0"><i class="fa fa-check"></i><b>3.7.1</b> 함수를 이용한 유전력 계산</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="01-qc.html"><a href="#gwas-%EC%B5%9C%EC%A2%85-null-%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9-%EB%B0%8F-gwas"><i class="fa fa-check"></i><b>3.8</b> GWAS 최종 null 모형 적합 및 GWAS</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="gwas-절차.html"><a href="gwas-절차.html"><i class="fa fa-check"></i><b>3.8.1</b> Null model이란? 왜 먼저 적합하는가?</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="01-qc.html"><a href="#gwas-%EA%B2%B0%EA%B3%BC-%EC%8B%9C%EA%B0%81%ED%99%94"><i class="fa fa-check"></i><b>3.9</b> GWAS 결과 시각화</a></li>
+<li class="chapter" data-level="3.10" data-path="01-qc.html"><a href="#r%EB%A1%9C-gwas-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C"><i class="fa fa-check"></i><b>3.10</b> 🎉 R로 GWAS 과정 완료</a></li>
+<li class="chapter" data-level="3.11" data-path="gwas-절차.html"><a href="gwas-절차.html#script-full"><i class="fa fa-check"></i><b>3.11</b> 스크립트 전체 보기</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS 절차</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="pre-gwas-절차-유전자형-데이터-qc" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Pre-GWAS 절차: 유전자형 데이터 QC<a href="#pre-gwas-%EC%A0%88%EC%B0%A8-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+개요
+<div class="alert alert-info checklist" role="alert">
+<p>
+<span class="icon">📋</span> <strong>GWAS 분석을 위한 유전자형 데이터 QC 워크플로우</strong> (Windows RStudio + PLINK2 + awk)
+</p>
+<ul class="tight">
+<li>
+유전자형 데이터 변환 (PED/MAP → PGEN)
+</li>
+<li>
+REF/ALT allele 오류 변이 제거
+</li>
+<li>
+1차 필터 적용 (autosomes + X, biallelic, monomorphic 제거, 중복 제거)
+</li>
+<li>
+품종별 IID 목록 준비 및 데이터셋 분리
+</li>
+<li>
+품종별 QC 리포트 생성 (missingness, HWE, allele frequency)
+</li>
+<li>
+RStudio에서 품종별 QC 리포트 확인 및 2차 필터 값 결정
+</li>
+<li>
+품종별 2차 필터 적용 및 최종 유전자형 세트 생성 (PLINK1 binary)
+</li>
+</ul>
+</div>
+<hr />
+<div id="rstudio-terminal-전체-유전자형-데이터-qc-워크플로우" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> [RStudio Terminal] 전체 유전자형 데이터 QC 워크플로우<a href="#rstudio-terminal-%EC%A0%84%EC%B2%B4-%EC%9C%A0%EC%A0%84%EC%9E%90%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0-qc-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>아래 단계들은 모두 <strong>R 콘솔이 아니라 RStudio의 Terminal 탭</strong>에서 실행한다.</p>
+<ul>
+<li>RStudio 화면 하단의 <strong>Console</strong> 옆 <strong>Terminal</strong> 탭을 클릭</li>
+<li>Windows에서는 <code>cmd.exe</code> 또는 <code>PowerShell</code>이 자동 실행되며, Mac/Linux에서는 <code>bash/zsh</code> 셸이 열림</li>
+<li>각 단계의 코드 블록 우측 상단의 📋복사 버튼을 눌러 복사한 뒤, <strong>Terminal</strong> 탭의 <code>&gt;</code> 옆에 마우스 오른쪽 버튼을 클릭 한 후 <kbd style="background:#e5e7eb; color:#111; border-radius:4px; padding:2px 6px;">Paste</kbd>를 클릭하고 <kbd>Enter</kbd>를 누르면 실행</li>
+<li>실행 결과물은 각 단계의 <strong>“생성되는 출력 파일”</strong> 설명에 따라 확인</li>
+</ul>
+<hr />
+<div id="결과-저장-디렉터리-준비" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> 0) 결과 저장 디렉터리 준비<a href="#%EA%B2%B0%EA%B3%BC-%EC%A0%80%EC%9E%A5-%EB%94%94%EB%A0%89%ED%84%B0%EB%A6%AC-%EC%A4%80%EB%B9%84" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>작업 전 단계별 결과를 저장할 디렉토리 생성</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>0) 출력 폴더 생성 (전체 데이터셋)</strong>
+</p>
+<pre><code class="language-bash">mkdir 00_import 01_autosomesX 02_reports 03_qc 04_split</code></pre>
+<p>
+<em>생성되는 폴더:</em><br>
+<code>00_import/</code>, <code>01_autosomesX/</code>, <code>02_reports/</code>, <code>03_qc/</code>, <code>04_split/</code>
+</p>
+</div>
+<hr />
+</div>
+<div id="원본-pedmap을-plink2-pgen-세트로-변환" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> 1) 원본 PED/MAP을 PLINK2 PGEN 세트로 변환<a href="#%EC%9B%90%EB%B3%B8-pedmap%EC%9D%84-plink2-pgen-%EC%84%B8%ED%8A%B8%EB%A1%9C-%EB%B3%80%ED%99%98" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PLINK1 형식(PED/MAP)을 PLINK2 형식(PGEN/PVAR/PSAM)으로 변환</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>1) PED/MAP → PGEN 변환 (전체 데이터셋)</strong>
+</p>
+<pre><code class="language-bash">plink2 --cow --pedmap NIAS_ibv3_296ea --sort-vars --make-pgen --out 00_import/NIAS_ibv3_296ea</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>00_import/NIAS_ibv3_296ea.[pgen|pvar|psam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --cow
+  --make-pgen
+  --out 00_import\NIAS_ibv3_296ea
+  --pedmap NIAS_ibv3_296ea
+  --sort-vars
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:23 2025
+
+Random number seed: 1755676403
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+--pedmap: 53218 variants in .map file.
+--pedmap: 296 samples present, genotypes extracted to
+00_import\NIAS_ibv3_296ea-temporary.bed.smaj .
+Transposing sample-major .bed to 00_import\NIAS_ibv3_296ea-temporary.pgen , and
+setting major alleles to provisional-REF.
+Transpose complete.
+--pedmap: 00_import\NIAS_ibv3_296ea-temporary.pgen +
+00_import\NIAS_ibv3_296ea-temporary.pvar +
+00_import\NIAS_ibv3_296ea-temporary.psam written. .bed.smaj and .fam.tmp
+temporary files deleted.
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import\NIAS_ibv3_296ea-temporary.psam.
+53218 variants loaded from 00_import\NIAS_ibv3_296ea-temporary.pvar.
+Note: No phenotype data present.
+Writing 00_import\NIAS_ibv3_296ea.pvar ... done.
+Writing 00_import\NIAS_ibv3_296ea.psam ... done.
+Writing 00_import\NIAS_ibv3_296ea.pgen ... done.
+
+End time: Wed Aug 20 16:53:24 2025
+    </code></pre>
+</details>
+<hr />
+</div>
+<div id="refalt-.-오류-변이-제거" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> 2) REF/ALT <code>.</code> 오류 변이 제거<a href="#refalt-.-%EC%98%A4%EB%A5%98-%EB%B3%80%EC%9D%B4-%EC%A0%9C%EA%B1%B0" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>REF 및 ALT allele이 <code>.</code>으로 지정된 변이를 제거한 데이터셋 생성</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>2-1) REF/ALT가 모두 ‘.’ 인 변이 전체 행 추출 (awk)</strong>
+</p>
+<pre><code class="language-bash">awk -F '\t' "NR&gt;1 &amp;&amp; $4==\".\" &amp;&amp; $5==\".\"" 00_import/NIAS_ibv3_296ea.pvar &gt; bad_refalt_ids_both_strict.txt</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>bad_refalt_ids_both_strict.txt</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 bad_refalt_ids_both_strict.txt — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+0   0   BTA-91057-no-rs   .   .   0
+2   104844698   ARS-BFGL-NGS-40237   .   .   117.9899
+3   47820211    BTB-00462798         .   .   70.45705
+3   86433347    ARS-BFGL-NGS-11769   .   .   109.0945
+3   120031577   BTB-01714430         .   .   126.98
+6   108805685   Hapmap39313-BTA-121776  .   .   112.8388
+13  21528917    ARS-BFGL-NGS-59624   .   .   1.695824
+15  49076839    ARS-BFGL-BAC-20572   .   .   47.92302
+15  57434389    ARS-BFGL-BAC-19997   .   .   54.28989
+19  27444684    ARS-BFGL-NGS-38067   .   .   48.69351
+23  39274007    BovineHD2300011347   .   .   0
+X   98185142    ARS-BFGL-NGS-2544    .   .   99.77262
+Y   0           BovineHD3100000048   .   .   0
+Y   0           BovineHD3100000210   .   .   0
+Y   0           BovineHD3100000515   .   .   0
+Y   0           BovineHD3100000517   .   .   0
+Y   0           BovineHD3100001404   .   .   0
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>2-2) 문제 변이의 ID만 추출 (awk)</strong>
+</p>
+<pre><code class="language-bash">awk -F '\t' "NR&gt;1 &amp;&amp; $4==\".\" &amp;&amp; $5==\".\" {print $3}" 00_import/NIAS_ibv3_296ea.pvar &gt; bad_refalt_ids.txt</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>bad_refalt_ids.txt</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 bad_refalt_ids.txt — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+BTA-91057-no-rs
+ARS-BFGL-NGS-40237
+BTB-00462798
+ARS-BFGL-NGS-11769
+BTB-01714430
+Hapmap39313-BTA-121776
+ARS-BFGL-NGS-59624
+ARS-BFGL-BAC-20572
+ARS-BFGL-BAC-19997
+ARS-BFGL-NGS-38067
+BovineHD2300011347
+ARS-BFGL-NGS-2544
+BovineHD3100000048
+BovineHD3100000210
+BovineHD3100000515
+BovineHD3100000517
+BovineHD3100001404
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>2-3) 문제 변이를 제외한 pfile 생성 (전체 데이터셋)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 00_import/NIAS_ibv3_296ea --exclude bad_refalt_ids.txt --make-pgen --out 00_import/NIAS_ibv3_296ea.clean</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>00_import/NIAS_ibv3_296ea.clean.[pgen|pvar|psam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --exclude bad_refalt_ids.txt
+  --make-pgen
+  --out 00_import/NIAS_ibv3_296ea.clean
+  --pfile 00_import/NIAS_ibv3_296ea
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:24 2025
+
+Random number seed: 1755676404
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.psam.
+chrSet header line: 29 autosome pairs.
+53218 variants loaded from 00_import/NIAS_ibv3_296ea.pvar.
+Note: No phenotype data present.
+--exclude: 53201 variants remaining.
+53201 variants remaining after main filters.
+Writing 00_import/NIAS_ibv3_296ea.clean.psam ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pvar ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025
+  </code></pre>
+</details>
+<hr />
+</div>
+<div id="차-필터-적용" class="section level3 hasAnchor" number="2.1.4">
+<h3><span class="header-section-number">2.1.4</span> 3) 1차 필터 적용<a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Autosomes + X 염색체만 남기고, 다대립성/단일형/중복 변이 제거</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">💻</span> <strong>3) Autosomes + X, biallelic only, no monomorphic or duplicate variants (전체 데이터셋)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 00_import/NIAS_ibv3_296ea.clean --chr 1-29,X --max-alleles 2 --mac 1 --rm-dup force-first --sort-vars --make-pgen --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>01_autosomesX/NIAS_ibv3_296ea.autosomesX.[pgen|pvar|psam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --chr 1-29,X
+  --mac 1
+  --make-pgen
+  --max-alleles 2
+  --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+  --pfile 00_import/NIAS_ibv3_296ea.clean
+  --rm-dup force-first
+  --sort-vars
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:25 2025
+
+Random number seed: 1755676405
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.clean.psam.
+chrSet header line: 29 autosome pairs.
+52424 out of 53201 variants loaded from 00_import/NIAS_ibv3_296ea.clean.pvar.
+Note: No phenotype data present.
+Note: Skipping --rm-dup since no duplicate IDs are present.
+Calculating allele frequencies... done.
+4848 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+47576 variants remaining after main filters.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025
+  </code></pre>
+</details>
+<hr />
+</div>
+<div id="품종별-iid-목록-준비" class="section level3 hasAnchor" number="2.1.5">
+<h3><span class="header-section-number">2.1.5</span> 4) 품종별 IID 목록 준비<a href="#%ED%92%88%EC%A2%85%EB%B3%84-iid-%EB%AA%A9%EB%A1%9D-%EC%A4%80%EB%B9%84" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Holstein / Jersey 개체 ID 파일을 FID IID 목록으로 매칭(PSAM 기반)</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐄</span> <strong>4-1) Holstein (홀스타인) IID 변환</strong>
+</p>
+<pre><code class="language-bash">awk "NR==FNR {iid[$1]=1; next} FNR&gt;1 &amp;&amp; ($2 in iid) {print $1, $2}" holstein.txt 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam &gt; holstein_ids.txt</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>holstein_ids.txt</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 holstein_ids.txt — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+1 3530
+2 3528
+3 3527
+4 3195
+5 3994
+...
+195 4354
+196 4353
+197 4352
+198 4163
+199 4351
+200 4279
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐂</span> <strong>4-2) Jersey (저지) IID 변환</strong>
+</p>
+<pre><code class="language-bash">awk "NR==FNR {iid[$1]=1; next} FNR&gt;1 &amp;&amp; ($2 in iid) {print $1, $2}" jersey.txt 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam &gt; jersey_ids.txt</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>jersey_ids.txt</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 jersey_ids.txt — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+201 4273
+202 4284
+203 4289
+204 4230
+205 4292
+...
+292 4318
+293 4317
+294 4096
+295 4179
+296 4316
+  </code></pre>
+</details>
+<hr />
+</div>
+<div id="품종별-서브셋-pfile-생성" class="section level3 hasAnchor" number="2.1.6">
+<h3><span class="header-section-number">2.1.6</span> 5) 품종별 서브셋 pfile 생성<a href="#%ED%92%88%EC%A2%85%EB%B3%84-%EC%84%9C%EB%B8%8C%EC%85%8B-pfile-%EC%83%9D%EC%84%B1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>품종별 IID 목록을 기반으로 데이터셋 분리</p>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐄</span> <strong>5-1) Holstein (홀스타인) 서브셋</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep holstein_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.holstein</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>04_split/NIAS_ibv3_296ea.holstein.[pgen|pvar|psam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --keep holstein_ids.txt
+  --make-pgen
+  --out 04_split/NIAS_ibv3_296ea.holstein
+  --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:26 2025
+
+Random number seed: 1755676406
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar.
+Note: No phenotype data present.
+--keep: 200 samples remaining.
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Writing 04_split/NIAS_ibv3_296ea.holstein.psam ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pvar ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pgen ... done.
+
+End time: Wed Aug 20 16:53:26 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐂</span> <strong>5-2) Jersey (저지) 서브셋</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep jersey_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.jersey</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>04_split/NIAS_ibv3_296ea.jersey.[pgen|pvar|psam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --keep jersey_ids.txt
+  --make-pgen
+  --out 04_split/NIAS_ibv3_296ea.jersey
+  --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:26 2025
+
+Random number seed: 1755676406
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar.
+Note: No phenotype data present.
+--keep: 96 samples remaining.
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Writing 04_split/NIAS_ibv3_296ea.jersey.psam ... done.
+Writing 04_split/NIAS_ibv3_296ea.jersey.pvar ... done.
+Writing 04_split/NIAS_ibv3_296ea.jersey.pgen ... done.
+
+End time: Wed Aug 20 16:53:26 2025
+  </code></pre>
+</details>
+<hr />
+</div>
+<div id="차-필터-적용-및-최종-데이터셋-생성" class="section level3 hasAnchor" number="2.1.7">
+<h3><span class="header-section-number">2.1.7</span> 6) 2차 필터 적용 및 최종 데이터셋 생성<a href="#%EC%B0%A8-%ED%95%84%ED%84%B0-%EC%A0%81%EC%9A%A9-%EB%B0%8F-%EC%B5%9C%EC%A2%85-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B-%EC%83%9D%EC%84%B1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>통용되는 QC 기준값을 적용하여 최종 PLINK1 binary 파일 생성</p>
+<ul>
+<li>mind = 0.05, geno = 0.05, hwe = 1e-6, maf = 0.05</li>
+</ul>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐄</span> <strong>6-1) Holstein (홀스타인)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --maf 0.05 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>03_qc/NIAS_ibv3_296ea.holstein.[bed|bim|fam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --maf 0.05
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.holstein
+  --pfile 04_split/NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Mon Aug 25 19:11:34 2025
+
+Random number seed: 1756116694
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split/NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+--geno: 193 variants removed due to missing genotype data.
+--hwe: 37 variants removed due to Hardy-Weinberg exact test (founders only).
+5732 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+41614 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bed ... done.
+
+End time: Mon Aug 25 19:11:34 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐂</span> <strong>6-2) Jersey (저지)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --maf 0.05 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>03_qc/NIAS_ibv3_296ea.jersey.[bed|bim|fam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --maf 0.05
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.jersey
+  --pfile 04_split/NIAS_ibv3_296ea.jersey
+
+Hostname: RDA
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Mon Aug 25 19:11:40 2025
+
+Random number seed: 1756116700
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split/NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Calculating allele frequencies... done.
+--geno: 154 variants removed due to missing genotype data.
+--hwe: 18 variants removed due to Hardy-Weinberg exact test (founders only).
+12329 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+35075 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bed ... done.
+
+End time: Mon Aug 25 19:11:40 2025
+  </code></pre>
+</details>
+<!-- ===== 최종 산출물 한눈에 보기 ===== -->
+<h4>
+📁 최종 PLINK1 Binary 세트 한눈에 보기
+</h4>
+<dl class="qc-glance">
+<dt>
+<code>.bed</code> — Binary genotype file
+</dt>
+<dd>
+각 SNP × 개체의 유전자형 정보를 이진(binary) 형태로 저장 (압축 효율적).
+</dd>
+<dt>
+<code>.bim</code> — Variant information
+</dt>
+<dd>
+각 변이의 염색체, SNP ID, 위치, 대립유전자(ref/alt) 정보를 포함.
+</dd>
+<dt>
+<code>.fam</code> — Sample information
+</dt>
+<dd>
+각 개체의 FID/IID, 부·모 ID, 성별, phenotype(형질) 정보를 저장.
+</dd>
+</dl>
+<hr />
+</div>
+</div>
+<div id="품종별-qc-리포트-활용-2차-필터-기준값-정하기" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> 품종별 QC 리포트 활용 2차 필터 기준값 정하기<a href="#%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%ED%99%9C%EC%9A%A9-2%EC%B0%A8-%ED%95%84%ED%84%B0-%EA%B8%B0%EC%A4%80%EA%B0%92-%EC%A0%95%ED%95%98%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="alert alert-info checklist" role="alert">
+<p>
+<span class="icon">ℹ️</span> <strong>품종별 PLINK2 QC 리포트 만들기 및 리뷰</strong>:
+</p>
+<ul class="tight">
+<li>
+PLINK2 QC 보고서(<code>.smiss</code>, <code>.vmiss</code>, <code>.hardy</code>, <code>.afreq</code>) 생성
+</li>
+<li>
+RStudio로 QC 보고서 파일 불러오기 및 미리보기
+</li>
+<li>
+샘플별/SNP별 유전자형 결측률(missingness), 하디–바인베르크 평형(HWE), 소수 대립유전자 빈도(MAF)를 품종별로 시각화
+</li>
+<li>
+기준미달 샘플 및 변이 정보 CSV 작성 및 기준 미달 SNP에 대한 통합 요약 생성
+</li>
+</ul>
+</div>
+<div id="rstudio-terminal-품종별-qc-리포트-출력" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> 1) [RStudio Terminal] 품종별 QC 리포트 출력<a href="#rstudio-terminal-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%B6%9C%EB%A0%A5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐄</span> <strong>Holstein (홀스타인)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --missing --hardy --freq --out 02_reports/holstein/NIAS_ibv3_296ea.holstein.autosomesX</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>02_reports/holstein/NIAS_ibv3_296ea.holstein.autosomesX.[smiss|vmiss|hardy|afreq]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --freq
+  --hardy
+  --missing
+  --out 02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX
+  --pfile 04_split\NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:27 2025
+
+Random number seed: 1755676407
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split\NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split\NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.afreq .
+--missing: Sample missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.smiss .
+--missing: Variant missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.vmiss .
+--hardy: Skipping 887 haploid variants.
+--hardy: Autosomal Hardy-Weinberg report (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.hardy .
+
+End time: Wed Aug 20 16:53:27 2025
+  </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐂</span> <strong>Jersey (저지)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --missing --hardy --freq --out 02_reports/jersey/NIAS_ibv3_296ea.jersey.autosomesX</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>02_reports/jersey/NIAS_ibv3_296ea.jersey.autosomesX.[smiss|vmiss|hardy|afreq]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --freq
+  --hardy
+  --missing
+  --out 02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX
+  --pfile 04_split\NIAS_ibv3_296ea.jersey
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:27 2025
+
+Random number seed: 1755676407
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split\NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split\NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.afreq .
+--missing: Sample missing data report written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.smiss .
+--missing: Variant missing data report written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.vmiss .
+--hardy: Skipping 887 haploid variants.
+--hardy: Autosomal Hardy-Weinberg report (founders only) written to
+02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX.hardy .
+
+End time: Wed Aug 20 16:53:28 2025
+  </code></pre>
+</details>
+<!-- ===== 인자 설명 (간단; 파일 형식 재설명 없음) ===== -->
+<section id="plink2-args-compact" class="alert alert-info">
+<h4>
+<span class="icon">⚙️</span> 사용된 PLINK2 인자(arguments)
+</h4>
+<dl class="dl-horizontal arglist">
+<dt>
+<code>--pfile PREFIX</code>
+</dt>
+<dd>
+PGEN 데이터셋 불러오기 (<code>PREFIX.pgen/pvar/psam</code>).
+</dd>
+<dt>
+<code>--missing</code>
+</dt>
+<dd>
+유전자형 결측 비율 계산 (<code>.smiss</code> 및 <code>.vmiss</code> 파일 생성).
+</dd>
+<dt>
+<code>--hardy</code>
+</dt>
+<dd>
+하디–바인베르크 exact test 검정 실행 (상염색체 → <code>.hardy</code>, X 염색체 → <code>.hardy.x</code>).
+</dd>
+<dt>
+<code>--freq</code>
+</dt>
+<dd>
+대립유전자 빈도 계산 (<code>.afreq</code> 파일 생성).
+</dd>
+<dt>
+<code>--out PREFIX</code>
+</dt>
+<dd>
+출력 경로/접두어 지정 (디렉터리는 미리 존재해야 함).
+</dd>
+</dl>
+</section>
+<!-- ===== QC 리포트 한눈에 보기 ===== -->
+<h4>
+📁 PLINK2 QC 리포트 한눈에 보기
+</h4>
+<dl class="qc-glance">
+<dt>
+<code>.smiss</code> — 샘플 결측률
+</dt>
+<dd>
+개체별 유전자형 미호출 비율 (<code>F_MISS</code> by sample).
+</dd>
+<dt>
+<code>.vmiss</code> — 변이 결측률
+</dt>
+<dd>
+변이별 유전자형 미호출 비율 (전체 샘플 기준, <code>F_MISS</code> by SNP).
+</dd>
+<dt>
+<code>.hardy</code> / <code>.hardy.x</code> — 하디–바인베르크 평형 검정
+</dt>
+<dd>
+Hardy–Weinberg exact test 검정 P값 (상염색체 / X 염색체).
+</dd>
+<dt>
+<code>.afreq</code> — 대립유전자 빈도
+</dt>
+<dd>
+변이별 대체(ALT) 대립유전자 빈도 (<code>.pvar</code> 파일의 대립유전자 사용; ALT는 소수 대립유전자(minor allele)가 아닐 수 있어서 빈도가 0.5 이상일 수도 있음).
+</dd>
+</dl>
+</div>
+<div id="rstudio-console-설정" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> 2) [RStudio Console] 설정<a href="#rstudio-console-%EC%84%A4%EC%A0%95" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-1" tabindex="-1"></a><span class="co"># 품종별 기본 QC 보고서</span></span>
+<span id="cb3-2"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-2" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb3-3"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-3" tabindex="-1"></a><span class="co"># ---- 필요한 패키지 설치 및 불러오기----</span></span>
+<span id="cb3-4"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-4" tabindex="-1"></a>need <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;readr&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb3-5"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-5" tabindex="-1"></a>to_install <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(need, <span class="fu">rownames</span>(<span class="fu">installed.packages</span>()))</span>
+<span id="cb3-6"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-6" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(to_install)) <span class="fu">install.packages</span>(to_install, <span class="at">repos =</span> <span class="st">&quot;https://cloud.r-project.org&quot;</span>)</span>
+<span id="cb3-7"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-7" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">lapply</span>(need, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-8"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-9" tabindex="-1"></a><span class="co"># ---- 보조 함수 &amp; 기준값(=필터링 기준) ----</span></span>
+<span id="cb3-10"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-10" tabindex="-1"></a>neglog10 <span class="ot">&lt;-</span> <span class="cf">function</span>(p) <span class="sc">-</span><span class="fu">log10</span>(<span class="fu">pmax</span>(p, .Machine<span class="sc">$</span>double.xmin))  <span class="co"># -Inf 방지</span></span>
+<span id="cb3-11"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-11" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-12" tabindex="-1"></a><span class="co"># 이대립성(biallelic) 데이터의 MAF: ALT_FREQS 사용</span></span>
+<span id="cb3-13"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-13" tabindex="-1"></a><span class="co"># plink2 --freq의 ALT는 기본적으로 비참조 대립유전자(.pvar 파일에서 정의된 ALT)이며, 소수 대립유전자(minor allele)가 아닐 수도 있음. </span></span>
+<span id="cb3-14"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-14" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-15" tabindex="-1"></a>maf_from_afreq <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb3-16"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-16" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="st">&quot;ALT_FREQS&quot;</span> <span class="sc">%in%</span> <span class="fu">names</span>(df))</span>
+<span id="cb3-17"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-17" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb3-18"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-18" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb3-19"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-19" tabindex="-1"></a>      <span class="co"># 숫자형으로 변환 후 [0,1] 범위로 보정</span></span>
+<span id="cb3-20"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-20" tabindex="-1"></a>      <span class="at">ALT_FREQS =</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(ALT_FREQS)),</span>
+<span id="cb3-21"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-21" tabindex="-1"></a>      <span class="at">ALT_FREQS =</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(ALT_FREQS, <span class="dv">0</span>), <span class="dv">1</span>),</span>
+<span id="cb3-22"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-22" tabindex="-1"></a>      <span class="at">MAF_calc  =</span> <span class="fu">pmin</span>(ALT_FREQS, <span class="dv">1</span> <span class="sc">-</span> ALT_FREQS)</span>
+<span id="cb3-23"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-23" tabindex="-1"></a>    )</span>
+<span id="cb3-24"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-24" tabindex="-1"></a>}</span>
+<span id="cb3-25"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-25" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-26" tabindex="-1"></a><span class="co"># ---- 기준값 (필요 시 조정) ----</span></span>
+<span id="cb3-27"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-27" tabindex="-1"></a>mind_thr <span class="ot">&lt;-</span> <span class="fl">0.05</span>  <span class="co"># 개체 단위 유전자형 결측률</span></span>
+<span id="cb3-28"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-28" tabindex="-1"></a>geno_thr <span class="ot">&lt;-</span> <span class="fl">0.05</span>  <span class="co"># 변이 단위 유전자형 결측률</span></span>
+<span id="cb3-29"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-29" tabindex="-1"></a>hwe_thr  <span class="ot">&lt;-</span> <span class="fl">1e-6</span>  <span class="co"># 하디–바인베르크(HWE) p-값</span></span>
+<span id="cb3-30"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-30" tabindex="-1"></a>maf_thr  <span class="ot">&lt;-</span> <span class="fl">0.05</span>  <span class="co"># 소수 대립유전자 빈도(MAF)</span></span>
+<span id="cb3-31"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-31" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-32" tabindex="-1"></a><span class="co"># ---- 기본 경로 &amp; 품종 구분(서브디렉토리 설정용) ----</span></span>
+<span id="cb3-33"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-33" tabindex="-1"></a>base_dir <span class="ot">&lt;-</span> <span class="st">&quot;02_reports&quot;</span></span>
+<span id="cb3-34"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb3-34" tabindex="-1"></a>breeds   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;holstein&quot;</span>,<span class="st">&quot;jersey&quot;</span>)</span></code></pre></div>
+<details class="params-details" id="run-params">
+<summary title="펼치려면 클릭">
+<span class="chev" aria-hidden="true"></span>
+🔧 <strong>실행 파라미터</strong>
+<span class="click-hint">— 👆클릭하여 보기</span>
+</summary>
+<table class="table table-striped params-table">
+<tbody>
+<tr>
+<td>
+기본 디렉터리 (base_dir)
+</td>
+<td>
+<code>02_reports</code>
+</td>
+</tr>
+<tr>
+<td>
+품종 목록 (breeds)
+</td>
+<td>
+<code>holstein, jersey</code>
+</td>
+</tr>
+<tr>
+<td>
+개체 단위 결측률 기준 (mind_thr)
+</td>
+<td>
+<code>0.05</code>
+</td>
+</tr>
+<tr>
+<td>
+변이 단위 결측률 기준 (geno_thr)
+</td>
+<td>
+<code>0.05</code>
+</td>
+</tr>
+<tr>
+<td>
+HWE p-값 기준 (hwe_thr)
+</td>
+<td>
+<code>1e-06</code>
+</td>
+</tr>
+<tr>
+<td>
+MAF 기준 (maf_thr)
+</td>
+<td>
+<code>0.05</code>
+</td>
+</tr>
+</tbody>
+</table>
+</details>
+</div>
+<div id="rstudio-console-품종별-qc-리포트-점검" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> 3) [RStudio Console] 품종별 QC 리포트 점검<a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%A0%90%EA%B2%80" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-1" tabindex="-1"></a><span class="co"># 품종별 요약 행을 저장할 리스트</span></span>
+<span id="cb4-2"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-2" tabindex="-1"></a>summary_rows <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb4-3"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-4" tabindex="-1"></a><span class="co"># ---- 품종별 실행 ----</span></span>
+<span id="cb4-5"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-5" tabindex="-1"></a><span class="co"># 전체 품종(breeds 벡터: &quot;holstein&quot;, &quot;jersey&quot;)을 순차적으로 처리한다. </span></span>
+<span id="cb4-6"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-6" tabindex="-1"></a><span class="co">#   - breeds[1] = &quot;holstein&quot;</span></span>
+<span id="cb4-7"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-7" tabindex="-1"></a><span class="co">#   - breeds[2] = &quot;jersey&quot;</span></span>
+<span id="cb4-8"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-8" tabindex="-1"></a><span class="co"># 아래 for 루프에서 자동으로 두 품종이 반복 실행된다. </span></span>
+<span id="cb4-9"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-10" tabindex="-1"></a><span class="co"># ---- 모든 품종 자동 실행 ----</span></span>
+<span id="cb4-11"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-11" tabindex="-1"></a><span class="cf">for</span> (breed <span class="cf">in</span> breeds) {</span>
+<span id="cb4-12"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-12" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;=== 품종 처리 중: &quot;</span>, breed, <span class="st">&quot; ===&quot;</span>)</span>
+<span id="cb4-13"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-14" tabindex="-1"></a>  prefix <span class="ot">&lt;-</span> <span class="fu">file.path</span>(base_dir, breed, <span class="fu">sprintf</span>(<span class="st">&quot;NIAS_ibv3_296ea.%s.autosomesX&quot;</span>, breed))</span>
+<span id="cb4-15"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-15" tabindex="-1"></a>  f_smiss <span class="ot">&lt;-</span> <span class="fu">paste0</span>(prefix, <span class="st">&quot;.smiss&quot;</span>)</span>
+<span id="cb4-16"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-16" tabindex="-1"></a>  f_vmiss <span class="ot">&lt;-</span> <span class="fu">paste0</span>(prefix, <span class="st">&quot;.vmiss&quot;</span>)</span>
+<span id="cb4-17"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-17" tabindex="-1"></a>  f_hardy <span class="ot">&lt;-</span> <span class="fu">paste0</span>(prefix, <span class="st">&quot;.hardy&quot;</span>)</span>
+<span id="cb4-18"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-18" tabindex="-1"></a>  f_afreq <span class="ot">&lt;-</span> <span class="fu">paste0</span>(prefix, <span class="st">&quot;.afreq&quot;</span>)</span>
+<span id="cb4-19"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-19" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-20" tabindex="-1"></a>  out_dir  <span class="ot">&lt;-</span> <span class="fu">file.path</span>(base_dir, breed)</span>
+<span id="cb4-21"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-21" tabindex="-1"></a>  figs_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(out_dir, <span class="st">&quot;figs&quot;</span>)</span>
+<span id="cb4-22"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-22" tabindex="-1"></a>  <span class="fu">dir.create</span>(figs_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-23"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-23" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-24" tabindex="-1"></a>  <span class="co"># ---- 데이터 불러오기 ----</span></span>
+<span id="cb4-25"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-25" tabindex="-1"></a>  smiss <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_tsv</span>(f_smiss, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-26"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-26" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">FID =</span> <span class="st">`</span><span class="at">#FID</span><span class="st">`</span>)  <span class="co"># &quot;#FID&quot; -&gt; FID</span></span>
+<span id="cb4-27"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-27" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-28" tabindex="-1"></a>  vmiss <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_tsv</span>(f_vmiss, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-29"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-29" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">CHROM =</span> <span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span>)</span>
+<span id="cb4-30"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-30" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-31" tabindex="-1"></a>  hardy <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_tsv</span>(f_hardy, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-32"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-32" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">CHROM =</span> <span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-33"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-33" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">minuslog10P =</span> <span class="fu">neglog10</span>(P))</span>
+<span id="cb4-34"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-34" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-35" tabindex="-1"></a>  afreq <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_tsv</span>(f_afreq, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-36"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-36" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">CHROM =</span> <span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-37"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-37" tabindex="-1"></a>    <span class="fu">maf_from_afreq</span>()</span>
+<span id="cb4-38"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-38" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-39" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;smiss 데이터 앞부분:&quot;</span>); <span class="fu">print</span>(utils<span class="sc">::</span><span class="fu">head</span>(smiss))</span>
+<span id="cb4-40"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-40" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;vmiss 데이터 앞부분:&quot;</span>); <span class="fu">print</span>(utils<span class="sc">::</span><span class="fu">head</span>(vmiss))</span>
+<span id="cb4-41"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-41" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;hardy 데이터 앞부분:&quot;</span>); <span class="fu">print</span>(utils<span class="sc">::</span><span class="fu">head</span>(hardy))</span>
+<span id="cb4-42"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-42" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;afreq 데이터 앞부분:&quot;</span>); <span class="fu">print</span>(utils<span class="sc">::</span><span class="fu">head</span>(afreq))</span>
+<span id="cb4-43"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-43" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-44" tabindex="-1"></a>  <span class="co"># ---- 그래프 ----</span></span>
+<span id="cb4-45"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-45" tabindex="-1"></a>  qc_theme <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb4-46"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-46" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb4-47"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-47" tabindex="-1"></a>      <span class="at">axis.title.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb4-48"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-48" tabindex="-1"></a>      <span class="at">axis.title.y =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb4-49"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-49" tabindex="-1"></a>      <span class="at">axis.text.x  =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb4-50"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-50" tabindex="-1"></a>      <span class="at">axis.text.y  =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb4-51"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-51" tabindex="-1"></a>      <span class="at">plot.title   =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb4-52"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-52" tabindex="-1"></a>    )</span>
+<span id="cb4-53"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-53" tabindex="-1"></a></span>
+<span id="cb4-54"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-54" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(smiss, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> F_MISS)) <span class="sc">+</span></span>
+<span id="cb4-55"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-55" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">50</span>) <span class="sc">+</span></span>
+<span id="cb4-56"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-56" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mind_thr) <span class="sc">+</span></span>
+<span id="cb4-57"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-57" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste0</span>(breed, <span class="st">&quot;: 개체 단위 결측률 (F_MISS)&quot;</span>),</span>
+<span id="cb4-58"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-58" tabindex="-1"></a>                  <span class="at">x =</span> <span class="st">&quot;F_MISS&quot;</span>, <span class="at">y =</span> <span class="st">&quot;개수&quot;</span>) <span class="sc">+</span> qc_theme</span>
+<span id="cb4-59"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-59" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-60" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(vmiss, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> F_MISS)) <span class="sc">+</span></span>
+<span id="cb4-61"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-61" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">60</span>) <span class="sc">+</span></span>
+<span id="cb4-62"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-62" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_vline</span>(<span class="at">xintercept =</span> geno_thr) <span class="sc">+</span></span>
+<span id="cb4-63"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-63" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste0</span>(breed, <span class="st">&quot;: 변이 단위 결측률 (F_MISS)&quot;</span>),</span>
+<span id="cb4-64"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-64" tabindex="-1"></a>                  <span class="at">x =</span> <span class="st">&quot;F_MISS&quot;</span>, <span class="at">y =</span> <span class="st">&quot;개수&quot;</span>) <span class="sc">+</span> qc_theme</span>
+<span id="cb4-65"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-65" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-66" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(hardy, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> minuslog10P)) <span class="sc">+</span></span>
+<span id="cb4-67"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-67" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">60</span>) <span class="sc">+</span></span>
+<span id="cb4-68"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-68" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="fu">log10</span>(hwe_thr)) <span class="sc">+</span></span>
+<span id="cb4-69"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-69" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste0</span>(breed, <span class="st">&quot;: 하디-바인베르크 검정 (-log10P)&quot;</span>),</span>
+<span id="cb4-70"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-70" tabindex="-1"></a>                  <span class="at">x =</span> <span class="st">&quot;-log10(P)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;개수&quot;</span>) <span class="sc">+</span> qc_theme</span>
+<span id="cb4-71"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-71" tabindex="-1"></a></span>
+<span id="cb4-72"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-72" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(afreq, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> MAF_calc)) <span class="sc">+</span></span>
+<span id="cb4-73"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-73" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">60</span>) <span class="sc">+</span></span>
+<span id="cb4-74"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-74" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_vline</span>(<span class="at">xintercept =</span> maf_thr) <span class="sc">+</span></span>
+<span id="cb4-75"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-75" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste0</span>(breed, <span class="st">&quot;: MAF 분포&quot;</span>),</span>
+<span id="cb4-76"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-76" tabindex="-1"></a>                  <span class="at">x =</span> <span class="st">&quot;MAF&quot;</span>, <span class="at">y =</span> <span class="st">&quot;개수&quot;</span>) <span class="sc">+</span> qc_theme</span>
+<span id="cb4-77"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-77" tabindex="-1"></a></span>
+<span id="cb4-78"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-78" tabindex="-1"></a>  <span class="fu">print</span>(p1); <span class="fu">print</span>(p2); <span class="fu">print</span>(p3); <span class="fu">print</span>(p4)</span>
+<span id="cb4-79"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-79" tabindex="-1"></a></span>
+<span id="cb4-80"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-80" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(<span class="fu">file.path</span>(figs_dir, <span class="st">&quot;smiss_hist.png&quot;</span>), p1, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">height =</span> <span class="dv">3</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb4-81"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-81" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(<span class="fu">file.path</span>(figs_dir, <span class="st">&quot;vmiss_hist.png&quot;</span>), p2, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">height =</span> <span class="dv">3</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb4-82"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-82" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(<span class="fu">file.path</span>(figs_dir, <span class="st">&quot;hardy_hist.png&quot;</span>), p3, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">height =</span> <span class="dv">3</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb4-83"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-83" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(<span class="fu">file.path</span>(figs_dir, <span class="st">&quot;maf_hist.png&quot;</span>),   p4, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">height =</span> <span class="dv">3</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb4-84"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-84" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-85" tabindex="-1"></a>  <span class="co"># ---- 이상치(outlier) 테이블 ----</span></span>
+<span id="cb4-86"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-86" tabindex="-1"></a>  <span class="fu">assign</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_samples_&quot;</span>, breed),</span>
+<span id="cb4-87"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-87" tabindex="-1"></a>         smiss <span class="sc">|&gt;</span></span>
+<span id="cb4-88"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-88" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">filter</span>(F_MISS <span class="sc">&gt;</span> mind_thr) <span class="sc">|&gt;</span></span>
+<span id="cb4-89"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-89" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">select</span>(FID, IID, F_MISS),</span>
+<span id="cb4-90"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-90" tabindex="-1"></a>         <span class="at">envir =</span> .GlobalEnv)</span>
+<span id="cb4-91"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-91" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-92" tabindex="-1"></a>  <span class="fu">assign</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_miss_&quot;</span>, breed),</span>
+<span id="cb4-93"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-93" tabindex="-1"></a>         vmiss <span class="sc">|&gt;</span></span>
+<span id="cb4-94"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-94" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">filter</span>(F_MISS <span class="sc">&gt;</span> geno_thr) <span class="sc">|&gt;</span></span>
+<span id="cb4-95"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-95" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">select</span>(CHROM, ID, F_MISS),</span>
+<span id="cb4-96"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-96" tabindex="-1"></a>         <span class="at">envir =</span> .GlobalEnv)</span>
+<span id="cb4-97"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-97" tabindex="-1"></a></span>
+<span id="cb4-98"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-98" tabindex="-1"></a>  <span class="fu">assign</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_hwe_&quot;</span>, breed),</span>
+<span id="cb4-99"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-99" tabindex="-1"></a>         hardy <span class="sc">|&gt;</span></span>
+<span id="cb4-100"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-100" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">filter</span>(P <span class="sc">&lt;</span> hwe_thr) <span class="sc">|&gt;</span></span>
+<span id="cb4-101"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-101" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">select</span>(CHROM, ID, P),</span>
+<span id="cb4-102"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-102" tabindex="-1"></a>         <span class="at">envir =</span> .GlobalEnv)</span>
+<span id="cb4-103"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-103" tabindex="-1"></a></span>
+<span id="cb4-104"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-104" tabindex="-1"></a>  <span class="fu">assign</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_maf_&quot;</span>, breed),</span>
+<span id="cb4-105"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-105" tabindex="-1"></a>         afreq <span class="sc">|&gt;</span></span>
+<span id="cb4-106"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-106" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">filter</span>(MAF_calc <span class="sc">&lt;</span> maf_thr) <span class="sc">|&gt;</span></span>
+<span id="cb4-107"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-107" tabindex="-1"></a>           dplyr<span class="sc">::</span><span class="fu">select</span>(CHROM, ID, MAF_calc),</span>
+<span id="cb4-108"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-108" tabindex="-1"></a>         <span class="at">envir =</span> .GlobalEnv)</span>
+<span id="cb4-109"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-109" tabindex="-1"></a></span>
+<span id="cb4-110"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-110" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_samples_&quot;</span>,   breed)), <span class="fu">file.path</span>(out_dir, <span class="fu">paste0</span>(<span class="st">&quot;bad_samples_over_mind.&quot;</span>, breed, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb4-111"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-111" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_miss_&quot;</span>, breed)), <span class="fu">file.path</span>(out_dir, <span class="fu">paste0</span>(<span class="st">&quot;bad_snps_over_geno.&quot;</span>, breed, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb4-112"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-112" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_hwe_&quot;</span>,  breed)), <span class="fu">file.path</span>(out_dir, <span class="fu">paste0</span>(<span class="st">&quot;bad_snps_hwe.&quot;</span>, breed, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb4-113"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-113" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="fu">get</span>(<span class="fu">paste0</span>(<span class="st">&quot;bad_snps_maf_&quot;</span>,  breed)), <span class="fu">file.path</span>(out_dir, <span class="fu">paste0</span>(<span class="st">&quot;bad_snps_low_maf.&quot;</span>, breed, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb4-114"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-114" tabindex="-1"></a></span>
+<span id="cb4-115"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-115" tabindex="-1"></a>  <span class="co"># ---- 품종별 변이 QC 요약 ----</span></span>
+<span id="cb4-116"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-116" tabindex="-1"></a>  vmiss <span class="ot">&lt;-</span> vmiss <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">CHROM =</span> <span class="fu">as.character</span>(CHROM))</span>
+<span id="cb4-117"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-117" tabindex="-1"></a>  hardy <span class="ot">&lt;-</span> hardy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">CHROM =</span> <span class="fu">as.character</span>(CHROM))</span>
+<span id="cb4-118"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-118" tabindex="-1"></a>  afreq <span class="ot">&lt;-</span> afreq <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">CHROM =</span> <span class="fu">as.character</span>(CHROM))</span>
+<span id="cb4-119"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-119" tabindex="-1"></a></span>
+<span id="cb4-120"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-120" tabindex="-1"></a>  variant_qc <span class="ot">&lt;-</span> vmiss <span class="sc">|&gt;</span></span>
+<span id="cb4-121"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-121" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(CHROM, ID, F_MISS) <span class="sc">|&gt;</span></span>
+<span id="cb4-122"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-122" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(hardy, CHROM, ID, P),        <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;CHROM&quot;</span>,<span class="st">&quot;ID&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-123"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-123" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(afreq, CHROM, ID, MAF_calc), <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;CHROM&quot;</span>,<span class="st">&quot;ID&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-124"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-124" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb4-125"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-125" tabindex="-1"></a>      <span class="at">fail_miss =</span> F_MISS <span class="sc">&gt;</span> geno_thr,</span>
+<span id="cb4-126"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-126" tabindex="-1"></a>      <span class="at">fail_hwe  =</span> P <span class="sc">&lt;</span> hwe_thr,</span>
+<span id="cb4-127"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-127" tabindex="-1"></a>      <span class="at">fail_maf  =</span> MAF_calc <span class="sc">&lt;</span> maf_thr,</span>
+<span id="cb4-128"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-128" tabindex="-1"></a>      <span class="at">fail_any  =</span> fail_miss <span class="sc">|</span> fail_hwe <span class="sc">|</span> fail_maf</span>
+<span id="cb4-129"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-129" tabindex="-1"></a>    )</span>
+<span id="cb4-130"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-130" tabindex="-1"></a></span>
+<span id="cb4-131"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-131" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(variant_qc, <span class="fu">file.path</span>(out_dir, <span class="fu">paste0</span>(<span class="st">&quot;variant_qc_summary.&quot;</span>, breed, <span class="st">&quot;.csv&quot;</span>)))</span>
+<span id="cb4-132"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-132" tabindex="-1"></a></span>
+<span id="cb4-133"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-133" tabindex="-1"></a>  n_fail_any   <span class="ot">&lt;-</span> <span class="fu">sum</span>(variant_qc<span class="sc">$</span>fail_any, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-134"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-134" tabindex="-1"></a>  n_snps_total <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(vmiss<span class="sc">$</span>ID)</span>
+<span id="cb4-135"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-135" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;[%s] 총 SNP 수: %s; 기준 실패 SNP 수: %s (%.2f%%)</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb4-136"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-136" tabindex="-1"></a>              breed,</span>
+<span id="cb4-137"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-137" tabindex="-1"></a>              <span class="fu">prettyNum</span>(n_snps_total, <span class="at">big.mark =</span> <span class="st">&quot;,&quot;</span>),</span>
+<span id="cb4-138"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-138" tabindex="-1"></a>              <span class="fu">prettyNum</span>(n_fail_any,   <span class="at">big.mark =</span> <span class="st">&quot;,&quot;</span>),</span>
+<span id="cb4-139"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-139" tabindex="-1"></a>              <span class="dv">100</span> <span class="sc">*</span> n_fail_any <span class="sc">/</span> n_snps_total))</span>
+<span id="cb4-140"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-140" tabindex="-1"></a></span>
+<span id="cb4-141"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-141" tabindex="-1"></a>  <span class="co"># ---- 요약 행 ----</span></span>
+<span id="cb4-142"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-142" tabindex="-1"></a>  samples_over_mind <span class="ot">&lt;-</span> <span class="fu">sum</span>(smiss<span class="sc">$</span>F_MISS <span class="sc">&gt;</span> mind_thr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-143"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-143" tabindex="-1"></a>  snps_over_geno    <span class="ot">&lt;-</span> <span class="fu">sum</span>(vmiss<span class="sc">$</span>F_MISS <span class="sc">&gt;</span> geno_thr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-144"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-144" tabindex="-1"></a>  snps_fail_hwe     <span class="ot">&lt;-</span> <span class="fu">sum</span>(hardy<span class="sc">$</span>P <span class="sc">&lt;</span> hwe_thr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-145"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-145" tabindex="-1"></a>  snps_below_maf    <span class="ot">&lt;-</span> <span class="fu">sum</span>(afreq<span class="sc">$</span>MAF_calc <span class="sc">&lt;</span> maf_thr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-146"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-146" tabindex="-1"></a></span>
+<span id="cb4-147"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-147" tabindex="-1"></a>  summary_row <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb4-148"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-148" tabindex="-1"></a>    <span class="at">breed =</span> breed,</span>
+<span id="cb4-149"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-149" tabindex="-1"></a>    <span class="at">n_samples =</span> <span class="fu">nrow</span>(smiss),</span>
+<span id="cb4-150"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-150" tabindex="-1"></a>    <span class="at">n_variants =</span> <span class="fu">nrow</span>(vmiss),</span>
+<span id="cb4-151"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-151" tabindex="-1"></a>    <span class="at">samples_over_mind =</span> samples_over_mind,</span>
+<span id="cb4-152"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-152" tabindex="-1"></a>    <span class="at">snps_over_geno =</span> snps_over_geno,</span>
+<span id="cb4-153"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-153" tabindex="-1"></a>    <span class="at">snps_fail_hwe =</span> snps_fail_hwe,</span>
+<span id="cb4-154"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-154" tabindex="-1"></a>    <span class="at">snps_below_maf_threshold =</span> snps_below_maf,</span>
+<span id="cb4-155"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-155" tabindex="-1"></a>    <span class="at">snps_fail_any_filter =</span> n_fail_any,</span>
+<span id="cb4-156"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-156" tabindex="-1"></a>    <span class="at">pct_fail_any =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n_fail_any <span class="sc">/</span> <span class="fu">nrow</span>(vmiss), <span class="dv">3</span>)</span>
+<span id="cb4-157"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-157" tabindex="-1"></a>  )</span>
+<span id="cb4-158"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-158" tabindex="-1"></a></span>
+<span id="cb4-159"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-159" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(summary_row, <span class="fu">file.path</span>(out_dir, <span class="st">&quot;qc_summary_counts.csv&quot;</span>))</span>
+<span id="cb4-160"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-160" tabindex="-1"></a>  summary_rows[[breed]] <span class="ot">&lt;-</span> summary_row</span>
+<span id="cb4-161"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb4-161" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>#&gt; === 품종 처리 중: holstein ===</code></pre>
+<pre><code>#&gt; smiss 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 5
+#&gt;     FID   IID MISSING_CT OBS_CT   F_MISS
+#&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1     1  3530         34  47576 0.000715
+#&gt; 2     2  3528         51  47576 0.00107 
+#&gt; 3     3  3527         35  47576 0.000736
+#&gt; 4     4  3195        277  47576 0.00582 
+#&gt; 5     5  3994        107  47576 0.00225 
+#&gt; 6     6  3786         43  47576 0.000904</code></pre>
+<pre><code>#&gt; vmiss 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 5
+#&gt;   CHROM ID                              MISSING_CT OBS_CT F_MISS
+#&gt;   &lt;chr&gt; &lt;chr&gt;                                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 1     Hapmap43437-BTA-101873                   0    200      0
+#&gt; 2 1     ARS-BFGL-NGS-16466                       0    200      0
+#&gt; 3 1     ARS-BFGL-NGS-105096                      0    200      0
+#&gt; 4 1     Hapmap34944-BES1_Contig627_1906          0    200      0
+#&gt; 5 1     ARS-BFGL-NGS-98142                       0    200      0
+#&gt; 6 1     Hapmap53946-rs29015852                   0    200      0</code></pre>
+<pre><code>#&gt; hardy 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 11
+#&gt;   CHROM ID               A1    AX    HOM_A1_CT HET_A1_CT TWO_AX_CT `O(HET_A1)`
+#&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; 1     1 Hapmap43437-BTA… G     A            31        92        77       0.46 
+#&gt; 2     1 ARS-BFGL-NGS-16… G     A           174        26         0       0.13 
+#&gt; 3     1 ARS-BFGL-NGS-10… G     A           172        27         1       0.135
+#&gt; 4     1 Hapmap34944-BES… C     A           123        68         9       0.34 
+#&gt; 5     1 ARS-BFGL-NGS-98… G     A           102        79        19       0.395
+#&gt; 6     1 Hapmap53946-rs2… G     A            94        86        20       0.43 
+#&gt; # ℹ 3 more variables: `E(HET_A1)` &lt;dbl&gt;, P &lt;dbl&gt;, minuslog10P &lt;dbl&gt;</code></pre>
+<pre><code>#&gt; afreq 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 8
+#&gt;   CHROM ID            REF   ALT   `PROVISIONAL_REF?` ALT_FREQS OBS_CT MAF_calc
+#&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 1     Hapmap43437-… G     A     Y                     0.615     400   0.385 
+#&gt; 2 1     ARS-BFGL-NGS… G     A     Y                     0.065     400   0.065 
+#&gt; 3 1     ARS-BFGL-NGS… G     A     Y                     0.0725    400   0.0725
+#&gt; 4 1     Hapmap34944-… C     A     Y                     0.215     400   0.215 
+#&gt; 5 1     ARS-BFGL-NGS… G     A     Y                     0.292     400   0.292 
+#&gt; 6 1     Hapmap53946-… G     A     Y                     0.315     400   0.315</code></pre>
+<p><img src="my-final-book_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="my-final-book_files/figure-html/unnamed-chunk-5-2.png" width="672" /><img src="my-final-book_files/figure-html/unnamed-chunk-5-3.png" width="672" /><img src="my-final-book_files/figure-html/unnamed-chunk-5-4.png" width="672" /></p>
+<pre><code>#&gt; [holstein] 총 SNP 수: 47,576; 기준 실패 SNP 수: 5,962 (12.53%)</code></pre>
+<pre><code>#&gt; === 품종 처리 중: jersey ===
+#&gt; smiss 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 5
+#&gt;     FID   IID MISSING_CT OBS_CT   F_MISS
+#&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1   201  4273         56  47576 0.00118 
+#&gt; 2   202  4284         69  47576 0.00145 
+#&gt; 3   203  4289         54  47576 0.00114 
+#&gt; 4   204  4230         52  47576 0.00109 
+#&gt; 5   205  4292         27  47576 0.000568
+#&gt; 6   206  4236         32  47576 0.000673</code></pre>
+<pre><code>#&gt; vmiss 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 5
+#&gt;   CHROM ID                              MISSING_CT OBS_CT F_MISS
+#&gt;   &lt;chr&gt; &lt;chr&gt;                                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 1     Hapmap43437-BTA-101873                   0     96      0
+#&gt; 2 1     ARS-BFGL-NGS-16466                       0     96      0
+#&gt; 3 1     ARS-BFGL-NGS-105096                      0     96      0
+#&gt; 4 1     Hapmap34944-BES1_Contig627_1906          0     96      0
+#&gt; 5 1     ARS-BFGL-NGS-98142                       0     96      0
+#&gt; 6 1     Hapmap53946-rs29015852                   0     96      0</code></pre>
+<pre><code>#&gt; hardy 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 11
+#&gt;   CHROM ID               A1    AX    HOM_A1_CT HET_A1_CT TWO_AX_CT `O(HET_A1)`
+#&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; 1     1 Hapmap43437-BTA… G     A            78        18         0       0.188
+#&gt; 2     1 ARS-BFGL-NGS-16… G     A            70        26         0       0.271
+#&gt; 3     1 ARS-BFGL-NGS-10… G     A            16        57        23       0.594
+#&gt; 4     1 Hapmap34944-BES… C     A            10        52        34       0.542
+#&gt; 5     1 ARS-BFGL-NGS-98… G     A            49        34        13       0.354
+#&gt; 6     1 Hapmap53946-rs2… G     A            46        45         5       0.469
+#&gt; # ℹ 3 more variables: `E(HET_A1)` &lt;dbl&gt;, P &lt;dbl&gt;, minuslog10P &lt;dbl&gt;</code></pre>
+<pre><code>#&gt; afreq 데이터 앞부분:</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 8
+#&gt;   CHROM ID            REF   ALT   `PROVISIONAL_REF?` ALT_FREQS OBS_CT MAF_calc
+#&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 1     Hapmap43437-… G     A     Y                     0.0938    192   0.0938
+#&gt; 2 1     ARS-BFGL-NGS… G     A     Y                     0.135     192   0.135 
+#&gt; 3 1     ARS-BFGL-NGS… G     A     Y                     0.536     192   0.464 
+#&gt; 4 1     Hapmap34944-… C     A     Y                     0.625     192   0.375 
+#&gt; 5 1     ARS-BFGL-NGS… G     A     Y                     0.312     192   0.312 
+#&gt; 6 1     Hapmap53946-… G     A     Y                     0.286     192   0.286</code></pre>
+<p><img src="my-final-book_files/figure-html/unnamed-chunk-5-5.png" width="672" /><img src="my-final-book_files/figure-html/unnamed-chunk-5-6.png" width="672" /><img src="my-final-book_files/figure-html/unnamed-chunk-5-7.png" width="672" /></p>
+<pre><code>#&gt; Warning: Removed 3 rows containing non-finite outside the scale range (`stat_bin()`).
+#&gt; Removed 3 rows containing non-finite outside the scale range (`stat_bin()`).</code></pre>
+<p><img src="my-final-book_files/figure-html/unnamed-chunk-5-8.png" width="672" /></p>
+<pre><code>#&gt; [jersey] 총 SNP 수: 47,576; 기준 실패 SNP 수: 12,501 (26.28%)</code></pre>
+</div>
+<div id="rstudio-console-품종별-qc-리포트-요약-결과-통합" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> 4) [RStudio Console] 품종별 QC 리포트 요약 결과 통합<a href="#rstudio-console-%ED%92%88%EC%A2%85%EB%B3%84-qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EC%9A%94%EC%95%BD-%EA%B2%B0%EA%B3%BC-%ED%86%B5%ED%95%A9" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb25-1" tabindex="-1"></a>summary_all <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(summary_rows)</span>
+<span id="cb25-2"><a href="pre-gwas-절차-유전자형-데이터-qc.html#cb25-2" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(summary_all, <span class="fu">file.path</span>(base_dir, <span class="st">&quot;qc_summary_by_breed.csv&quot;</span>))</span></code></pre></div>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+breed
+</th>
+<th style="text-align:right;">
+n_samples
+</th>
+<th style="text-align:right;">
+n_variants
+</th>
+<th style="text-align:right;">
+samples_over_mind
+</th>
+<th style="text-align:right;">
+snps_over_geno
+</th>
+<th style="text-align:right;">
+snps_fail_hwe
+</th>
+<th style="text-align:right;">
+snps_below_maf_threshold
+</th>
+<th style="text-align:right;">
+snps_fail_any_filter
+</th>
+<th style="text-align:right;">
+pct_fail_any
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+holstein
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+47576
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+193
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+5751
+</td>
+<td style="text-align:right;">
+5962
+</td>
+<td style="text-align:right;">
+12.532
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+jersey
+</td>
+<td style="text-align:right;">
+96
+</td>
+<td style="text-align:right;">
+47576
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+154
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+12373
+</td>
+<td style="text-align:right;">
+12501
+</td>
+<td style="text-align:right;">
+26.276
+</td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-success outputs" role="alert">
+<h4 class="alert-heading">
+📁 최종출력물
+</h4>
+<h5 class="mt-2">
+품종별 (<code>02_reports/&lt;breed&gt;/</code> 내부)
+</h5>
+<table class="table table-striped table-condensed outputs-table">
+<thead>
+<tr>
+<th>
+위치
+</th>
+<th>
+파일 이름
+</th>
+<th>
+형식
+</th>
+<th>
+설명
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>02_reports/&lt;breed&gt;/figs/</code>
+</td>
+<td>
+<code>smiss_hist.png</code>, <code>vmiss_hist.png</code>,<br> <code>hardy_hist.png</code>, <code>maf_hist.png</code>
+</td>
+<td>
+PNG
+</td>
+<td>
+히스토그램 그림: 개체/변이 결측률, 하디–바인베르크(HWE, −log10P), MAF
+</td>
+</tr>
+<tr>
+<td>
+<code>02_reports/&lt;breed&gt;/</code>
+</td>
+<td>
+<code>bad_samples_over_mind.&lt;breed&gt;.csv</code><br> <code>bad_snps_over_geno.&lt;breed&gt;.csv</code><br> <code>bad_snps_hwe.&lt;breed&gt;.csv</code><br> <code>bad_snps_low_maf.&lt;breed&gt;.csv</code>
+</td>
+<td>
+CSV
+</td>
+<td>
+지표별 이상치 목록 (개체 결측률, SNP 결측률, HWE, MAF)
+</td>
+</tr>
+<tr>
+<td>
+<code>02_reports/&lt;breed&gt;/</code>
+</td>
+<td>
+<code>variant_qc_summary.&lt;breed&gt;.csv</code>
+</td>
+<td>
+CSV
+</td>
+<td>
+변이 단위 요약 (플래그 포함: <code>fail_miss</code>, <code>fail_hwe</code>, <code>fail_maf</code>, <code>fail_any</code>)
+</td>
+</tr>
+<tr>
+<td>
+<code>02_reports/&lt;breed&gt;/</code>
+</td>
+<td>
+<code>qc_summary_counts.csv</code>
+</td>
+<td>
+CSV
+</td>
+<td>
+품종별 요약 (개체/변이 수 및 기준 실패 개수)
+</td>
+</tr>
+</tbody>
+</table>
+<h5>
+통합 (전체 품종)
+</h5>
+<ul class="list-unstyled mb-0">
+<li>
+📚 <strong>전체 품종 요약</strong>: <code>02_reports/qc_summary_by_breed.csv</code> (CSV)
+</li>
+</ul>
+</div>
+</div>
+<div id="qc-리포트-결과-다시보기" class="section level3 hasAnchor" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> 5) QC 리포트 결과 다시보기<a href="#qc-%EB%A6%AC%ED%8F%AC%ED%8A%B8-%EA%B2%B0%EA%B3%BC-%EB%8B%A4%EC%8B%9C%EB%B3%B4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="recap-grid">
+<div class="recap-card breed-holstein">
+<h5>
+🐄 holstein
+</h5>
+<div class="recap-badges">
+<p><span class="badge">샘플 개수 200</span>
+<span class="badge">변이 개수 47,576</span></p>
+</div>
+<div class="breakdown-tree">
+<div class="tree-root">
+<span class="badge badge-fail"><strong>실패 변이 5,962 (12.53%)</strong></span>
+</div>
+<div class="tree-branches">
+<div class="branch">
+<span class="pill pill-miss">miss <strong>193</strong></span>
+</div>
+<div class="branch">
+<span class="pill pill-hwe">HWE <strong>108</strong></span>
+</div>
+<div class="branch">
+<span class="pill pill-maf">low MAF <strong>5,751</strong></span>
+</div>
+</div>
+</div>
+<div class="progress progress-dual" role="img" aria-label="실패 12.53%, 통과 87.47%">
+<div class="progress-seg fail seg-striped" style="width: 12.53%" data-label="실패 5,962 (12.53%)">
+
+</div>
+<div class="progress-seg pass" style="width: 87.47%" data-label="통과 41,614 (87.47%)">
+
+</div>
+</div>
+</div>
+<div class="recap-card breed-jersey">
+<h5>
+🐂 jersey
+</h5>
+<div class="recap-badges">
+<p><span class="badge">샘플 개수 96</span>
+<span class="badge">변이 개수 47,576</span></p>
+</div>
+<div class="breakdown-tree">
+<div class="tree-root">
+<span class="badge badge-fail"><strong>실패 변이 12,501 (26.28%)</strong></span>
+</div>
+<div class="tree-branches">
+<div class="branch">
+<span class="pill pill-miss">miss <strong>154</strong></span>
+</div>
+<div class="branch">
+<span class="pill pill-hwe">HWE <strong>48</strong></span>
+</div>
+<div class="branch">
+<span class="pill pill-maf">low MAF <strong>12,373</strong></span>
+</div>
+</div>
+</div>
+<div class="progress progress-dual" role="img" aria-label="실패 26.28%, 통과 73.72%">
+<div class="progress-seg fail seg-striped" style="width: 26.28%" data-label="실패 12,501 (26.28%)">
+
+</div>
+<div class="progress-seg pass" style="width: 73.72%" data-label="통과 35,075 (73.72%)">
+
+</div>
+</div>
+</div>
+</div>
+<hr />
+</div>
+</div>
+<div id="최종-plink1-binary-세트-다시-만들기" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> 최종 PLINK1 Binary 세트 다시 만들기<a href="#%EC%B5%9C%EC%A2%85-plink1-binary-%EC%84%B8%ED%8A%B8-%EB%8B%A4%EC%8B%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!-- ==== 4. 최종 데이터셋 다시 만들기 — 요약 패널 ==== -->
+<!-- 여기에 순수 HTML을 넣으면 코드가 아니라 실제 HTML로 렌더링됩니다 -->
+<div class="rebuild-summary">
+  <h4 class="rs-title">🔁 최종 세트 재생성 요약</h4>
+  <p class="rs-desc">바뀐 QC 기준값(특히 per-population <code>minor allele count (MAC) ≥ 10</code>)을 적용하여 최종 <code>PLINK1 binary</code> 파일을 다시 생성한다.</p>
+
+  <div class="rs-cols">
+    <div class="rs-col">
+      <h5>🐄 Holstein <span class="rs-tag rs-tag-change">변경</span></h5>
+      <ul class="rs-chips">
+        <li><span class="k">mind</span> <b>0.05</b></li>
+        <li><span class="k">geno</span> <b>0.05</b></li>
+        <li><span class="k">hwe</span> <b>1e-6</b></li>
+        <li class="changed"><span class="k">mac</span> <b>10</b> <em>(MAF 0.025)</em></li>
+      </ul>
+    </div>
+
+    <div class="rs-col">
+      <h5>🐂 Jersey <span class="rs-tag rs-tag-change">변경</span></h5>
+      <ul class="rs-chips">
+        <li><span class="k">mind</span> <b>0.05</b></li>
+        <li><span class="k">geno</span> <b>0.05</b></li>
+        <li><span class="k">hwe</span> <b>1e-6</b></li>
+        <li class="changed"><span class="k">mac</span> <b>10</b> <em>(MAF 0.052)</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rs-note">
+    <p>📝 <b>Per-population MAC ≥ 10</b> 해석:</p>
+    <ul>
+      <li>Holstein (n=200 → 400 chromosomes): MAC 10 ≈ MAF <code>10/400 = 0.025</code></li>
+      <li>Jersey (n=96 → 192 chromosomes): MAC 10 ≈ MAF <code>10/192 ≈ 0.052</code></li>
+    </ul>
+    <p>즉, 표본 크기에 따라 실질 MAF 컷이 자동으로 맞춰진다. </p>
+  </div>
+</div>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐄</span> <strong>7-1) Holstein (홀스타인)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>03_qc/NIAS_ibv3_296ea.holstein.[bed|bim|fam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log (Holstein) — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --mac 10
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.holstein
+  --pfile 04_split/NIAS_ibv3_296ea.holstein
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Sun Aug 24 20:03:32 2025
+
+Random number seed: 1756033412
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split/NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+--geno: 193 variants removed due to missing genotype data.
+--hwe: 37 variants removed due to Hardy-Weinberg exact test (founders only).
+3660 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+43686 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bed ... done.
+
+End time: Sun Aug 24 20:03:33 2025
+    </code></pre>
+</details>
+<div class="alert alert-info cmd" role="alert">
+<p>
+<span class="icon">🐂</span> <strong>7-2) Jersey (저지)</strong>
+</p>
+<pre><code class="language-bash">plink2 --pfile 04_split/NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+<p>
+<em>생성되는 출력 파일:</em><br>
+<code>03_qc/NIAS_ibv3_296ea.jersey.[bed|bim|fam]</code>
+</p>
+</div>
+<details class="alert alert-secondary log">
+<summary style="cursor:pointer; font-size:1.1em; font-weight:600">
+📄 PLINK2 run log (Jersey) — 👆 클릭하여 보기
+</summary>
+<pre class="no-copy"><code class="language-text">
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --mac 10
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.jersey
+  --pfile 04_split/NIAS_ibv3_296ea.jersey
+
+Hostname: haesu
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Sun Aug 24 20:03:46 2025
+
+Random number seed: 1756033426
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) loaded from
+04_split/NIAS_ibv3_296ea.jersey.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.jersey.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+96 samples (0 females, 0 males, 96 ambiguous; 96 founders) remaining after main
+filters.
+Calculating allele frequencies... done.
+--geno: 154 variants removed due to missing genotype data.
+--hwe: 18 variants removed due to Hardy-Weinberg exact test (founders only).
+12329 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+35075 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.jersey.bed ... done.
+
+End time: Sun Aug 24 20:03:46 2025
+    </code></pre>
+</details>
+<div class="alert alert-success comparison" role="alert">
+<p>
+<span class="icon">📊</span> <strong>QC summary comparison: Holstein vs Jersey</strong>
+</p>
+<table class="table table-sm table-bordered rs-compare">
+<thead>
+<tr>
+<th>
+Metric
+</th>
+<th>
+🐄 Holstein
+</th>
+<th>
+🐂 Jersey
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Samples loaded
+</td>
+<td>
+<b>200</b> (200 founders)
+</td>
+<td>
+<b>96</b> (96 founders)
+</td>
+</tr>
+<tr>
+<td>
+Variants loaded
+</td>
+<td>
+<b>47,576</b>
+</td>
+<td>
+<b>47,576</b>
+</td>
+</tr>
+<tr>
+<td>
+Removed by <code>–mind 0.05</code>
+</td>
+<td>
+<b>0</b>
+</td>
+<td>
+<b>0</b>
+</td>
+</tr>
+<tr>
+<td>
+Removed by <code>–geno 0.05</code>
+</td>
+<td>
+<b>193</b>
+</td>
+<td>
+<b>154</b>
+</td>
+</tr>
+<tr>
+<td>
+Removed by <code>–hwe 1e-6</code>
+</td>
+<td>
+<b>37</b>
+</td>
+<td>
+<b>18</b>
+</td>
+</tr>
+<tr>
+<td>
+Removed by <code>–mac 10</code>
+</td>
+<td>
+<b>3,660</b>
+</td>
+<td>
+<b>12,329</b>
+</td>
+</tr>
+<tr class="final-row">
+<td>
+<b>Final variants</b>
+</td>
+<td>
+<b>43,686</b>
+</td>
+<td>
+<b>35,075</b>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr style="margin:1.25rem 0" />
+</div>
+<div id="qc-과정-완료" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> 🎉 QC 과정 완료<a href="#qc-%EA%B3%BC%EC%A0%95-%EC%99%84%EB%A3%8C" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="alert alert-success" role="alert" style="margin-top:.5rem">
+<h4 class="alert-heading" style="margin-top:0;margin-bottom:.5rem">
+✅ QC 절차를 끝까지 잘 마쳤다!
+</h4>
+<p style="margin-bottom:.75rem">
+모든 단계(데이터 변환 → 오류 변이 제거 → 1차/2차 필터링 → 품종별 QC 리포트 리뷰 후 2차 필터링)를 거쳐
+최종 <code>PLINK1 binary</code> 세트(<code>.bed/.bim/.fam</code>)를 만들었다. 🍀
+</p>
+<hr style="margin:.75rem 0" />
+<p class="mb-0">
+이제 이 유전자형 데이터로 GWAS 분석을 시작할 수 있다. 🚀🔥
+</p>
+</div>
+<hr style="margin:1.25rem 0" />
+</div>
+<div id="스크립트-전체-보기" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> 스크립트 전체 보기<a href="#%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%A0%84%EC%B2%B4-%EB%B3%B4%EA%B8%B0" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+<p>
+<span style="font-size:1.1em">💻 <strong>Plink Genotype QC</strong></span>
+</p>
+<details>
+<summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+<code>cmd_plink_qc.bat</code> 파일 — 👆 클릭하여 보기
+</summary>
+<pre><code class="language-bash">:: ============================================
+:: Plink genotype data QC (run in RStudio Terminal on Windows CMD)
+:: ============================================
+
+:: 0) 출력 폴더 생성
+mkdir 00_import 01_autosomesX 02_reports 03_qc 04_split
+
+:: 1) PED/MAP → PGEN 변환
+::    --cow        : 소(cattle) 빌트/염색체 규칙 사용
+::    --pedmap     : 입력 prefix (NIAS_ibv3_296ea.ped/.map)
+::    --sort-vars  : 변이를 유전체 좌표 순으로 정렬
+::    --make-pgen  : 출력 형식은 PLINK2(.pgen/.pvar/.psam)
+::    --out        : 출력 접두어
+plink2 --cow --pedmap NIAS_ibv3_296ea --sort-vars --make-pgen --out 00_import\NIAS_ibv3_296ea
+
+:: 2) PVAR에서 REF/ALT가 둘 다 '.'인 문제 변이 목록 추출 및 제거
+::    (이 상태는 "Duplicate allele code" 오류를 유발함)
+
+:: 2-1) REF(4열)과 ALT(5열)가 모두 '.'인 전체 행 저장(헤더 제외)
+awk -F '\t' "NR>1 && $4==\".\" && $5==\".\"" 00_import\NIAS_ibv3_296ea.pvar > bad_refalt_ids_both_strict.txt
+
+:: 2-2) 같은 조건의 변이 ID(3열)만 추출
+awk -F '\t' "NR>1 && $4==\".\" && $5==\".\" {print $3}" 00_import\NIAS_ibv3_296ea.pvar > bad_refalt_ids.txt
+
+:: 2-3) 문제 변이 제외 후 깨끗한 pfile로 저장
+plink2 --pfile 00_import/NIAS_ibv3_296ea --exclude bad_refalt_ids.txt --make-pgen --out 00_import/NIAS_ibv3_296ea.clean
+
+:: 3) 1차 필터(필수): 오토솜+X염색체, biallelic, 단일형 제거, 중복 ID 제거 → 이후 단계에서 사용하는 autosomesX 생성
+::    --chr 1-29,X         : 염색체 1–29 + X만 사용
+::    --max-alleles 2      : 대립유전자 ≤ 2 (biallelic만 유지)
+::    --mac 1              : 최소 소수 대립유전자 수 ≥ 1 (단일형 변이 제거)
+::    --rm-dup force-first : 중복 변이 발견 시 첫 번째 것만 유지 (좌표/allele 기준)
+::    --sort-vars          : 좌표 순으로 정렬
+::    --make-pgen          : pgen/pvar/psam 출력
+::    --out                : autosomesX 세트 출력 위치
+
+plink2 --pfile 00_import/NIAS_ibv3_296ea.clean --chr 1-29,X --max-alleles 2 --mac 1 --rm-dup force-first --sort-vars --make-pgen --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+:: 3-추가) 품종별 데이터셋 분리 준비: Holstein/Jersey IID 목록을 FID IID 두 열로 변환
+::        (holstein.txt / jersey.txt에는 IID만 있다고 가정, .psam에서 FID를 매칭해온다)
+
+:: Holstein: 첫 번째 파일(holstein.txt)의 IID를 해시에 저장하고, .psam에서 일치하는 IID 행의 FID IID를 출력
+awk "NR==FNR {iid[$1]=1; next} FNR>1 && ($2 in iid) {print $1, $2}" holstein.txt 01_autosomesX\NIAS_ibv3_296ea.autosomesX.psam > holstein_ids.txt
+
+:: Jersey: 동일 처리
+awk "NR==FNR {iid[$1]=1; next} FNR>1 && ($2 in iid) {print $1, $2}" jersey.txt 01_autosomesX\NIAS_ibv3_296ea.autosomesX.psam > jersey_ids.txt
+
+:: 4) 품종별 서브셋 pfile 만들기
+
+:: Holstein 서브셋 pfile 생성 (--keep: FID IID 목록의 샘플만 유지)
+plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep holstein_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.holstein
+
+:: Jersey 서브셋 pfile 생성
+plink2 --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX --keep jersey_ids.txt --make-pgen --out 04_split/NIAS_ibv3_296ea.jersey
+
+:: 5) 품종별 기본 QC 리포트 만들기
+::    --missing : 샘플/변이 결측률(missing genotype rate)
+::    --hardy   : HWE(하디–바인베르그) 검정
+::    --freq    : 대립유전자 빈도
+
+:: 5-1) 품종별 QC 리포트 폴더 생성
+mkdir 02_reports\holstein 02_reports\jersey
+
+:: Holstein QC 리포트
+plink2 --pfile 04_split\NIAS_ibv3_296ea.holstein --missing --hardy --freq --out 02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX
+
+:: Jersey QC 리포트
+plink2 --pfile 04_split\NIAS_ibv3_296ea.jersey --missing --hardy --freq --out 02_reports\jersey\NIAS_ibv3_296ea.jersey.autosomesX
+
+:: 6) RStudio에서 품종별 QC 리포트 확인 및 2차 필터 값 결정
+:: check_genotype_data.R script 실행
+
+:: 7) 품종별 2차 필터 적용(값은 연구 목적/샘플 크기에 맞게 조정)
+::    --mind 0.05 : 개체 결측률 ≤ 5%만 유지(0.05 초과 개체 제외)
+::    --geno 0.05 : 변이 결측률 ≤ 5%만 유지(0.05 초과 변이 제외)
+::    --mac 10: MAF ≥ 0.025 (Holstein) 및 0.052(Jersey) 변이만 유지
+::    --hwe  1e-6 : HWE p < 1e-6 변이 제외
+::    --make-bed  : PLINK1 바이너리(.bed/.bim/.fam) 파일로 저장
+
+:: Holstein
+plink2 --pfile 04_split\NIAS_ibv3_296ea.holstein --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.holstein
+
+:: Jersey 
+plink2 --pfile 04_split\NIAS_ibv3_296ea.jersey --mind 0.05 --geno 0.05 --mac 10 --hwe 1e-6 --make-bed --out 03_qc/NIAS_ibv3_296ea.jersey</code></pre>
+</details>
+</div>
+<div class="alert alert-secondary" role="alert" style="margin-top:1rem">
+<p>
+<span style="font-size:1.1em">📘 <strong>Breed-wise QC Report Review</strong></span>
+</p>
+<details>
+<summary style="cursor:pointer;font-size:1.15em; font-weight:600">
+<code>check_genotype_data.R</code> 파일 — 👆 클릭하여 보기
+</summary>
+<pre><code class="language-r"># 품종별 기본 QC 보고서
+# ---------------------------------------------------
+# ---- 필요한 패키지 설치 및 불러오기----
+need <- c("readr","dplyr","ggplot2")
+to_install <- setdiff(need, rownames(installed.packages()))
+if (length(to_install)) install.packages(to_install, repos = "https://cloud.r-project.org")
+invisible(lapply(need, library, character.only = TRUE))
+
+# ---- 보조 함수 & 기준값(=필터링 기준) ----
+neglog10 <- function(p) -log10(pmax(p, .Machine$double.xmin))  # -Inf 방지
+
+# 이대립성(biallelic) 데이터의 MAF: ALT_FREQS 사용
+# plink2 --freq의 ALT는 기본적으로 비참조 대립유전자(.pvar 파일에서 정의된 ALT)이며, 소수 대립유전자(minor allele)가 아닐 수도 있음. 
+
+maf_from_afreq <- function(df) {
+  stopifnot("ALT_FREQS" %in% names(df))
+  df %>%
+    mutate(
+      # 숫자형으로 변환 후 [0,1] 범위로 보정
+      ALT_FREQS = suppressWarnings(as.numeric(ALT_FREQS)),
+      ALT_FREQS = pmin(pmax(ALT_FREQS, 0), 1),
+      MAF_calc  = pmin(ALT_FREQS, 1 - ALT_FREQS)
+    )
+}
+
+# ---- 기준값 (필요 시 조정) ----
+mind_thr <- 0.05  # 개체 단위 유전자형 결측률
+geno_thr <- 0.05  # 변이 단위 유전자형 결측률
+hwe_thr  <- 1e-6  # 하디–바인베르크(HWE) p-값
+maf_thr  <- 0.05  # 소수 대립유전자 빈도(MAF)
+
+# ---- 기본 경로 & 품종 구분(서브디렉토리 설정용) ----
+base_dir <- "02_reports"
+breeds   <- c("holstein","jersey")
+
+# 품종별 요약 행을 저장할 리스트
+summary_rows <- list()
+
+# ---- 품종별 실행 ----
+# 전체 품종(breeds 벡터: "holstein", "jersey")을 순차적으로 처리한다. 
+#   - breeds[1] = "holstein"
+#   - breeds[2] = "jersey"
+# 아래 for 루프에서 자동으로 두 품종이 반복 실행된다. 
+# ---- 모든 품종 자동 실행 ----
+for (breed in breeds) {
+  message("=== 품종 처리 중: ", breed, " ===")
+
+  prefix <- file.path(base_dir, breed, sprintf("NIAS_ibv3_296ea.%s.autosomesX", breed))
+  f_smiss <- paste0(prefix, ".smiss")
+  f_vmiss <- paste0(prefix, ".vmiss")
+  f_hardy <- paste0(prefix, ".hardy")
+  f_afreq <- paste0(prefix, ".afreq")
+
+  out_dir  <- file.path(base_dir, breed)
+  figs_dir <- file.path(out_dir, "figs")
+  dir.create(figs_dir, showWarnings = FALSE, recursive = TRUE)
+
+  # ---- 데이터 불러오기 ----
+  smiss <- readr::read_tsv(f_smiss, show_col_types = FALSE) |>
+    dplyr::rename(FID = `#FID`)  # "#FID" -> FID
+
+  vmiss <- readr::read_tsv(f_vmiss, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`)
+
+  hardy <- readr::read_tsv(f_hardy, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    dplyr::mutate(minuslog10P = neglog10(P))
+
+  afreq <- readr::read_tsv(f_afreq, show_col_types = FALSE) |>
+    dplyr::rename(CHROM = `#CHROM`) |>
+    maf_from_afreq()
+
+  message("smiss 데이터 앞부분:"); print(utils::head(smiss))
+  message("vmiss 데이터 앞부분:"); print(utils::head(vmiss))
+  message("hardy 데이터 앞부분:"); print(utils::head(hardy))
+  message("afreq 데이터 앞부분:"); print(utils::head(afreq))
+
+  # ---- 그래프 ----
+  qc_theme <- ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+      axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+      axis.text.x  = ggplot2::element_text(size = 12),
+      axis.text.y  = ggplot2::element_text(size = 12),
+      plot.title   = ggplot2::element_text(size = 16, face = "bold", hjust = 0.5)
+    )
+
+  p1 <- ggplot2::ggplot(smiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 50) +
+    ggplot2::geom_vline(xintercept = mind_thr) +
+    ggplot2::labs(title = paste0(breed, ": 개체 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p2 <- ggplot2::ggplot(vmiss, ggplot2::aes(x = F_MISS)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = geno_thr) +
+    ggplot2::labs(title = paste0(breed, ": 변이 단위 결측률 (F_MISS)"),
+                  x = "F_MISS", y = "개수") + qc_theme
+
+  p3 <- ggplot2::ggplot(hardy, ggplot2::aes(x = minuslog10P)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = -log10(hwe_thr)) +
+    ggplot2::labs(title = paste0(breed, ": 하디-바인베르크 검정 (-log10P)"),
+                  x = "-log10(P)", y = "개수") + qc_theme
+
+  p4 <- ggplot2::ggplot(afreq, ggplot2::aes(x = MAF_calc)) +
+    ggplot2::geom_histogram(bins = 60) +
+    ggplot2::geom_vline(xintercept = maf_thr) +
+    ggplot2::labs(title = paste0(breed, ": MAF 분포"),
+                  x = "MAF", y = "개수") + qc_theme
+
+  print(p1); print(p2); print(p3); print(p4)
+
+  ggplot2::ggsave(file.path(figs_dir, "smiss_hist.png"), p1, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "vmiss_hist.png"), p2, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "hardy_hist.png"), p3, width = 3, height = 3, dpi = 300)
+  ggplot2::ggsave(file.path(figs_dir, "maf_hist.png"),   p4, width = 3, height = 3, dpi = 300)
+
+  # ---- 이상치(outlier) 테이블 ----
+  assign(paste0("bad_samples_", breed),
+         smiss |>
+           dplyr::filter(F_MISS > mind_thr) |>
+           dplyr::select(FID, IID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_miss_", breed),
+         vmiss |>
+           dplyr::filter(F_MISS > geno_thr) |>
+           dplyr::select(CHROM, ID, F_MISS),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_hwe_", breed),
+         hardy |>
+           dplyr::filter(P < hwe_thr) |>
+           dplyr::select(CHROM, ID, P),
+         envir = .GlobalEnv)
+
+  assign(paste0("bad_snps_maf_", breed),
+         afreq |>
+           dplyr::filter(MAF_calc < maf_thr) |>
+           dplyr::select(CHROM, ID, MAF_calc),
+         envir = .GlobalEnv)
+
+  readr::write_csv(get(paste0("bad_samples_",   breed)), file.path(out_dir, paste0("bad_samples_over_mind.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_miss_", breed)), file.path(out_dir, paste0("bad_snps_over_geno.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_hwe_",  breed)), file.path(out_dir, paste0("bad_snps_hwe.", breed, ".csv")))
+  readr::write_csv(get(paste0("bad_snps_maf_",  breed)), file.path(out_dir, paste0("bad_snps_low_maf.", breed, ".csv")))
+
+  # ---- 품종별 변이 QC 요약 ----
+  vmiss <- vmiss |> dplyr::mutate(CHROM = as.character(CHROM))
+  hardy <- hardy |> dplyr::mutate(CHROM = as.character(CHROM))
+  afreq <- afreq |> dplyr::mutate(CHROM = as.character(CHROM))
+
+  variant_qc <- vmiss |>
+    dplyr::select(CHROM, ID, F_MISS) |>
+    dplyr::left_join(dplyr::select(hardy, CHROM, ID, P),        by = c("CHROM","ID")) |>
+    dplyr::left_join(dplyr::select(afreq, CHROM, ID, MAF_calc), by = c("CHROM","ID")) |>
+    dplyr::mutate(
+      fail_miss = F_MISS > geno_thr,
+      fail_hwe  = P < hwe_thr,
+      fail_maf  = MAF_calc < maf_thr,
+      fail_any  = fail_miss | fail_hwe | fail_maf
+    )
+
+  readr::write_csv(variant_qc, file.path(out_dir, paste0("variant_qc_summary.", breed, ".csv")))
+
+  n_fail_any   <- sum(variant_qc$fail_any, na.rm = TRUE)
+  n_snps_total <- dplyr::n_distinct(vmiss$ID)
+  cat(sprintf("[%s] 총 SNP 수: %s; 기준 실패 SNP 수: %s (%.2f%%)\n\n",
+              breed,
+              prettyNum(n_snps_total, big.mark = ","),
+              prettyNum(n_fail_any,   big.mark = ","),
+              100 * n_fail_any / n_snps_total))
+
+  # ---- 요약 행 ----
+  samples_over_mind <- sum(smiss$F_MISS > mind_thr, na.rm = TRUE)
+  snps_over_geno    <- sum(vmiss$F_MISS > geno_thr, na.rm = TRUE)
+  snps_fail_hwe     <- sum(hardy$P < hwe_thr, na.rm = TRUE)
+  snps_below_maf    <- sum(afreq$MAF_calc < maf_thr, na.rm = TRUE)
+
+  summary_row <- tibble::tibble(
+    breed = breed,
+    n_samples = nrow(smiss),
+    n_variants = nrow(vmiss),
+    samples_over_mind = samples_over_mind,
+    snps_over_geno = snps_over_geno,
+    snps_fail_hwe = snps_fail_hwe,
+    snps_below_maf_threshold = snps_below_maf,
+    snps_fail_any_filter = n_fail_any,
+    pct_fail_any = round(100 * n_fail_any / nrow(vmiss), 3)
+  )
+
+  readr::write_csv(summary_row, file.path(out_dir, "qc_summary_counts.csv"))
+  summary_rows[[breed]] <- summary_row
+}
+
+summary_all <- dplyr::bind_rows(summary_rows)
+readr::write_csv(summary_all, file.path(base_dir, "qc_summary_by_breed.csv"))</code></pre>
+</details>
+</div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="gwas-분석-사전-준비-절차.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gwas-절차.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

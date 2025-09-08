@@ -1,0 +1,86 @@
+<style>
+/* Position button inside code block (works with Pandoc's sourceCode markup) */
+pre, pre.sourceCode { position: relative; }
+
+/* Bigger, clearer button */
+.copy-btn {
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 1.2em;           /* <- bigger text */
+  line-height: 1;
+  padding: 6px 10px;          /* <- bigger button */
+  border-radius: 6px;
+  border: 1px solid #cfd8e3;
+  background: rgba(255,255,255,0.9);
+  cursor: pointer;
+}
+.copy-btn:hover { background: #f3f4f6; }
+.copy-btn.copied {
+  border-color: #2eb85c;
+  color: #2eb85c;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Helper: check if a <pre> contains an R code block (handles 'sourceCode r' and 'language-r')
+  function isRPre(pre) {
+    const code = pre.querySelector("code");
+    if (!code) return false;
+    const classes = new Set(
+      ((code.className || "") + " " + (pre.className || ""))
+        .trim().split(/\s+/).filter(Boolean)
+    );
+    return classes.has("language-r") || classes.has("r"); // matches 'language-r' or 'sourceCode r'
+  }
+
+  // Find only R code blocks
+  const rPres = Array.from(document.querySelectorAll("pre")).filter(isRPre);
+
+  rPres.forEach(function (pre) {
+    const code = pre.querySelector("code");
+    if (!code) return;
+
+    // Add the button inside <pre> (absolute-positioned)
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.setAttribute("aria-label", "copy code");
+    btn.textContent = "📋 Copy";
+    pre.appendChild(btn);
+
+    // Copy handler without external libraries
+    btn.addEventListener("click", async function () {
+      const text = code.innerText;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          // Fallback for older browsers/viewers
+          const range = document.createRange();
+          range.selectNodeContents(code);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          document.execCommand("copy");
+          sel.removeAllRanges();
+        }
+        btn.textContent = "✅ Copied!";
+        btn.classList.add("copied");
+        setTimeout(function () {
+          btn.textContent = "📋 Copy";
+          btn.classList.remove("copied");
+        }, 1500);
+      } catch (e) {
+        btn.textContent = "❌ Failed";
+        setTimeout(function () { btn.textContent = "📋 Copy"; }, 3000);
+        console.error("Copy failed:", e);
+      }
+    });
+  });
+});
+</script>
+<style>
+  .copy-btn { font-size: 1.35em; padding: 8px 12px; font-weight: 700; }
+</style>
+

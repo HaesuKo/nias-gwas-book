@@ -1,0 +1,259 @@
+﻿/* ---- readthedown 전용 가벼운 카드/뱃지/콜아웃 스타일 ---- */
+:root{
+  --rd-border:#e2e6ea;
+  --rd-muted:#6c757d;
+  --rd-bg:#ffffff;
+  --rd-shadow:0 2px 10px rgba(0,0,0,.06);
+  --rd-primary:#2a7ae2;
+  --rd-warn:#e59819;
+  --rd-green:#198754;
+}
+
+.rd-card{
+  background:var(--rd-bg);
+  border:1px solid var(--rd-border);
+  border-radius:10px;
+  box-shadow:var(--rd-shadow);
+  margin:1rem 0 1.25rem;
+  overflow:hidden;
+}
+
+.rd-card__header{
+  padding:.85rem 1rem;
+  font-weight:700;
+  letter-spacing:-.2px;
+  background:linear-gradient(0deg, rgba(42,122,226,.10), rgba(42,122,226,.10));
+  border-bottom:1px solid var(--rd-border);
+}
+
+.rd-chip{
+  display:inline-block;
+  min-width:2.2rem;
+  padding:.15rem .5rem;
+  margin-right:.4rem;
+  font-weight:700;
+  text-align:center;
+  border-radius:999px;
+  background:#2a7ae2;
+  color:#fff;
+  font-size:.95rem;
+}
+
+.rd-card__body{ padding:1rem; }
+
+.rd-link-btn{
+  display:inline-block;
+  padding:.25rem .55rem;
+  border:1px solid var(--rd-primary);
+  color:#fff !important;
+  background:var(--rd-primary);
+  border-radius:6px;
+  font-size:.85rem;
+  text-decoration:none !important;
+  margin-left:.4rem;
+}
+
+.rd-note{
+  color:var(--rd-muted);
+  font-size:.95rem;
+  margin:.2rem 0 .8rem;
+}
+
+.rd-callout{
+  padding:.75rem .9rem;
+  border-left:4px solid var(--rd-primary);
+  background:#eef5ff;
+  border-radius:6px;
+  margin:.75rem 0 1rem;
+}
+.rd-callout.warn{
+  border-left-color:var(--rd-warn);
+  background:#fff7e6;
+}
+
+.rd-steps{
+  list-style:none;
+  padding-left:0;
+  margin:.25rem 0 .5rem;
+  counter-reset: step;
+}
+.rd-steps li{
+  position:relative;
+  border:1px solid var(--rd-border);
+  border-radius:8px;
+  padding:.6rem .75rem .6rem 2.4rem;
+  margin:.45rem 0;
+  background:#fff;
+}
+.rd-steps li::before{
+  counter-increment: step;
+  content: counter(step);
+  position:absolute;
+  top:50%; left:.6rem;
+  transform:translateY(-50%);
+  width:1.6rem; height:1.6rem;
+  line-height:1.6rem;
+  text-align:center;
+  border-radius:50%;
+  background:#f1f4f8;
+  border:1px solid var(--rd-border);
+  font-weight:700;
+  color:#2b2f33;
+}
+code, kbd{ border-radius:4px; }
+kbd{ border:1px solid #dfe2e5; border-bottom-width:2px; background:#f8f9fa; padding:0 .35rem; }
+
+/* kbd 가독성 향상 (readthedown/kate 테마용) */
+.rd-card kbd, .rd-steps kbd {
+  background:#fff !important;
+  color:#2b2f33 !important;
+  border:1px solid #dfe2e5;
+  border-bottom-width:2px;
+  border-radius:4px;
+  padding:0 .35rem;
+  box-shadow:none;
+}
+
+/* 코드 조각도 약간 더 또렷하게 */
+.rd-steps code {
+  background:#f6f8fa;
+  color:#2b2f33;
+  border-radius:4px;
+  padding:0 .15rem;
+}
+
+/* rd-steps: 네이티브 번호/점(1.) 숨기기 */
+.rd-steps,
+.rd-steps ol,
+.rd-steps ul{
+  list-style: none !important;
+  padding-left: 0;
+  margin: .25rem 0 .5rem 0;
+}
+.rd-steps li{
+  list-style: none !important;
+}
+/* Chrome/Firefox/Safari의 기본 ::marker 제거 */
+.rd-steps li::marker{
+  content: "" !important;
+}
+
+/* 모든 rd-card 제목 확대 (전역) */
+.rd-card__header{ font-size: 1.2rem; }
+.rd-card__header .rd-chip{ font-size: 1.05rem; padding:.2rem .6rem; }
+
+/* rd-steps: 직계 자식만 번호칩, 중첩 리스트는 번호칩 X */
+.rd-steps { counter-reset: step; list-style:none; padding-left:0; margin:.25rem 0 .5rem 0; }
+.rd-steps > li {
+  position:relative;
+  border:1px solid var(--rd-border);
+  border-radius:8px;
+  padding:.6rem .75rem .6rem 2.4rem;
+  margin:.45rem 0;
+  background:#fff;
+}
+.rd-steps > li::before {
+  counter-increment: step;
+  content: counter(step);
+  position:absolute;
+  top:50%; left:.6rem;
+  transform:translateY(-50%);
+  width:1.6rem; height:1.6rem; line-height:1.6rem;
+  text-align:center; border-radius:50%;
+  background:#f1f4f8; border:1px solid var(--rd-border);
+  font-weight:700; color:#2b2f33;
+}
+/* 체크리스트(번호 없이 체크 아이콘) */
+.rd-check { list-style:none; padding-left:0; margin:.35rem 0 0 0; }
+.rd-check li {
+  position:relative; padding-left:1.75rem; margin:.35rem 0;
+  background:#fff;
+}
+.rd-check li::before {
+  content:"✔";
+  position:absolute; left:.35rem; top:.1rem;
+  font-weight:700; color:var(--rd-green);
+}
+.rd-check .muted { color:var(--rd-muted); font-size:.95rem; }
+
+/* rd-check: 기본 글머리표(•, 1.) 제거 */
+.rd-check,
+.rd-check ul,
+.rd-check ol{
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+/* 일부 브라우저의 ::marker 제거 */
+.rd-check li::marker{
+  content: "" !important;
+}
+/* 혹시 이전에 체크아이콘(::before)을 썼다면 완전히 숨김 */
+.rd-check li::before{
+  content: "" !important;
+  display: none !important;
+}
+
+/* 큰 체크리스트 */
+.rd-check--lg { font-size:1.1rem; line-height:1.7; }
+.rd-check--lg code { font-size:.95em; }
+
+/* 항목 간 여백을 넉넉히 */
+.rd-check--spacious li { margin:.6rem 0; }
+
+/* 큰 콜아웃 */
+.rd-callout--lg { font-size:1.15rem; line-height:1.75; }
+.rd-callout--lg code { font-size:.95em; }  /* inline code 과대확대 방지 */
+
+/* 파일 부연 설명 카드의 소제목 크기/줄간격 확대 */
+#file-notes h6{
+  font-size:1.15rem;
+  line-height:1.35;
+  margin:.1rem 0 .5rem; /* 기존 인라인 마진과 동일 */
+  font-weight:700;
+}
+
+/* --- 탭 스타일 --- */
+.tab-container {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+/* 라디오 버튼은 숨김 */
+.tab-container input[type="radio"] {
+  display: none;
+}
+/* 탭 버튼(label) 스타일 */
+.tab-container label {
+  display: inline-block;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+  color: #495057;
+}
+/* 탭 내용 스타일 */
+.tab-container .tab-content {
+  display: none;
+  padding: 1.2rem;
+  border-top: 1px solid #dee2e6;
+  background-color: #fdfdfd;
+}
+/* 선택된 탭과 내용을 보여주는 로직 */
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2 {
+  display: block;
+}
+#tab1:checked ~ label[for="tab1"],
+#tab2:checked ~ label[for="tab2"] {
+  color: var(--accent-color, #007bff);
+  border-bottom-color: var(--accent-color, #007bff);
+}
+
+/* Increase the max width of the main content area */
+.bs4-book .container-fluid {
+  max-width: 1400px; /* Adjust this value as needed */
+}

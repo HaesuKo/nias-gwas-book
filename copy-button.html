@@ -1,0 +1,166 @@
+<style>
+/* Keep your original look */
+pre, pre.sourceCode { position: static; } /* let wrapper handle positioning */
+.copy-btn {
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cfd8e3;
+  background: rgba(255,255,255,0.9);
+  cursor: pointer;
+}
+.copy-btn:hover { background: #f3f4f6; }
+.copy-btn.copied { border-color: #2eb85c; color: #2eb85c; }
+
+/* New: wrapper that anchors the button reliably at the top-right */
+.copy-wrap { position: relative; }
+
+/* Reserve space so text/scrollbar never sit under the button */
+.copy-wrap pre, .copy-wrap pre.sourceCode {
+  padding-top: 2.2em !important;
+  padding-right: 4.8em !important;
+}
+
+/* PLINK callouts may be tighter—give them a bit more room */
+.alert.cmd .copy-wrap pre, .alert.cmd .copy-wrap pre.sourceCode {
+  padding-top: 2.4em !important;
+  padding-right: 5.6em !important;
+}
+
+/* Keep button above code and scrollbar */
+.copy-btn { z-index: 3; }
+
+/* Small screens: slightly smaller button + padding */
+@media (max-width: 640px){
+  .copy-btn { font-size: 1.05em; padding: 5px 9px; }
+  .copy-wrap pre, .copy-wrap pre.sourceCode {
+    padding-top: 2.0em !important; padding-right: 4.0em !important;
+  }
+  .alert.cmd .copy-wrap pre, .alert.cmd .copy-wrap pre.sourceCode {
+    padding-top: 2.2em !important; padding-right: 4.8em !important;
+  }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // --- helpers ---
+  function getCode(pre){ return pre.querySelector("code"); }
+
+  // skip R console output / messages / warnings / errors
+  function isOutput(pre, code){
+    const BAD = ["output","message","messages","warning","error","stderr","stdout",
+                 "console","result","results","verbatim","r-output"];
+    const has = el => el && el.classList &&
+      BAD.some(tok => Array.from(el.classList).some(c => c.toLowerCase().includes(tok)));
+    if (has(pre) || has(code)) return true;
+
+    if (pre.closest("div.sourceCode")) return false;          // pandoc source wrapper → source
+    const cls = ((code.className||"") + " " + (pre.className||"")).toLowerCase();
+    if (/language-/.test(cls)) return false;                  // highlight.js → source
+
+    // prompt-heavy heuristic looks like console
+    const txt = (code.innerText||"").trim();
+    const lines = txt.split(/\r?\n/);
+    const prompts = lines.filter(l => /^\s*[>+]/.test(l)).length;
+    return (lines.length && prompts/lines.length > 0.6);
+  }
+
+  function isWantedSource(pre){
+    const code = getCode(pre); if (!code) return false;
+    if (pre.closest(".alert.cmd")) return true; // always allow PLINK callouts
+    const classes = new Set(
+      ((code.className||"") + " " + (pre.className||""))
+        .trim().split(/\s+/).filter(Boolean).map(s => s.toLowerCase())
+    );
+    const LANGS = [
+      "language-r","r","language-bash","bash","language-sh","sh",
+      "language-python","python","language-yaml","yaml",
+      "language-json","json","language-ini","ini","plaintext","language-text","text"
+    ];
+    const hasLang = LANGS.some(k => classes.has(k));
+    return hasLang || !!pre.closest("div.sourceCode");
+  }
+
+  function ensureWrapper(pre){
+    if (pre.parentElement && pre.parentElement.classList.contains("copy-wrap")) {
+      return pre.parentElement;
+    }
+    const wrap = document.createElement("div");
+    wrap.className = "copy-wrap";
+    pre.replaceWith(wrap);
+    wrap.appendChild(pre);
+    return wrap;
+  }
+
+  function hasButton(container){
+    return !!container.querySelector(":scope > .copy-btn");
+  }
+
+  const pres = Array.from(document.querySelectorAll("pre"));
+  pres.forEach(pre => {
+    const code = getCode(pre); if (!code) return;
+    if (!isWantedSource(pre)) return;
+    if (isOutput(pre, code)) return;
+
+    const wrap = ensureWrapper(pre);
+    if (hasButton(wrap)) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.setAttribute("aria-label", "코드 복사");
+    btn.textContent = "📋 복사";
+    wrap.appendChild(btn);
+
+    btn.addEventListener("click", async () => {
+      const text = code.innerText;
+      try{
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const range = document.createRange();
+          range.selectNodeContents(code);
+          const sel = window.getSelection();
+          sel.removeAllRanges(); sel.addRange(range);
+          document.execCommand("copy");
+          sel.removeAllRanges();
+        }
+        btn.textContent = "✅ 복사됨!";
+        btn.classList.add("copied");
+        setTimeout(() => { btn.textContent = "📋 복사"; btn.classList.remove("copied"); }, 1500);
+      }catch(e){
+        btn.textContent = "❌ 실패";
+        setTimeout(() => { btn.textContent = "📋 복사"; }, 3000);
+        console.error("Copy failed:", e);
+      }
+    });
+  });
+});
+</script>
+
+<!-- keep your extra sizing rule -->
+<style>
+  .copy-btn { font-size: 0.95em; padding: 4px 8px; font-weight: 600; }
+</style>
+
+<style>
+/* Smaller copy button just for PLINK bash commands in .alert.cmd */
+.alert.cmd .copy-btn {
+  font-size: 0.95em;   /* smaller text */
+  padding: 4px 8px;    /* smaller button box */
+  font-weight: 600;    /* a little lighter if you want */
+}
+</style>
+
+<style>
+  /* Hide copy button for any block inside a .log container */
+  .log .copy-btn { display: none !important; }
+
+  /* Hide button when the <pre> has .no-copy (button is appended right after <pre>) */
+  .copy-wrap > pre.no-copy + .copy-btn { display: none !important; }
+</style>
+
