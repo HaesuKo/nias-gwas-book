@@ -1,0 +1,2 @@
+trait,n_snps,lambda,n_sig_BH,n_sig_bonf,min_p,min_p_SNP,min_BH
+days_in_milk,43686,0.9858212272952565,0,0,1.0138536050386251e-5,37174,0.44291208589717374

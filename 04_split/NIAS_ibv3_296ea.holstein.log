@@ -1,0 +1,27 @@
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --keep holstein_ids.txt
+  --make-pgen
+  --out 04_split/NIAS_ibv3_296ea.holstein
+  --pfile 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+
+Hostname: 유고해수
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:26 2025
+
+Random number seed: 1755676406
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar.
+Note: No phenotype data present.
+--keep: 200 samples remaining.
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Writing 04_split/NIAS_ibv3_296ea.holstein.psam ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pvar ... done.
+Writing 04_split/NIAS_ibv3_296ea.holstein.pgen ... done.
+
+End time: Wed Aug 20 16:53:26 2025

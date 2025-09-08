@@ -1,0 +1,26 @@
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --exclude bad_refalt_ids.txt
+  --make-pgen
+  --out 00_import/NIAS_ibv3_296ea.clean
+  --pfile 00_import/NIAS_ibv3_296ea
+
+Hostname: 유고해수
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:24 2025
+
+Random number seed: 1755676404
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.psam.
+chrSet header line: 29 autosome pairs.
+53218 variants loaded from 00_import/NIAS_ibv3_296ea.pvar.
+Note: No phenotype data present.
+--exclude: 53201 variants remaining.
+53201 variants remaining after main filters.
+Writing 00_import/NIAS_ibv3_296ea.clean.psam ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pvar ... done.
+Writing 00_import/NIAS_ibv3_296ea.clean.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025

@@ -1,0 +1,37 @@
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --geno 0.05
+  --hwe 1e-6
+  --mac 10
+  --make-bed
+  --mind 0.05
+  --out 03_qc/NIAS_ibv3_296ea.holstein
+  --pfile 04_split/NIAS_ibv3_296ea.holstein
+
+Hostname: RDA
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Mon Aug 25 19:21:25 2025
+
+Random number seed: 1756117285
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split/NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split/NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+0 samples removed due to missing genotype data (--mind).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) remaining after
+main filters.
+Calculating allele frequencies... done.
+--geno: 193 variants removed due to missing genotype data.
+--hwe: 37 variants removed due to Hardy-Weinberg exact test (founders only).
+3660 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+43686 variants remaining after main filters.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.fam ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bim ... done.
+Writing 03_qc/NIAS_ibv3_296ea.holstein.bed ... done.
+
+End time: Mon Aug 25 19:21:25 2025

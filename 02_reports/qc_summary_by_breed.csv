@@ -1,0 +1,3 @@
+breed,n_samples,n_variants,samples_over_mind,snps_over_geno,snps_fail_hwe,snps_below_maf_threshold,snps_fail_any_filter,pct_fail_any
+holstein,200,47576,0,193,108,5751,5962,12.532
+jersey,96,47576,0,154,48,12373,12501,26.276

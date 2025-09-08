@@ -1,0 +1,33 @@
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --chr 1-29,X
+  --mac 1
+  --make-pgen
+  --max-alleles 2
+  --out 01_autosomesX/NIAS_ibv3_296ea.autosomesX
+  --pfile 00_import/NIAS_ibv3_296ea.clean
+  --rm-dup force-first
+  --sort-vars
+
+Hostname: 유고해수
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:25 2025
+
+Random number seed: 1755676405
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+296 samples (0 females, 0 males, 296 ambiguous; 296 founders) loaded from
+00_import/NIAS_ibv3_296ea.clean.psam.
+chrSet header line: 29 autosome pairs.
+52424 out of 53201 variants loaded from 00_import/NIAS_ibv3_296ea.clean.pvar.
+Note: No phenotype data present.
+Note: Skipping --rm-dup since no duplicate IDs are present.
+Calculating allele frequencies... done.
+4848 variants removed due to allele frequency threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+47576 variants remaining after main filters.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pvar ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.psam ... done.
+Writing 01_autosomesX/NIAS_ibv3_296ea.autosomesX.pgen ... done.
+
+End time: Wed Aug 20 16:53:25 2025

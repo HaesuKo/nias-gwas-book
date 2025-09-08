@@ -1,0 +1,33 @@
+PLINK v2.0.0-a.6.21 64-bit (6 Aug 2025)
+Options in effect:
+  --freq
+  --hardy
+  --missing
+  --out 02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX
+  --pfile 04_split\NIAS_ibv3_296ea.holstein
+
+Hostname: 유고해수
+Working directory: G:\Rhome\NIAS_ibv3_296ea\PLINK_120825_0322
+Start time: Wed Aug 20 16:53:27 2025
+
+Random number seed: 1755676407
+65463 MiB RAM detected; reserving 32731 MiB for main workspace.
+Using up to 16 threads (change this with --threads).
+200 samples (0 females, 0 males, 200 ambiguous; 200 founders) loaded from
+04_split\NIAS_ibv3_296ea.holstein.psam.
+chrSet header line: 29 autosome pairs.
+47576 variants loaded from 04_split\NIAS_ibv3_296ea.holstein.pvar.
+Note: No phenotype data present.
+Calculating sample missingness rates... done.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.afreq .
+--missing: Sample missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.smiss .
+--missing: Variant missing data report written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.vmiss .
+--hardy: Skipping 887 haploid variants.
+--hardy: Autosomal Hardy-Weinberg report (founders only) written to
+02_reports\holstein\NIAS_ibv3_296ea.holstein.autosomesX.hardy .
+
+End time: Wed Aug 20 16:53:27 2025
